@@ -16,5 +16,9 @@
     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.1.5" />
     <PackageReference Include="DevExpress.Persistent.Base" Version="21.1.5" />
     <PackageReference Include="DevExpress.Persistent.BaseImpl" Version="21.1.5" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="NUnit" Version="3.13.2" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ namespace ComplexPortfolio.Module.Controllers {
 
             }
         }
-        TickerPrice GetPriceFromLine(string line) {
+      public  TickerPrice GetPriceFromLine(string line,IObjectSpace os) {
             return null;
         }
     }

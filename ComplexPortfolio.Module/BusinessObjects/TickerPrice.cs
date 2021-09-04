@@ -13,6 +13,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public TickerPrice(Session session) : base(session) {
         }
 
+        public TickerPrice() {
+
+        }
 
         double volume;
         decimal close;
@@ -50,7 +53,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         public decimal Close {
-
+            get => close;
             set => SetPropertyValue(nameof(Close), ref close, value);
         }
         
