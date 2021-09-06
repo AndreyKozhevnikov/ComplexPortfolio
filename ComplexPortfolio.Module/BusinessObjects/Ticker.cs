@@ -1,16 +1,23 @@
-﻿using DevExpress.Persistent.BaseImpl;
+﻿using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
 using DevExpress.Xpo;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+    [DebuggerDisplay("Name - {Name}")]
+    [DefaultClassOptions]
     public class Ticker : BaseObject {
         public Ticker(Session session) : base(session) {
         }
 
+        public Ticker() {
+
+        }
         string description;
         string name;
 

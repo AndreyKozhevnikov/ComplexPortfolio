@@ -3,17 +3,19 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Xpo;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DefaultClassOptions]
-    public class TickerPrice : BaseObject {
-        public TickerPrice(Session session) : base(session) {
+    [DebuggerDisplay("Ticker-{Ticker.Name},Date-{Date}")]
+    public class TickerDayData : BaseObject {
+        public TickerDayData(Session session) : base(session) {
         }
 
-        public TickerPrice() {
+        public TickerDayData() {
 
         }
 
