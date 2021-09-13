@@ -11,13 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.Controllers {
-   public class AddPricesFromFilesController:ObjectViewController<ListView,TickerDayData> {
-        public AddPricesFromFilesController() {
-            var addPricesAction = new SimpleAction(this, "AddPricesAction", PredefinedCategory.Edit);
-            addPricesAction.Execute += AddPricesAction_Execute; ;
+   public class AddDayDataFromFilesController:ObjectViewController<ListView,TickerDayData> {
+        public AddDayDataFromFilesController() {
+            var addDayDataAction = new SimpleAction(this, "AddPricesAction", PredefinedCategory.Edit);
+            addDayDataAction.Execute += AddDayDataAction_Execute; ;
         }
 
-        private void AddPricesAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+        private void AddDayDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var folder = @"c:\temp\shares";
             string[] fileEntries = Directory.GetFiles(folder);
             var os = Application.CreateObjectSpace(typeof(TickerDayData));

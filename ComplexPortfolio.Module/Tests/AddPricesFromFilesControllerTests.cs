@@ -16,7 +16,7 @@ namespace ComplexPortfolio.Module.Tests {
         [Test]
         public void GetPriceFromLine_firstLine_noPrices(){
             //arrange
-            var cont = new AddPricesFromFilesController();
+            var cont = new AddDayDataFromFilesController();
             var line = "<TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>";
             var osMoq = new Mock<IObjectSpace>();
             osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
@@ -31,7 +31,7 @@ namespace ComplexPortfolio.Module.Tests {
         [Test]
         public void GetPriceFromLine_normalline_noticker() {
             //arrange
-            var cont = new AddPricesFromFilesController();
+            var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
             osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
@@ -54,7 +54,7 @@ namespace ComplexPortfolio.Module.Tests {
         [Test]
         public void GetPriceFromLine_normalline_tickerexists() {
             //arrange
-            var cont = new AddPricesFromFilesController();
+            var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
             osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
@@ -79,7 +79,7 @@ namespace ComplexPortfolio.Module.Tests {
         [Test]
         public void GetPriceFromLine_normalline_tickerexists_PriceExist() {
             //arrange
-            var cont = new AddPricesFromFilesController();
+            var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
             osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
