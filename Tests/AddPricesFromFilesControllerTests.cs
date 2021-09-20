@@ -23,7 +23,7 @@ namespace ComplexPortfolio.Module.Tests {
             
             //act
 
-            var res = cont.GetPriceFromLine(line, osMoq.Object,new List<TickerDayData>(),new List<Ticker>());
+            var res = cont.ProcessLine(line, osMoq.Object,new List<TickerDayData>(),new List<Ticker>());
             //assert
             Assert.AreEqual(null, res);
         }
@@ -39,7 +39,7 @@ namespace ComplexPortfolio.Module.Tests {
             
             //act
 
-            var res = cont.GetPriceFromLine(line, osMoq.Object, new List<TickerDayData>(), new List<Ticker>());
+            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayData>(), new List<Ticker>());
             //assert
             Assert.AreEqual("FXGD", res.Ticker.Name); 
             Assert.AreEqual(new DateTime(2020,01,09), res.Date); 
@@ -64,7 +64,7 @@ namespace ComplexPortfolio.Module.Tests {
 
             //act
 
-            var res = cont.GetPriceFromLine(line, osMoq.Object, new List<TickerDayData>(), existingTickers);
+            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayData>(), existingTickers);
             //assert
             Assert.AreEqual("FXGD", res.Ticker.Name);
             Assert.AreEqual(new DateTime(2020, 01, 09), res.Date);
@@ -90,11 +90,33 @@ namespace ComplexPortfolio.Module.Tests {
             existingPrices.Add(new TickerDayData() {Ticker= new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
             //act
 
-            var res = cont.GetPriceFromLine(line, osMoq.Object, existingPrices, existingTickers);
+            var res = cont.ProcessLine(line, osMoq.Object, existingPrices, existingTickers);
             //assert
             Assert.AreEqual(null, res);
            
             osMoq.Verify(x => x.CreateObject<Ticker>(), Times.Never);
+        }
+
+        [Test]
+        public void GetPriceFromLine_createNewTickerOnlyOnce() {
+            //arrange
+            var cont = new AddDayDataFromFilesController();
+            var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
+            var osMoq = new Mock<IObjectSpace>();
+            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<Ticker>()).Returns(new Ticker());
+            var existingTickers = new List<Ticker>();
+          //  existingTickers.Add(new Ticker() { Name = "FXGD" });
+            var existingPrices = new List<TickerDayData>();
+            existingPrices.Add(new TickerDayData() { Ticker = new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
+            //act
+
+            var res = cont.ProcessLine(line, osMoq.Object, existingPrices, existingTickers);
+            var res2 = cont.ProcessLine(line, osMoq.Object, existingPrices, existingTickers);
+            //assert
+            Assert.AreEqual(null, res);
+
+            osMoq.Verify(x => x.CreateObject<Ticker>(), Times.Once);
         }
 
     }

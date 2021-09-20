@@ -22,34 +22,33 @@ namespace ComplexPortfolio.Module.Controllers {
             string[] fileEntries = Directory.GetFiles(folder);
             var os = Application.CreateObjectSpace(typeof(TickerDayData));
             var existingPrices = os.GetObjects<TickerDayData>();
-            var existingTickers = os.GetObjects<Ticker>();
+            var existingTickers = os.GetObjects<Ticker>().ToList();
             foreach (var fileName in fileEntries) {
                 StreamReader file = new StreamReader(fileName);
                 string line;
                 while((line= file.ReadLine()) != null) {
-                    GetPriceFromLine(line, os, existingPrices, existingTickers);
+                    ProcessLine(line, os, existingPrices, existingTickers);
                 }
             }
             os.CommitChanges();
         }
-      public TickerDayData GetPriceFromLine(string line,IObjectSpace os, IList<TickerDayData> existingPrices, IList<Ticker> existingTickers) {
+      public TickerDayData ProcessLine(string line,IObjectSpace os, IList<TickerDayData> existingPrices, IList<Ticker> existingTickers) {
             var cells = line.Split(';');
             if(cells[0].StartsWith('<')) {
                 return null;
             }
-         
             var tickerName = cells[0];
             var ticker = existingTickers.Where(x=>x.Name == tickerName).FirstOrDefault();
             if(ticker == null) {
                 ticker = os.CreateObject<Ticker>();
                 ticker.Name = tickerName;
+                existingTickers.Add(ticker);
             }
             var dateString = cells[2];
             var year = dateString.Substring(0, 4);
             var month = dateString.Substring(4, 2);
             var date = dateString.Substring(6, 2);
             var dateTime= new DateTime(int.Parse(year), int.Parse(month), int.Parse(date));
-            //var existPrice = os.FindObject<TickerPrice>(CriteriaOperator.Parse("Ticker.Name=? and Date=?",tickerName, dateTime));
             var existPrice = existingPrices.Where(x => x.Ticker.Name == tickerName && x.Date == dateTime).FirstOrDefault();
             if(existPrice != null) {
                 return null;
