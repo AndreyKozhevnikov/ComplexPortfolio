@@ -1,4 +1,5 @@
-﻿using DevExpress.ExpressApp.DC;
+﻿using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.DC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DomainComponent]
-    public class CalculateDayData {
+    public class CalculateDayData: NonPersistentLiteObject {
 
         decimal valueDiffTotal;
         decimal valueDiff;

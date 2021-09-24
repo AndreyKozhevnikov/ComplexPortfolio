@@ -1,5 +1,6 @@
 ﻿using ComplexPortfolio.Module.BusinessObjects;
 using ComplexPortfolio.Module.HelpClasses;
+using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.Persistent.Base;
@@ -20,8 +21,8 @@ namespace ComplexPortfolio.Module.Controllers {
             CalculatePosition(this.ViewCurrentObject, this.ObjectSpace, new ParametersProvider());
         }
 
-        public void CalculatePosition(Position viewCurrentObject, IObjectSpace objectSpace, IParametersProvider parametersProvider) {
-
+        public void CalculatePosition(Position position, IObjectSpace objectSpace, IParametersProvider parametersProvider) {
+            var lst = objectSpace.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
         }
     }
 }

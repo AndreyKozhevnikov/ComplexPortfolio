@@ -14,10 +14,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Transaction() {
         }
 
+        public Transaction(DateTime __transactionDate, int _amount, decimal _price, TransactionDirectionEnum _direction) {
+            this.transationDate = __transactionDate;
+            this.amount = _amount;
+            this.price = _price;
+            this.direction = _direction;
+        }
+
         string comment;
         int amount;
         decimal price;
-        string propertyName;
+        
         DateTime transationDate;
         TransactionDirectionEnum direction;
 
