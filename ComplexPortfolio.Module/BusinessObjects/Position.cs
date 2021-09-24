@@ -42,5 +42,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Transaction>(nameof(Transactions));
             }
         }
+        [PersistentAlias("Transactions.Sum(Amount)")]
+        public int SharesCount {
+            get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
+        }
     }
 }
