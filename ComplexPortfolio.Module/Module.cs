@@ -16,12 +16,14 @@ using DevExpress.ExpressApp.Model.DomainLogics;
 using DevExpress.ExpressApp.Model.NodeGenerators;
 using DevExpress.Xpo;
 using DevExpress.ExpressApp.Xpo;
+using DevExpress.ExpressApp.ConditionalAppearance;
 
 namespace ComplexPortfolio.Module {
     // For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ModuleBase.
     public sealed partial class ComplexPortfolioModule : ModuleBase {
         public ComplexPortfolioModule() {
             InitializeComponent();
+            this.RequiredModuleTypes.Add(typeof(ConditionalAppearanceModule));
         }
         public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) {
             ModuleUpdater updater = new DatabaseUpdate.Updater(objectSpace, versionFromDB);
