@@ -15,6 +15,10 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Position(Session session) : base(session) {
         }
 
+        public Position() {
+
+        }
+
         bool allowEdit;
         string comment;
         Ticker ticker;
@@ -22,7 +26,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);
         }
-     //   [VisibleInDetailView(false)]
+        //   [VisibleInDetailView(false)]
         [VisibleInListView(false)]
         public bool AllowEdit {
             get => allowEdit;
@@ -46,5 +50,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public int SharesCount {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
+
+        public List<CalculateDayData> CalculateData { get; set; }
     }
 }

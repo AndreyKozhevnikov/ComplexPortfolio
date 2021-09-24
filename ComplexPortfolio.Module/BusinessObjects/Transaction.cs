@@ -11,6 +11,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Transaction(Session session) : base(session) {
         }
 
+        public Transaction() {
+        }
+
         string comment;
         int amount;
         decimal price;
