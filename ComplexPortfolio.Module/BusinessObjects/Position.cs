@@ -13,10 +13,18 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Position(Session session) : base(session) {
         }
 
+        string comment;
         Ticker ticker;
         public Ticker Ticker {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);
+        }
+
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string Comment {
+            get => comment;
+            set => SetPropertyValue(nameof(Comment), ref comment, value);
         }
 
         [Association]

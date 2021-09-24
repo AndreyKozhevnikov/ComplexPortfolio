@@ -11,6 +11,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Transaction(Session session) : base(session) {
         }
 
+        string comment;
         int amount;
         decimal price;
         string propertyName;
@@ -34,7 +35,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => amount;
             set => SetPropertyValue(nameof(Amount), ref amount, value);
         }
-
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string Comment {
+            get => comment;
+            set => SetPropertyValue(nameof(Comment), ref comment, value);
+        }
         Position _position;
         [Association]
         public Position Position {
