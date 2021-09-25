@@ -19,7 +19,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
         }
 
-        public TickerDayData(Ticker _ticker, DateTime _date, int _close) {
+        public TickerDayData(Ticker _ticker, DateTime _date, decimal _close) {
             this.ticker = _ticker;
             this.date = _date;
             this.close = _close;

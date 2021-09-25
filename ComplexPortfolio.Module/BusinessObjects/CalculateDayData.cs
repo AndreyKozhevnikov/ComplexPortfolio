@@ -2,27 +2,40 @@
 using DevExpress.ExpressApp.DC;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DomainComponent]
+    [DebuggerDisplay("Date - {Date}")]
     public class CalculateDayData: NonPersistentLiteObject {
 
-        decimal valueDiffTotal;
+        decimal valueTotal;
         decimal valueDiff;
         decimal _value;
         decimal price;
         int currentSharesCount;
         DateTime date;
+        
+        
+
+        public CalculateDayData(DateTime _date) {
+            this.date = _date;
+        }
+
+        public CalculateDayData(TickerDayData _dayData) {
+            this.price = _dayData.Close;
+            this.date = _dayData.Date;
+        }
 
         public DateTime Date {
             get => date;
             set => date = value;
         }
 
-        public int CurrentSharesCount {
+        public int SharesCount {
             get => currentSharesCount;
             set => currentSharesCount = value;
         }
@@ -42,9 +55,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => valueDiff = value;
         }
         
-        public decimal ValueDiffTotal {
-            get => valueDiffTotal;
-            set => valueDiffTotal = value;
+        public decimal ValueTotal {
+            get => valueTotal;
+            set => valueTotal = value;
         }
 
     }

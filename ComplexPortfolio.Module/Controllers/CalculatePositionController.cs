@@ -1,5 +1,4 @@
 ﻿using ComplexPortfolio.Module.BusinessObjects;
-using ComplexPortfolio.Module.HelpClasses;
 using DevExpress.Data.Filtering;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
@@ -14,15 +13,46 @@ namespace ComplexPortfolio.Module.Controllers {
     public class CalculatePositionController : ObjectViewController<DetailView, Position> {
         public CalculatePositionController() {
             var calculateAction = new SimpleAction(this, "Calculate", PredefinedCategory.Edit);
-            calculateAction.Execute += AddDayDataAction_Execute; ;
+            calculateAction.Execute += AddDayDataAction_Execute;
         }
 
         private void AddDayDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            CalculatePosition(this.ViewCurrentObject, this.ObjectSpace, new ParametersProvider());
+            CalculatePosition(this.ViewCurrentObject, this.ObjectSpace);
         }
 
-        public void CalculatePosition(Position position, IObjectSpace objectSpace, IParametersProvider parametersProvider) {
-            var lst = objectSpace.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
+        public void CalculatePosition(Position position, IObjectSpace objectSpace) {
+            var dayDataList = objectSpace.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
+            
+            var firstTransactionDay = position.Transactions.Min(x => x.TransationDate);
+
+            var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalculateDayData(x)).ToList();
+
+            int currentSharesCount = 0;
+            decimal currentValue = 0;
+            decimal currentValueTotal = 0;
+
+            foreach(var calcData in calcDataList) {
+                calcData.SharesCount = currentSharesCount;
+                calcData.Value = calcData.Price*calcData.SharesCount;
+                calcData.ValueDiff = calcData.Value - currentValue;
+                calcData.ValueTotal = currentValueTotal+calcData.ValueDiff;
+                var transactions = position.Transactions.Where(x => x.TransationDate == calcData.Date).ToList();
+                PopulateCalcDataWithTransactionsData(calcData, transactions);
+
+                currentSharesCount = calcData.SharesCount;
+                currentValue = calcData.Value;
+                currentValueTotal = calcData.ValueTotal;
+            }
+            position.CalculateData = calcDataList;
+        }
+
+        public void PopulateCalcDataWithTransactionsData(CalculateDayData dayData, List<Transaction> transactions) {
+            foreach(var trans in transactions) {
+                dayData.SharesCount += trans.Amount;
+                dayData.Value += (trans.Amount * trans.Price);
+            }
         }
     }
+
+
 }
