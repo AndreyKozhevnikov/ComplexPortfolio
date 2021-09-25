@@ -1,3 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application>
+  <SchemaModules>
+    <SchemaModule Name="SystemModule" Version="21.1.5.0" IsNewNode="True" />
+  </SchemaModules>
+  <ViewItems>
+    <PropertyEditor Name="PropertyEditors">
+      <RegisteredPropertyEditor PropertyType="System.Decimal" DefaultEditMask="#,###,##0.##############################" DefaultDisplayFormat="{0:#,###,##0.##############################}" />
+    </PropertyEditor>
+  </ViewItems>
 </Application>

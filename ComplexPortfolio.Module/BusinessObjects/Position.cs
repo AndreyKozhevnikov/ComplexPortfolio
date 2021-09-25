@@ -22,6 +22,8 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         bool allowEdit;
         string comment;
         Ticker ticker;
+        private List<CalculateDayData> calculateData;
+
         public Ticker Ticker {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);
@@ -51,6 +53,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
 
-        public List<CalculateDayData> CalculateData { get; set; }
+        public List<CalculateDayData> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
     }
 }
