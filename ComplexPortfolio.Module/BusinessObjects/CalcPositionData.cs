@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DomainComponent]
     [DebuggerDisplay("Date - {Date}")]
-    public class CalculateDayData: NonPersistentLiteObject {
+    public class CalcPositionData: NonPersistentLiteObject {
 
         decimal valueTotal;
         decimal valueDiff;
@@ -21,12 +21,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         
         
 
-        public CalculateDayData(DateTime _date) {
+        public CalcPositionData(DateTime _date) {
             this.date = _date;
         }
 
-        public CalculateDayData(TickerDayData _dayData) {
-            this.price = _dayData.Close;
+        public CalcPositionData(TickerDayData _dayData) {
+            this.price = _dayData.Open;
             this.date = _dayData.Date;
         }
 

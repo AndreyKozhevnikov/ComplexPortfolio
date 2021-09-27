@@ -60,7 +60,7 @@ namespace Tests {
             lst.Add(trans1);
             lst.Add(trans2);
 
-            var calcData = new CalculateDayData(DateTime.Today);
+            var calcData = new CalcPositionData(DateTime.Today);
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act

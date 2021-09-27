@@ -25,7 +25,7 @@ namespace ComplexPortfolio.Module.Controllers {
             
             var firstTransactionDay = position.Transactions.Min(x => x.TransationDate);
 
-            var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalculateDayData(x)).ToList();
+            var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalcPositionData(x)).ToList();
 
             int currentSharesCount = 0;
             decimal currentValue = 0;
@@ -46,7 +46,7 @@ namespace ComplexPortfolio.Module.Controllers {
             position.CalculateData = calcDataList;
         }
 
-        public void PopulateCalcDataWithTransactionsData(CalculateDayData dayData, List<Transaction> transactions) {
+        public void PopulateCalcDataWithTransactionsData(CalcPositionData dayData, List<Transaction> transactions) {
             foreach(var trans in transactions) {
                 dayData.SharesCount += trans.Amount;
                 dayData.Value += (trans.Amount * trans.Price);

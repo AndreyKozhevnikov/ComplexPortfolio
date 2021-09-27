@@ -4,12 +4,14 @@ using DevExpress.Persistent.BaseImpl;
 using DevExpress.Xpo;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DefaultClassOptions]
+    [DebuggerDisplay("Ticker - {Ticker.Name}")]
     [Appearance("RedPriceObject", AppearanceItemType = "ViewItem", TargetItems = "Ticker", Criteria = "!AllowEdit", Context = "DetailView", Enabled = false)]
     public class Position : BaseObject {
         public Position(Session session) : base(session) {
@@ -22,13 +24,13 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         bool allowEdit;
         string comment;
         Ticker ticker;
-        private List<CalculateDayData> calculateData;
+        private List<CalcPositionData> calculateData;
 
         public Ticker Ticker {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);
         }
-        //   [VisibleInDetailView(false)]
+        
         [VisibleInListView(false)]
         public bool AllowEdit {
             get => allowEdit;
@@ -48,11 +50,22 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Transaction>(nameof(Transactions));
             }
         }
+
+        Portfolio _portfolio;
+        [Association]
+        public Portfolio Portfolio {
+            get {
+                return _portfolio;
+            }
+            set {
+                SetPropertyValue(nameof(Portfolio), ref _portfolio, value);
+            }
+        }
         [PersistentAlias("Transactions.Sum(Amount)")]
         public int SharesCount {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
 
-        public List<CalculateDayData> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
+        public List<CalcPositionData> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
     }
 }
