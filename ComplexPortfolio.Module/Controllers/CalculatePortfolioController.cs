@@ -16,6 +16,10 @@ namespace ComplexPortfolio.Module.Controllers {
             exportToExcelAction.Execute += ExportToExcelAction_Execute;
         }
 
+        public List<CalcPortfolioData> CalculatePortfolioData(List<Position> positions) {
+            return null;
+        }
+
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var portfolio = this.ViewCurrentObject;
             var cnt = new CalculatePositionController();
@@ -32,12 +36,12 @@ namespace ComplexPortfolio.Module.Controllers {
                     worksheet.Cells[currentRow, currentColumn].Value = position.Ticker.Name;
                     currentRow++;
                     foreach(var calcData in position.CalculateData) {
-                        worksheet.Cells[currentRow,currentColumn].Value = calcData.Date;
-                        worksheet.Cells[currentRow,currentColumn+1].Value = calcData.Price;
-                        worksheet.Cells[currentRow,currentColumn+2].Value = calcData.SharesCount;
-                        worksheet.Cells[currentRow,currentColumn+3].Value = calcData.Value;
-                        worksheet.Cells[currentRow,currentColumn+4].Value = calcData.ValueDiff;
-                        worksheet.Cells[currentRow,currentColumn+5].Value = calcData.ValueTotal;
+                        worksheet.Cells[currentRow, currentColumn].Value = calcData.Date;
+                        worksheet.Cells[currentRow, currentColumn + 1].Value = calcData.Price;
+                        worksheet.Cells[currentRow, currentColumn + 2].Value = calcData.SharesCount;
+                        worksheet.Cells[currentRow, currentColumn + 3].Value = calcData.Value;
+                        worksheet.Cells[currentRow, currentColumn + 4].Value = calcData.ValueDiff;
+                        worksheet.Cells[currentRow, currentColumn + 5].Value = calcData.ValueTotal;
                         currentRow++;
                     }
                     currentColumn += 8;

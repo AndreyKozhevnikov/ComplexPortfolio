@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DevExpress.ExpressApp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
-    class CalcPortfolioData {
+    public class CalcPortfolioData: NonPersistentLiteObject {
     }
 }

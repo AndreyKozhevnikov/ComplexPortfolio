@@ -26,7 +26,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         public CalcPositionData(TickerDayData _dayData) {
-            this.price = _dayData.Open;
+            this.price = _dayData.Close;
             this.date = _dayData.Date;
         }
 
