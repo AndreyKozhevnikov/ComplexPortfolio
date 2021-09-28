@@ -17,7 +17,35 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         public List<CalcPortfolioData> CalculatePortfolioData(List<Position> positions) {
-            return null;
+            DateTime startDate = DateTime.Today;
+            DateTime finishDate = DateTime.MinValue;
+            foreach(var p in positions) {
+                var positionStartDate = p.CalculateData.Min(x => x.Date);
+                if(positionStartDate < startDate) {
+                    startDate = positionStartDate;
+                }
+                var positionFinishDate = p.CalculateData.Max(x => x.Date);
+                if(positionFinishDate > finishDate) {
+                    finishDate = positionFinishDate;
+                }
+            }
+            List<CalcPortfolioData> result = new List<CalcPortfolioData>();
+            while(startDate <= finishDate) {
+                List<CalcPositionData> tmpList = new List<CalcPositionData>();
+                foreach(var p in positions) {
+                    var positionData = p.CalculateData.Where(x => x.Date == startDate).FirstOrDefault();
+                    if(positionData != null) {
+                        tmpList.Add(positionData);
+                    }
+                }
+                if(tmpList.Count > 0) {
+                    var portfolioData = new CalcPortfolioData(startDate);
+                    portfolioData.PositionData = tmpList;
+                    result.Add(portfolioData);
+                }
+                startDate = startDate.AddDays(1);
+            }
+            return result;
         }
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
