@@ -62,38 +62,43 @@ namespace ComplexPortfolio.Module.Controllers {
             }
         }
 
-        private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            var portfolio = this.ViewCurrentObject;
-            var cnt = new CalculatePositionController();
-            var os = Application.CreateObjectSpace(typeof(Position));
+        void ExportToExcel(List<CalcPortfolioDatum> calcPortData) {
             using(Workbook workbook = new Workbook()) {
-                foreach(var position in portfolio.Positions) {
-                    cnt.CalculatePosition(position, os);
-                }
-                
-                var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
-                
-                
-                // Access the first worksheet in the workbook.
-
                 Worksheet worksheet = workbook.Worksheets[0];
                 workbook.BeginUpdate();
                 var currentColumn = 1;
-                foreach(var position in portfolio.Positions) {
-                    cnt.CalculatePosition(position, os);
-                    var currentRow = 5;
-                    worksheet.Cells[currentRow, currentColumn].Value = position.Ticker.Name;
+                var currentRow = 6;
+                worksheet.Cells[currentRow, currentColumn].Value = "SumTotal";
+                currentColumn++;
+                foreach(var tickerName in calcPortData[0].Tickers) {
+                    worksheet.Cells[currentRow, currentColumn].Value = tickerName;
+                    currentColumn++;
+                }
+                currentColumn++;
+                worksheet.Cells[currentRow, currentColumn].Value = "SumDiffTotal";
+                currentColumn++;
+                foreach(var tickerName in calcPortData[0].Tickers) {
+                    worksheet.Cells[currentRow, currentColumn].Value = tickerName;
+                    currentColumn++;
+                }
+
+                foreach(var calcPortDatum in calcPortData) {
+                    currentColumn = 0;
                     currentRow++;
-                    foreach(var calcData in position.CalculateData) {
-                        worksheet.Cells[currentRow, currentColumn].Value = calcData.Date;
-                        worksheet.Cells[currentRow, currentColumn + 1].Value = calcData.Price;
-                        worksheet.Cells[currentRow, currentColumn + 2].Value = calcData.SharesCount;
-                        worksheet.Cells[currentRow, currentColumn + 3].Value = calcData.Value;
-                        worksheet.Cells[currentRow, currentColumn + 4].Value = calcData.ValueDiff;
-                        worksheet.Cells[currentRow, currentColumn + 5].Value = calcData.ValueDiffTotal;
-                        currentRow++;
+                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.Date;
+                    currentColumn++;
+                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.SumTotal;
+                    foreach(var sumTolalValue in calcPortDatum.SumTotalValues) {
+                        currentColumn++;
+                        worksheet.Cells[currentRow, currentColumn].Value = sumTolalValue;
                     }
-                    currentColumn += 8;
+                    currentColumn++;
+                    currentColumn++;
+                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.SumDiffTotal;
+                    foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
+                        currentColumn++;
+                        worksheet.Cells[currentRow, currentColumn].Value = sumDiffTolalValue;
+                    }
                 }
 
                 workbook.EndUpdate();
@@ -102,5 +107,19 @@ namespace ComplexPortfolio.Module.Controllers {
                 workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
             }
         }
+
+        private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var portfolio = this.ViewCurrentObject;
+            var cnt = new CalculatePositionController();
+            var os = Application.CreateObjectSpace(typeof(Position));
+
+            foreach(var position in portfolio.Positions) {
+                cnt.CalculatePosition(position, os);
+            }
+
+            var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
+            ExportToExcel(resultToPrint);
+        }
     }
 }
+
