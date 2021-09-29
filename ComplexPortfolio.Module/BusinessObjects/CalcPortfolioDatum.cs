@@ -7,34 +7,33 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
-    public class CalcPortfolioData : NonPersistentLiteObject {
-        public CalcPortfolioData(DateTime _date) {
+    public class CalcPortfolioDatum : NonPersistentLiteObject {
+        public CalcPortfolioDatum(DateTime _date) {
             this.date = _date;
-            
         }
 
-        double sumDiffTotal;
-        double sumTotal;
+        decimal sumDiffTotal;
+        decimal sumTotal;
         DateTime date;
         public DateTime Date {
             get => date;
             set => date = value;
         }
 
-        public double SumTotal {
+        public decimal SumTotal {
             get => sumTotal;
             set => SetPropertyValue(ref sumTotal, value);
         }
 
-        public double SumDiffTotal {
+        public decimal SumDiffTotal {
             get => sumDiffTotal;
             set => SetPropertyValue(ref sumDiffTotal, value);
         }
 
-        public List<CalcPositionData> PositionData { get; set; }
+        public List<CalcPositionDatum> PositionData { get; set; }
         public List<string> Tickers { get; set; }
-        public List<double> SumTotalValues { get; set; }
-        public List<double> SumDiffTotalValues { get; set; }
+        public List<decimal> SumTotalValues { get; set; }
+        public List<decimal> SumDiffTotalValues { get; set; }
 
         public void CalculateData() {
 

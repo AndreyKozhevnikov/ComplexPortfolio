@@ -1,5 +1,6 @@
 ﻿using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.DC;
+using DevExpress.Xpo;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,24 +11,20 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DomainComponent]
     [DebuggerDisplay("Date - {Date}")]
-    public class CalcPositionData: NonPersistentLiteObject {
+    public class CalcPositionDatum: NonPersistentLiteObject {
 
+        string tickerName;
         decimal valueTotal;
         decimal valueDiff;
         decimal _value;
         decimal price;
         int currentSharesCount;
         DateTime date;
-        
-        
 
-        public CalcPositionData(DateTime _date) {
-            this.date = _date;
-        }
-
-        public CalcPositionData(TickerDayData _dayData) {
+        public CalcPositionDatum(TickerDayData _dayData) {
             this.price = _dayData.Close;
             this.date = _dayData.Date;
+            this.tickerName = _dayData.Ticker.Name;
         }
 
         public DateTime Date {
@@ -54,10 +51,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => valueDiff;
             set => valueDiff = value;
         }
-        
-        public decimal ValueTotal {
+
+        public decimal ValueDiffTotal {
             get => valueTotal;
             set => valueTotal = value;
+        }
+
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string TickerName {
+            get => tickerName;
+            set => tickerName = value;
         }
 
     }

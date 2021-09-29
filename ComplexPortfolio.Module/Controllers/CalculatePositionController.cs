@@ -25,7 +25,7 @@ namespace ComplexPortfolio.Module.Controllers {
             
             var firstTransactionDay = position.Transactions.Min(x => x.TransationDate);
 
-            var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalcPositionData(x)).ToList();
+            var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalcPositionDatum(x)).ToList();
 
             int currentSharesCount = 0;
             decimal currentValue = 0;
@@ -35,18 +35,18 @@ namespace ComplexPortfolio.Module.Controllers {
                 calcData.SharesCount = currentSharesCount;
                 calcData.Value = calcData.Price*calcData.SharesCount;
                 calcData.ValueDiff = calcData.Value - currentValue;
-                calcData.ValueTotal = currentValueTotal+calcData.ValueDiff;
+                calcData.ValueDiffTotal = currentValueTotal+calcData.ValueDiff;
                 var transactions = position.Transactions.Where(x => x.TransationDate == calcData.Date).ToList();
                 PopulateCalcDataWithTransactionsData(calcData, transactions);
 
                 currentSharesCount = calcData.SharesCount;
                 currentValue = calcData.Value;
-                currentValueTotal = calcData.ValueTotal;
+                currentValueTotal = calcData.ValueDiffTotal;
             }
             position.CalculateData = calcDataList;
         }
 
-        public void PopulateCalcDataWithTransactionsData(CalcPositionData dayData, List<Transaction> transactions) {
+        public void PopulateCalcDataWithTransactionsData(CalcPositionDatum dayData, List<Transaction> transactions) {
             foreach(var trans in transactions) {
                 dayData.SharesCount += trans.Amount;
                 dayData.Value += (trans.Amount * trans.Price);

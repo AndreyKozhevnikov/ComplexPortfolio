@@ -37,7 +37,7 @@ namespace Tests {
             dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 22), 3180));
 
             osMock.Setup(x => x.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
-     
+
             //act
             cnt.CalculatePosition(pos, osMock.Object);
             //assert
@@ -46,7 +46,7 @@ namespace Tests {
             Assert.AreEqual(3180, pos.CalculateData[3].Price);
             Assert.AreEqual(22260, pos.CalculateData[3].Value);
             Assert.AreEqual(175, pos.CalculateData[3].ValueDiff);
-            Assert.AreEqual(-45, pos.CalculateData[3].ValueTotal);
+            Assert.AreEqual(-45, pos.CalculateData[3].ValueDiffTotal);
 
         }
 
@@ -60,7 +60,7 @@ namespace Tests {
             lst.Add(trans1);
             lst.Add(trans2);
 
-            var calcData = new CalcPositionData(DateTime.Today);
+            var calcData = new CalcPositionDatum(new TickerDayData(new Ticker() { Name = "Test1" }, new DateTime(2020, 8, 20), 0));
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act

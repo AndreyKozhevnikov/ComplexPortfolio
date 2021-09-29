@@ -24,7 +24,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         bool allowEdit;
         string comment;
         Ticker ticker;
-        private List<CalcPositionData> calculateData;
+        private List<CalcPositionDatum> calculateData;
 
         public Ticker Ticker {
             get => ticker;
@@ -66,6 +66,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
 
-        public List<CalcPositionData> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
+        public List<CalcPositionDatum> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
     }
 }

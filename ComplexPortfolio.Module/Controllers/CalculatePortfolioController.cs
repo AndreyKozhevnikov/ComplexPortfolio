@@ -16,7 +16,7 @@ namespace ComplexPortfolio.Module.Controllers {
             exportToExcelAction.Execute += ExportToExcelAction_Execute;
         }
 
-        public List<CalcPortfolioData> CalculatePortfolioData(List<Position> positions) {
+        public List<CalcPortfolioDatum> CalculatePortfolioDataList(List<Position> positions) {
             DateTime startDate = DateTime.Today;
             DateTime finishDate = DateTime.MinValue;
             foreach(var p in positions) {
@@ -29,9 +29,9 @@ namespace ComplexPortfolio.Module.Controllers {
                     finishDate = positionFinishDate;
                 }
             }
-            List<CalcPortfolioData> result = new List<CalcPortfolioData>();
+            List<CalcPortfolioDatum> result = new List<CalcPortfolioDatum>();
             while(startDate <= finishDate) {
-                List<CalcPositionData> tmpList = new List<CalcPositionData>();
+                List<CalcPositionDatum> tmpList = new List<CalcPositionDatum>();
                 foreach(var p in positions) {
                     var positionData = p.CalculateData.Where(x => x.Date == startDate).FirstOrDefault();
                     if(positionData != null) {
@@ -39,13 +39,26 @@ namespace ComplexPortfolio.Module.Controllers {
                     }
                 }
                 if(tmpList.Count > 0) {
-                    var portfolioData = new CalcPortfolioData(startDate);
+                    var portfolioData = new CalcPortfolioDatum(startDate);
                     portfolioData.PositionData = tmpList;
                     result.Add(portfolioData);
                 }
                 startDate = startDate.AddDays(1);
             }
             return result;
+        }
+
+        public void CalculateSinglePorfolioDatum(CalcPortfolioDatum datum) {
+            datum.Tickers = new List<string>();
+            datum.SumTotalValues = new List<decimal>();
+            datum.SumDiffTotalValues = new List<decimal>();
+            foreach(var p in datum.PositionData) {
+                datum.Tickers.Add(p.TickerName);
+                datum.SumTotalValues.Add(p.Value);
+                datum.SumTotal += p.Value;
+                datum.SumDiffTotalValues.Add(p.ValueDiffTotal);
+                datum.SumDiffTotal += p.ValueDiffTotal;
+            }
         }
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
@@ -69,7 +82,7 @@ namespace ComplexPortfolio.Module.Controllers {
                         worksheet.Cells[currentRow, currentColumn + 2].Value = calcData.SharesCount;
                         worksheet.Cells[currentRow, currentColumn + 3].Value = calcData.Value;
                         worksheet.Cells[currentRow, currentColumn + 4].Value = calcData.ValueDiff;
-                        worksheet.Cells[currentRow, currentColumn + 5].Value = calcData.ValueTotal;
+                        worksheet.Cells[currentRow, currentColumn + 5].Value = calcData.ValueDiffTotal;
                         currentRow++;
                     }
                     currentColumn += 8;
