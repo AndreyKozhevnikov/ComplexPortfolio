@@ -41,6 +41,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 if(tmpList.Count > 0) {
                     var portfolioData = new CalcPortfolioDatum(startDate);
                     portfolioData.PositionData = tmpList;
+                    CalculateSinglePorfolioDatum(portfolioData);
                     result.Add(portfolioData);
                 }
                 startDate = startDate.AddDays(1);
@@ -66,6 +67,13 @@ namespace ComplexPortfolio.Module.Controllers {
             var cnt = new CalculatePositionController();
             var os = Application.CreateObjectSpace(typeof(Position));
             using(Workbook workbook = new Workbook()) {
+                foreach(var position in portfolio.Positions) {
+                    cnt.CalculatePosition(position, os);
+                }
+                
+                var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
+                
+                
                 // Access the first worksheet in the workbook.
 
                 Worksheet worksheet = workbook.Worksheets[0];
@@ -89,7 +97,9 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
 
                 workbook.EndUpdate();
-                workbook.SaveDocument(@"c:\temp\shares\TestDoc.xlsx", DocumentFormat.Xlsx);
+                string date = DateTime.Now.ToString("yyyy_MM_dd");
+                string fileName = string.Format(@"c:\temp\shares\TestDoc{0}.xlsx", date);
+                workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
             }
         }
     }
