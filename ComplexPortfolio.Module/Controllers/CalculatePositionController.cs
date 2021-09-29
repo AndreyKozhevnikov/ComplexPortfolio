@@ -23,7 +23,7 @@ namespace ComplexPortfolio.Module.Controllers {
         public void CalculatePosition(Position position, IObjectSpace objectSpace) {
             var dayDataList = objectSpace.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
             
-            var firstTransactionDay = position.Transactions.Min(x => x.TransationDate);
+            var firstTransactionDay = position.Transactions.Min(x => x.Date);
 
             var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalcPositionDatum(x)).ToList();
 
@@ -36,7 +36,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 calcData.Value = calcData.Price*calcData.SharesCount;
                 calcData.ValueDiff = calcData.Value - currentValue;
                 calcData.ValueDiffTotal = currentValueTotal+calcData.ValueDiff;
-                var transactions = position.Transactions.Where(x => x.TransationDate == calcData.Date).ToList();
+                var transactions = position.Transactions.Where(x => x.Date == calcData.Date).ToList();
                 PopulateCalcDataWithTransactionsData(calcData, transactions);
 
                 currentSharesCount = calcData.SharesCount;

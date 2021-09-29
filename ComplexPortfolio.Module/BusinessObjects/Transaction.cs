@@ -33,9 +33,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => SetPropertyValue(nameof(Direction), ref direction, value);
         }
 
-        public DateTime TransationDate {
+        public DateTime Date {
             get => transationDate;
-            set => SetPropertyValue(nameof(TransationDate), ref transationDate, value);
+            set => SetPropertyValue(nameof(Date), ref transationDate, value);
         }
         public decimal Price {
             get => price;
