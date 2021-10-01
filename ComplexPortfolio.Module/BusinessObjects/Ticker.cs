@@ -32,5 +32,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => description;
             set => SetPropertyValue(nameof(Description), ref description, value);
         }
+
+        [Association]
+        public XPCollection<TickerDayDatum> DayData {
+            get {
+                return GetCollection<TickerDayDatum>(nameof(DayData));
+            }
+        }
     }
 }

@@ -11,10 +11,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.Controllers {
-    public class ImportTradesController : ObjectViewController {
+    public class ImportTradesController : ObjectViewController<ListView,Transaction> {
         public ImportTradesController() {
             var exportTradesAction = new SimpleAction(this, "ExportTrades", PredefinedCategory.Edit);
-            exportTradesAction.Execute += ExportTradesAction_Execute; ; ;
+            exportTradesAction.Execute += ExportTradesAction_Execute;
         }
 
         private void ExportTradesAction_Execute(object sender, SimpleActionExecuteEventArgs e) {

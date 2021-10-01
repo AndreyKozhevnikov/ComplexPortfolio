@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.Controllers {
-   public class AddDayDataFromFilesController:ObjectViewController<ListView,TickerDayData> {
+   public class AddDayDataFromFilesController:ObjectViewController<ListView,TickerDayDatum> {
         public AddDayDataFromFilesController() {
             var addDayDataAction = new SimpleAction(this, "AddPricesAction", PredefinedCategory.Edit);
             addDayDataAction.Execute += AddDayDataAction_Execute; ;
@@ -20,8 +20,8 @@ namespace ComplexPortfolio.Module.Controllers {
         private void AddDayDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var folder = @"c:\temp\shares";
             string[] fileEntries = Directory.GetFiles(folder);
-            var os = Application.CreateObjectSpace(typeof(TickerDayData));
-            var existingPrices = os.GetObjects<TickerDayData>();
+            var os = Application.CreateObjectSpace(typeof(TickerDayDatum));
+            var existingPrices = os.GetObjects<TickerDayDatum>();
             var existingTickers = os.GetObjects<Ticker>().ToList();
             foreach (var fileName in fileEntries) {
                 StreamReader file = new StreamReader(fileName);
@@ -32,7 +32,7 @@ namespace ComplexPortfolio.Module.Controllers {
             }
             os.CommitChanges();
         }
-      public TickerDayData ProcessLine(string line,IObjectSpace os, IList<TickerDayData> existingPrices, IList<Ticker> existingTickers) {
+      public TickerDayDatum ProcessLine(string line,IObjectSpace os, IList<TickerDayDatum> existingPrices, IList<Ticker> existingTickers) {
             var cells = line.Split(';');
             if(cells[0].StartsWith('<')) {
                 return null;
@@ -53,7 +53,7 @@ namespace ComplexPortfolio.Module.Controllers {
             if(existPrice != null) {
                 return null;
             }
-            var price = os.CreateObject<TickerDayData>();
+            var price = os.CreateObject<TickerDayDatum>();
             price.Ticker = ticker;
 
             price.Date = dateTime;
