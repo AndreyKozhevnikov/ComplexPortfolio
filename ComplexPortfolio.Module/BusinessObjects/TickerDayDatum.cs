@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DefaultClassOptions]
     [DebuggerDisplay("Ticker-{Ticker.Name},Date-{Date}")]
-    public class TickerDayData : BaseObject {
-        public TickerDayData(Session session) : base(session) {
+    public class TickerDayDatum : BaseObject {
+        public TickerDayDatum(Session session) : base(session) {
         }
 
-        public TickerDayData() {
+        public TickerDayDatum() {
 
         }
 
-        public TickerDayData(Ticker _ticker, DateTime _date, decimal _close) {
+        public TickerDayDatum(Ticker _ticker, DateTime _date, decimal _close) {
             this.ticker = _ticker;
             this.date = _date;
             this.close = _close;
@@ -34,6 +34,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         Ticker ticker;
 
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        [Association]
         public Ticker Ticker {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);

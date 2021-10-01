@@ -29,14 +29,14 @@ namespace Tests {
 
             var osMock = new Mock<IObjectSpace>();
 
-            var dayDataList = new List<TickerDayData>();
-            dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 17), 3180));
-            dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 18), 3184));
-            dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 19), 3157.5m));
-            dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 20), 3155));
-            dayDataList.Add(new TickerDayData(ticker, new DateTime(2020, 8, 22), 3180));
+            var dayDataList = new List<TickerDayDatum>();
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 17), 3180));
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 18), 3184));
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 19), 3157.5m));
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 20), 3155));
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 22), 3180));
 
-            osMock.Setup(x => x.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
+            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
 
             //act
             cnt.CalculatePosition(pos, osMock.Object);
@@ -60,7 +60,7 @@ namespace Tests {
             lst.Add(trans1);
             lst.Add(trans2);
 
-            var calcData = new CalcPositionDatum(new TickerDayData(new Ticker() { Name = "Test1" }, new DateTime(2020, 8, 20), 0));
+            var calcData = new CalcPositionDatum(new TickerDayDatum(new Ticker() { Name = "Test1" }, new DateTime(2020, 8, 20), 0));
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act

@@ -21,7 +21,7 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         public void CalculatePosition(Position position, IObjectSpace objectSpace) {
-            var dayDataList = objectSpace.GetObjects<TickerDayData>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
+            var dayDataList = objectSpace.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
             
             var firstTransactionDay = position.Transactions.Min(x => x.Date);
 

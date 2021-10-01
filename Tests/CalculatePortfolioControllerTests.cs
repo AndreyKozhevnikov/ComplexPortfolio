@@ -18,9 +18,9 @@ namespace Tests {
             var d1 = new DateTime(2021, 8, 19);
             var d2 = new DateTime(2021, 8, 21);
             var d3 = new DateTime(2021, 8, 22);
-            var tickerDayData1 = new TickerDayData(new Ticker(), d1, 0);
-            var tickerDayData2 = new TickerDayData(new Ticker(), d2, 0);
-            var tickerDayData3 = new TickerDayData(new Ticker(), d3, 0);
+            var tickerDayData1 = new TickerDayDatum(new Ticker(), d1, 0);
+            var tickerDayData2 = new TickerDayDatum(new Ticker(), d2, 0);
+            var tickerDayData3 = new TickerDayDatum(new Ticker(), d3, 0);
             var calcData11 = new CalcPositionDatum(tickerDayData1);
             var calcData12 = new CalcPositionDatum(tickerDayData2);
             position1.CalculateData = new List<CalcPositionDatum>();
@@ -55,21 +55,21 @@ namespace Tests {
             var cnt = new CalculatePortfolioController();
             var d1 = new DateTime(2020, 8, 20);
            
-            var tickerDayData1 = new TickerDayData(new Ticker() { Name = "FXRB" }, d1, 1767);
+            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "FXRB" }, d1, 1767);
             var position1 = new CalcPositionDatum(tickerDayData1);
             position1.SharesCount = 10;
             position1.Value = 17670;
             position1.ValueDiff = 0;
             position1.ValueDiffTotal = 160;
 
-            var tickerDayData2 = new TickerDayData(new Ticker() { Name = "FXRL" }, d1, 3113);
+            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "FXRL" }, d1, 3113);
             var position2 = new CalcPositionDatum(tickerDayData2);
             position2.SharesCount = 6;
             position2.Value = 18678;
             position2.ValueDiff = -366;
             position2.ValueDiffTotal = 72;
 
-            var tickerDayData3 = new TickerDayData(new Ticker() { Name = "FXGD" }, d1, 986.8m);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "FXGD" }, d1, 986.8m);
             var position3 = new CalcPositionDatum(tickerDayData3);
             position3.SharesCount = 17;
             position3.Value = 16775.6m;

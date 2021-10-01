@@ -19,11 +19,11 @@ namespace Tests {
             var cont = new AddDayDataFromFilesController();
             var line = "<TICKER>;<PER>;<DATE>;<TIME>;<OPEN>;<HIGH>;<LOW>;<CLOSE>;<VOL>";
             var osMoq = new Mock<IObjectSpace>();
-            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             
             //act
 
-            var res = cont.ProcessLine(line, osMoq.Object,new List<TickerDayData>(),new List<Ticker>());
+            var res = cont.ProcessLine(line, osMoq.Object,new List<TickerDayDatum>(),new List<Ticker>());
             //assert
             Assert.AreEqual(null, res);
         }
@@ -34,12 +34,12 @@ namespace Tests {
             var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
-            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             osMoq.Setup(x => x.CreateObject<Ticker>()).Returns(new Ticker());
             
             //act
 
-            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayData>(), new List<Ticker>());
+            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayDatum>(), new List<Ticker>());
             //assert
             Assert.AreEqual("FXGD", res.Ticker.Name); 
             Assert.AreEqual(new DateTime(2020,01,09), res.Date); 
@@ -57,14 +57,14 @@ namespace Tests {
             var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
-            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             osMoq.Setup(x => x.CreateObject<Ticker>()).Returns(new Ticker());
             var existingTickers = new List<Ticker>();
             existingTickers.Add(new Ticker() { Name = "FXGD" });
 
             //act
 
-            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayData>(), existingTickers);
+            var res = cont.ProcessLine(line, osMoq.Object, new List<TickerDayDatum>(), existingTickers);
             //assert
             Assert.AreEqual("FXGD", res.Ticker.Name);
             Assert.AreEqual(new DateTime(2020, 01, 09), res.Date);
@@ -82,12 +82,12 @@ namespace Tests {
             var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
-            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             osMoq.Setup(x => x.CreateObject<Ticker>()).Returns(new Ticker());
             var existingTickers = new List<Ticker>();
             existingTickers.Add(new Ticker() { Name = "FXGD" });
-            var existingPrices = new List<TickerDayData>();
-            existingPrices.Add(new TickerDayData() {Ticker= new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
+            var existingPrices = new List<TickerDayDatum>();
+            existingPrices.Add(new TickerDayDatum() {Ticker= new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
             //act
 
             var res = cont.ProcessLine(line, osMoq.Object, existingPrices, existingTickers);
@@ -103,12 +103,12 @@ namespace Tests {
             var cont = new AddDayDataFromFilesController();
             var line = "FXGD;D;20200109;000000;659.8000000;660.0000000;650.0000000;654.8000000;92468";
             var osMoq = new Mock<IObjectSpace>();
-            osMoq.Setup(x => x.CreateObject<TickerDayData>()).Returns(new TickerDayData());
+            osMoq.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             osMoq.Setup(x => x.CreateObject<Ticker>()).Returns(new Ticker());
             var existingTickers = new List<Ticker>();
           //  existingTickers.Add(new Ticker() { Name = "FXGD" });
-            var existingPrices = new List<TickerDayData>();
-            existingPrices.Add(new TickerDayData() { Ticker = new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
+            var existingPrices = new List<TickerDayDatum>();
+            existingPrices.Add(new TickerDayDatum() { Ticker = new Ticker() { Name = "FXGD" }, Date = new DateTime(2020, 1, 9) });
             //act
 
             var res = cont.ProcessLine(line, osMoq.Object, existingPrices, existingTickers);
