@@ -1,4 +1,5 @@
 ﻿using ComplexPortfolio.Module.BusinessObjects;
+using ComplexPortfolio.Module.HelpClasses;
 using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Actions;
 using DevExpress.Persistent.Base;
@@ -62,49 +63,41 @@ namespace ComplexPortfolio.Module.Controllers {
             }
         }
 
-        void ExportToExcel(List<CalcPortfolioDatum> calcPortData) {
-            using(Workbook workbook = new Workbook()) {
-                Worksheet worksheet = workbook.Worksheets[0];
-                workbook.BeginUpdate();
-                var currentColumn = 1;
-                var currentRow = 6;
-                worksheet.Cells[currentRow, currentColumn].Value = "SumTotal";
-                currentColumn++;
-                foreach(var tickerName in calcPortData[0].Tickers) {
-                    worksheet.Cells[currentRow, currentColumn].Value = tickerName;
-                    currentColumn++;
-                }
-                currentColumn++;
-                worksheet.Cells[currentRow, currentColumn].Value = "SumDiffTotal";
-                currentColumn++;
-                foreach(var tickerName in calcPortData[0].Tickers) {
-                    worksheet.Cells[currentRow, currentColumn].Value = tickerName;
-                    currentColumn++;
-                }
+        void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
-                foreach(var calcPortDatum in calcPortData) {
-                    currentColumn = 0;
-                    currentRow++;
-                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.Date;
-                    currentColumn++;
-                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.SumTotal;
-                    foreach(var sumTolalValue in calcPortDatum.SumTotalValues) {
-                        currentColumn++;
-                        worksheet.Cells[currentRow, currentColumn].Value = sumTolalValue;
-                    }
-                    currentColumn++;
-                    currentColumn++;
-                    worksheet.Cells[currentRow, currentColumn].Value = calcPortDatum.SumDiffTotal;
-                    foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
-                        currentColumn++;
-                        worksheet.Cells[currentRow, currentColumn].Value = sumDiffTolalValue;
-                    }
-                }
+            var currentColumn = 1;
+            var currentRow = 6;
+            wsWorker.SetCellValue(currentRow, currentColumn, "SumTotal");
+            currentColumn++;
+            foreach(var tickerName in calcPortData[0].Tickers) {
+                wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
+                currentColumn++;
+            }
+            currentColumn++;
+            wsWorker.SetCellValue(currentRow, currentColumn, "SumDiffTotal");
+            currentColumn++;
+            foreach(var tickerName in calcPortData[0].Tickers) {
+                wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
+                currentColumn++;
+            }
 
-                workbook.EndUpdate();
-                string date = DateTime.Now.ToString("yyyy_MM_dd");
-                string fileName = string.Format(@"c:\temp\shares\TestDoc{0}.xlsx", date);
-                workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
+            foreach(var calcPortDatum in calcPortData) {
+                currentColumn = 0;
+                currentRow++;
+                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
+                currentColumn++;
+                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumTotal);
+                foreach(var sumTolalValue in calcPortDatum.SumTotalValues) {
+                    currentColumn++;
+                    wsWorker.SetCellValue(currentRow, currentColumn, sumTolalValue);
+                }
+                currentColumn++;
+                currentColumn++;
+                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumDiffTotal);
+                foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
+                    currentColumn++;
+                    wsWorker.SetCellValue(currentRow, currentColumn, sumDiffTolalValue);
+                }
             }
         }
 
@@ -118,7 +111,19 @@ namespace ComplexPortfolio.Module.Controllers {
             }
 
             var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
-            ExportToExcel(resultToPrint);
+            using(Workbook workbook = new Workbook()) {
+
+                var wsWorker = new WorkSheetWorker();
+                wsWorker.CurrentWorkSheet = workbook.Worksheets[0];
+                workbook.BeginUpdate();
+                ExportToExcel(wsWorker, resultToPrint);
+
+                workbook.EndUpdate();
+                string date = DateTime.Now.ToString("yyyy_MM_dd");
+                string fileName = string.Format(@"c:\temp\shares\TestDoc{0}.xlsx", date);
+                workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
+            }
+
         }
     }
 }
