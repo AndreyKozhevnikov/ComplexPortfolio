@@ -53,6 +53,9 @@ namespace ComplexPortfolio.Module.Controllers {
             var tickers = os.GetObjects<Ticker>();
             foreach(var ticker in tickers) {
                 HashSet<DateTime> existingDataDates = new HashSet<DateTime>(ticker.DayData.Select(x => x.Date));
+                if(existingDataDates.Count > 0) {
+                    d1 = existingDataDates.Max();
+                }
                 var figiAccs = await context.MarketSearchByTickerAsync(ticker.Name);
                 if(figiAccs.Instruments.Count == 0) {
                     continue;
@@ -61,7 +64,6 @@ namespace ComplexPortfolio.Module.Controllers {
                 var data = await context.MarketCandlesAsync(figi, d1, d2, Tinkoff.Trading.OpenApi.Models.CandleInterval.Day);
                 foreach(var c in data.Candles) {
                     CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
-
                 }
                 os.CommitChanges();
             }
