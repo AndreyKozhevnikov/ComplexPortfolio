@@ -1,6 +1,7 @@
 ﻿using ComplexPortfolio.Module.BusinessObjects;
 using ComplexPortfolio.Module.Controllers;
 using ComplexPortfolio.Module.HelpClasses;
+using DevExpress.Spreadsheet;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -108,6 +109,7 @@ namespace Tests {
             var cnt = new CalculatePortfolioController();
 
             var wsWorkerMock = new Mock<IWorkSheetWorker>(MockBehavior.Strict);
+            wsWorkerMock.Setup(x => x.SetCellValue(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CellValue>()));
 
             var d1 = new DateTime(2020, 8, 20);
             var d2 = new DateTime(2020, 8, 21);
@@ -116,16 +118,16 @@ namespace Tests {
 
             var data1 = new CalcPortfolioDatum(d1);
 
-            data1.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 3), CreateTuple("RL", 7) };
-            data1.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 10), CreateTuple("RL", 5) };
+            data1.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 3), CreateTuple("FXRL", 7) };
+            data1.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 10), CreateTuple("FXRL", 5) };
 
             var data2 = new CalcPortfolioDatum(d1);
-            data2.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 10), CreateTuple("RL", 4), CreateTuple("RB", 6) };
-            data2.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 13), CreateTuple("RL", 7), CreateTuple("RB", 5) };
+            data2.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 10), CreateTuple("FXRL", 4), CreateTuple("FXRB", 6) };
+            data2.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 13), CreateTuple("FXRL", 7), CreateTuple("FXRB", 5) };
 
             var data3 = new CalcPortfolioDatum(d1);
-            data3.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("RL", 17), CreateTuple("RB", 13) };
-            data3.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("RL", 23), CreateTuple("RB", 12) };
+            data3.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXRL", 17), CreateTuple("FXRB", 13) };
+            data3.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXRL", 23), CreateTuple("FXRB", 12) };
 
             List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
             calcData.Add(data1);
@@ -133,15 +135,21 @@ namespace Tests {
             calcData.Add(data1);
 
 
+           
+
+
+            //act
+            cnt.ExportToExcel(wsWorkerMock.Object, calcData);
+            //assert
             wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "SumTotal"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXRB"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXGD"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 4, "FXRL"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXGD"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXRB"), Times.Once());
 
             wsWorkerMock.Verify(x => x.SetCellValue(7, 7, "SumDiffTotal"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "FXRB"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "FXGD"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXRL"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXGD"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXRB"), Times.Once());
 
             wsWorkerMock.Verify(x => x.SetCellValue(8, 1, new DateTime(2020, 8, 20)), Times.Once());
 
@@ -174,12 +182,6 @@ namespace Tests {
             wsWorkerMock.Verify(x => x.SetCellValue(10, 7, 35), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(10, 9, 23), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 12), Times.Once());
-
-
-            //act
-            cnt.ExportToExcel(wsWorkerMock.Object, calcData);
-            //assert
-
 
         }
     }

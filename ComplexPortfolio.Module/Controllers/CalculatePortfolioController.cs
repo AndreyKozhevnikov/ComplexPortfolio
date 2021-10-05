@@ -61,8 +61,8 @@ namespace ComplexPortfolio.Module.Controllers {
 
         public void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
-            var currentColumn = 1;
-            var currentRow = 6;
+            var currentColumn = 2;
+            var currentRow = 7;
             wsWorker.SetCellValue(currentRow, currentColumn, "SumTotal");
             currentColumn++;
             foreach(var tickerName in calcPortData[0].Tickers) {
@@ -78,7 +78,7 @@ namespace ComplexPortfolio.Module.Controllers {
             }
 
             foreach(var calcPortDatum in calcPortData) {
-                currentColumn = 0;
+                currentColumn = 1;
                 currentRow++;
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
                 currentColumn++;
