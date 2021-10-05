@@ -49,12 +49,16 @@ namespace Tests {
             Assert.AreEqual(d3, res[2].Date);
         }
 
+        Tuple<string, decimal> CreateTuple(string ticker, decimal value) {
+            return new Tuple<string, decimal>(ticker, value);
+        }
+
         [Test]
         public void CalculateSinglePorfolioDatumTest() {
             //arrange
             var cnt = new CalculatePortfolioController();
             var d1 = new DateTime(2020, 8, 20);
-           
+
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "FXRB" }, d1, 1767);
             var position1 = new CalcPositionDatum(tickerDayData1);
             position1.SharesCount = 10;
@@ -84,8 +88,8 @@ namespace Tests {
             //act
             cnt.CalculateSinglePorfolioDatum(datum);
             //assert
-            var lst1 = new List<decimal>() { 17670, 18678, 16775.6m };
-            var lst2 = new List<decimal>() { 160, 72, -887.4m };
+            var lst1 = new List<Tuple<string, decimal>>() { CreateTuple("FXRB", 17670), CreateTuple("FXRL", 18678), CreateTuple("FXGD", 16775.6m) };
+            var lst2 = new List<Tuple<string, decimal>>() { CreateTuple("FXRB", 160), CreateTuple("FXRL", 72), CreateTuple("FXGD", -887.4m) };
             var lst3 = new List<String>() { "FXRB", "FXRL", "FXGD" };
 
             Assert.AreEqual(53123.6, datum.SumTotal);
@@ -94,6 +98,43 @@ namespace Tests {
             Assert.AreEqual(lst2, datum.SumDiffTotalValues);
             Assert.AreEqual(lst3, datum.Tickers);
 
+        }
+
+        [Test]
+        public void ExportToExcel() {
+            //arrange
+            //var cnt = new CalculatePortfolioController();
+            //var d1 = new DateTime(2020, 8, 20);
+            //var d2 = new DateTime(2020, 8, 21);
+            //var d3 = new DateTime(2020, 8, 22);
+
+
+            //var data1 = new CalcPortfolioDatum(d1);
+            //data1.Tickers = new List<string> { "GD", "RL" };
+            //data1.SumTotal = 10;
+            //data1.SumTotalValues = new List<decimal> { 3, 7 };
+            //data1.SumDiffTotal = 15;
+            //data1.SumDiffTotalValues = new List<decimal> { 10, 5 };
+
+            //var data2 = new CalcPortfolioDatum(d1);
+            //data2.Tickers = new List<string> { "GD", "RL", "RB" };
+            //data2.SumTotal = 20;
+            //data2.SumTotalValues = new List<decimal> { 10, 4, 6 };
+            //data2.SumDiffTotal = 25;
+            //data2.SumDiffTotalValues = new List<decimal> { 13, 7, 5 };
+
+            //var data3 = new CalcPortfolioDatum(d1);
+            //data3.Tickers = new List<string> {  "RL","RB" };
+            //data3.SumTotal = 30;
+            //data3.SumTotalValues = new List<decimal> { 17, 13 };
+            //data3.SumDiffTotal = 35;
+            //data3.SumDiffTotalValues = new List<decimal> { 23,12 };
+
+            List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
+
+            //act
+
+            //assert
         }
     }
 }

@@ -15,7 +15,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         decimal sumDiffTotal;
-        decimal sumTotal;
+        // decimal sumTotal=-1;
         DateTime date;
         public DateTime Date {
             get => date;
@@ -23,23 +23,27 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         public decimal SumTotal {
-            get => sumTotal;
-            set => SetPropertyValue(ref sumTotal, value);
+            get {
+                return SumTotalValues.Sum(x => x.Item2);
+            }
         }
 
         public decimal SumDiffTotal {
-            get => sumDiffTotal;
-            set => SetPropertyValue(ref sumDiffTotal, value);
+            get {
+                return SumDiffTotalValues.Sum(x => x.Item2);
+            }
         }
 
         public List<CalcPositionDatum> PositionData { get; set; }
-        public List<string> Tickers { get; set; }
-        public List<decimal> SumTotalValues { get; set; }
-        public List<decimal> SumDiffTotalValues { get; set; }
-
-        public void CalculateData() {
-
+        public List<string> Tickers {
+            get {
+                return SumTotalValues.Select(x => x.Item1).ToList();
+            }
         }
+        public List<Tuple<string, decimal>> SumTotalValues { get; set; }
+        public List<Tuple<string, decimal>> SumDiffTotalValues { get; set; }
+
+
 
     }
 }

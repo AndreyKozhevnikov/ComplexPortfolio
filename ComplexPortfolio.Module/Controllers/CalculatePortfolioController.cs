@@ -51,19 +51,15 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         public void CalculateSinglePorfolioDatum(CalcPortfolioDatum datum) {
-            datum.Tickers = new List<string>();
-            datum.SumTotalValues = new List<decimal>();
-            datum.SumDiffTotalValues = new List<decimal>();
+            datum.SumTotalValues = new List<Tuple<string, decimal>>();
+            datum.SumDiffTotalValues = new List<Tuple<string, decimal>>();
             foreach(var p in datum.PositionData) {
-                datum.Tickers.Add(p.TickerName);
-                datum.SumTotalValues.Add(p.Value);
-                datum.SumTotal += p.Value;
-                datum.SumDiffTotalValues.Add(p.ValueDiffTotal);
-                datum.SumDiffTotal += p.ValueDiffTotal;
+                datum.SumTotalValues.Add(new Tuple<string,decimal>(p.TickerName, p.Value));
+                datum.SumDiffTotalValues.Add(new Tuple<string, decimal>(p.TickerName, p.ValueDiffTotal));
             }
         }
 
-        void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
+        public void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
             var currentColumn = 1;
             var currentRow = 6;
@@ -89,14 +85,14 @@ namespace ComplexPortfolio.Module.Controllers {
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumTotal);
                 foreach(var sumTolalValue in calcPortDatum.SumTotalValues) {
                     currentColumn++;
-                    wsWorker.SetCellValue(currentRow, currentColumn, sumTolalValue);
+                    wsWorker.SetCellValue(currentRow, currentColumn, sumTolalValue.Item2);
                 }
                 currentColumn++;
                 currentColumn++;
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumDiffTotal);
                 foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
                     currentColumn++;
-                    wsWorker.SetCellValue(currentRow, currentColumn, sumDiffTolalValue);
+                    wsWorker.SetCellValue(currentRow, currentColumn, sumDiffTolalValue.Item2);
                 }
             }
         }
