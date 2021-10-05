@@ -1,5 +1,7 @@
 ﻿using ComplexPortfolio.Module.BusinessObjects;
 using ComplexPortfolio.Module.Controllers;
+using ComplexPortfolio.Module.HelpClasses;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -102,39 +104,83 @@ namespace Tests {
 
         [Test]
         public void ExportToExcel() {
-            //arrange
-            //var cnt = new CalculatePortfolioController();
-            //var d1 = new DateTime(2020, 8, 20);
-            //var d2 = new DateTime(2020, 8, 21);
-            //var d3 = new DateTime(2020, 8, 22);
+            // arrange
+            var cnt = new CalculatePortfolioController();
+
+            var wsWorkerMock = new Mock<IWorkSheetWorker>(MockBehavior.Strict);
+
+            var d1 = new DateTime(2020, 8, 20);
+            var d2 = new DateTime(2020, 8, 21);
+            var d3 = new DateTime(2020, 8, 22);
 
 
-            //var data1 = new CalcPortfolioDatum(d1);
-            //data1.Tickers = new List<string> { "GD", "RL" };
-            //data1.SumTotal = 10;
-            //data1.SumTotalValues = new List<decimal> { 3, 7 };
-            //data1.SumDiffTotal = 15;
-            //data1.SumDiffTotalValues = new List<decimal> { 10, 5 };
+            var data1 = new CalcPortfolioDatum(d1);
 
-            //var data2 = new CalcPortfolioDatum(d1);
-            //data2.Tickers = new List<string> { "GD", "RL", "RB" };
-            //data2.SumTotal = 20;
-            //data2.SumTotalValues = new List<decimal> { 10, 4, 6 };
-            //data2.SumDiffTotal = 25;
-            //data2.SumDiffTotalValues = new List<decimal> { 13, 7, 5 };
+            data1.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 3), CreateTuple("RL", 7) };
+            data1.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 10), CreateTuple("RL", 5) };
 
-            //var data3 = new CalcPortfolioDatum(d1);
-            //data3.Tickers = new List<string> {  "RL","RB" };
-            //data3.SumTotal = 30;
-            //data3.SumTotalValues = new List<decimal> { 17, 13 };
-            //data3.SumDiffTotal = 35;
-            //data3.SumDiffTotalValues = new List<decimal> { 23,12 };
+            var data2 = new CalcPortfolioDatum(d1);
+            data2.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 10), CreateTuple("RL", 4), CreateTuple("RB", 6) };
+            data2.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("GD", 13), CreateTuple("RL", 7), CreateTuple("RB", 5) };
+
+            var data3 = new CalcPortfolioDatum(d1);
+            data3.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("RL", 17), CreateTuple("RB", 13) };
+            data3.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("RL", 23), CreateTuple("RB", 12) };
 
             List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
+            calcData.Add(data1);
+            calcData.Add(data1);
+            calcData.Add(data1);
+
+
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "SumTotal"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXRB"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 4, "FXRL"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXGD"), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 7, "SumDiffTotal"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "FXRB"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXRL"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXGD"), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 1, new DateTime(2020, 8, 20)), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 2, 10), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 3, 3), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 4, 7), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 7, 15), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 8, 10), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 9, 5), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 1, new DateTime(2020, 8, 21)), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 2, 20), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 3, 10), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 4, 4), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 5, 6), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 7, 25), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 8, 13), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 9, 7), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 10, 5), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 1, new DateTime(2020, 8, 22)), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 2, 20), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 4, 17), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 5, 13), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 7, 35), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 9, 23), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 12), Times.Once());
+
 
             //act
-
+            cnt.ExportToExcel(wsWorkerMock.Object, calcData);
             //assert
+
+
         }
     }
 }
