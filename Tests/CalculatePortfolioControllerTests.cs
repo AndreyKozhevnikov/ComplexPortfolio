@@ -21,9 +21,9 @@ namespace Tests {
             var d1 = new DateTime(2021, 8, 19);
             var d2 = new DateTime(2021, 8, 21);
             var d3 = new DateTime(2021, 8, 22);
-            var tickerDayData1 = new TickerDayDatum(new Ticker(), d1, 0);
-            var tickerDayData2 = new TickerDayDatum(new Ticker(), d2, 0);
-            var tickerDayData3 = new TickerDayDatum(new Ticker(), d3, 0);
+            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 0);
+            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 0);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test1" }, d3, 0);
             var calcData11 = new CalcPositionDatum(tickerDayData1);
             var calcData12 = new CalcPositionDatum(tickerDayData2);
             position1.CalculateData = new List<CalcPositionDatum>();
@@ -50,10 +50,6 @@ namespace Tests {
             Assert.AreEqual(d1, res[0].Date);
             Assert.AreEqual(d2, res[1].Date);
             Assert.AreEqual(d3, res[2].Date);
-        }
-
-        Tuple<string, decimal> CreateTuple(string ticker, decimal value) {
-            return new Tuple<string, decimal>(ticker, value);
         }
 
         [Test]
@@ -91,8 +87,8 @@ namespace Tests {
             //act
             cnt.CalculateSinglePorfolioDatum(datum);
             //assert
-            var lst1 = new List<Tuple<string, decimal>>() { CreateTuple("FXRB", 17670), CreateTuple("FXRL", 18678), CreateTuple("FXGD", 16775.6m) };
-            var lst2 = new List<Tuple<string, decimal>>() { CreateTuple("FXRB", 160), CreateTuple("FXRL", 72), CreateTuple("FXGD", -887.4m) };
+            var lst1 = new Dictionary<string, decimal> { { "FXRB", 17670 }, { "FXRL", 18678 }, { "FXGD", 16775.6m } };
+            var lst2 = new Dictionary<string, decimal> { { "FXRB", 160 }, { "FXRL", 72 }, { "FXGD", -887.4m } };
             var lst3 = new List<String>() { "FXRB", "FXRL", "FXGD" };
 
             Assert.AreEqual(53123.6, datum.SumTotal);
@@ -118,16 +114,16 @@ namespace Tests {
 
             var data1 = new CalcPortfolioDatum(d1);
 
-            data1.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 3), CreateTuple("FXRL", 7) };
-            data1.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 10), CreateTuple("FXRL", 5) };
+            data1.SumTotalValues = new Dictionary<string, decimal> { { "FXGD", 3 }, { "FXRL", 7 } };
+            data1.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXGD", 10 }, { "FXRL", 5 } };
 
             var data2 = new CalcPortfolioDatum(d1);
-            data2.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 10), CreateTuple("FXRL", 4), CreateTuple("FXRB", 6) };
-            data2.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXGD", 13), CreateTuple("FXRL", 7), CreateTuple("FXRB", 5) };
+            data2.SumTotalValues = new Dictionary<string, decimal> { { "FXGD", 10 }, { "FXRL", 4 }, { "FXRB", 6 } };
+            data2.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXGD", 13 }, { "FXRL", 7 }, { "FXRB", 5 } };
 
             var data3 = new CalcPortfolioDatum(d1);
-            data3.SumTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXRL", 17), CreateTuple("FXRB", 13) };
-            data3.SumDiffTotalValues = new List<Tuple<string, decimal>> { CreateTuple("FXRL", 23), CreateTuple("FXRB", 12) };
+            data3.SumTotalValues = new Dictionary<string, decimal> { { "FXRL", 17 }, { "FXRB", 13 } };
+            data3.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXRL", 23 }, { "FXRB", 12 } };
 
             List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
             calcData.Add(data1);
@@ -135,7 +131,7 @@ namespace Tests {
             calcData.Add(data1);
 
 
-           
+
 
 
             //act
@@ -182,6 +178,63 @@ namespace Tests {
             wsWorkerMock.Verify(x => x.SetCellValue(10, 7, 35), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(10, 9, 23), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 12), Times.Once());
+
+        }
+        [Test]
+        public void GetAllTickersFromCalcPortfolioData() {
+            //arrange
+            var cnt = new CalculatePortfolioController();
+            var expectedRes = new Dictionary<string, decimal>();
+            expectedRes.Add("FXCN", 0);
+            expectedRes.Add("FXGD", 0);
+            expectedRes.Add("FXRL", 0);
+            expectedRes.Add("FXUS", 0);
+
+            var ticker1 = new Ticker() { Name = "FXGD" };
+            var ticker2 = new Ticker() { Name = "FXRL" };
+            var ticker3 = new Ticker() { Name = "FXUS" };
+            var ticker4 = new Ticker() { Name = "FXCN" };
+
+
+
+            var c1 = new CalcPortfolioDatum(DateTime.Now);
+            var t11 = new TickerDayDatum(ticker1, DateTime.Today, 0);
+            var p11 = new CalcPositionDatum(t11);
+            c1.PositionData = new List<CalcPositionDatum>() { p11 };
+
+            var c2 = new CalcPortfolioDatum(DateTime.Now);
+            var t21 = new TickerDayDatum(ticker1, DateTime.Today, 0);
+            var p21 = new CalcPositionDatum(t21);
+            var t22 = new TickerDayDatum(ticker2, DateTime.Today, 0);
+            var p22 = new CalcPositionDatum(t22);
+            c2.PositionData = new List<CalcPositionDatum>() { p21, p22 };
+
+
+            var c3 = new CalcPortfolioDatum(DateTime.Now);
+            var t31 = new TickerDayDatum(ticker2, DateTime.Today, 0);
+            var p31 = new CalcPositionDatum(t31);
+            var t32 = new TickerDayDatum(ticker3, DateTime.Today, 0);
+            var p32 = new CalcPositionDatum(t32);
+            c3.PositionData = new List<CalcPositionDatum>() { p31, p32 };
+
+            var c4 = new CalcPortfolioDatum(DateTime.Now);
+            var t41 = new TickerDayDatum(ticker3, DateTime.Today, 0);
+            var p41 = new CalcPositionDatum(t41);
+            var t42 = new TickerDayDatum(ticker4, DateTime.Today, 0);
+            var p42 = new CalcPositionDatum(t42);
+            c4.PositionData = new List<CalcPositionDatum>() { p41, p42 };
+
+            var c5 = new CalcPortfolioDatum(DateTime.Now);
+            var t51 = new TickerDayDatum(ticker4, DateTime.Today, 0);
+            var p51 = new CalcPositionDatum(t51);
+            c5.PositionData = new List<CalcPositionDatum>() { p51 };
+
+            var inputList = new List<CalcPortfolioDatum>() { c1, c2, c3, c4, c5 };
+
+            //act
+            var res = cnt.GetAllTickersFromCalcPortfolioData(inputList);
+            //assert
+            Assert.AreEqual(expectedRes, res);
 
         }
     }

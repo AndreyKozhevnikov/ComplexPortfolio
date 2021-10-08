@@ -24,24 +24,24 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
         public decimal SumTotal {
             get {
-                return SumTotalValues.Sum(x => x.Item2);
+                return SumTotalValues.Sum(x => x.Value);
             }
         }
 
         public decimal SumDiffTotal {
             get {
-                return SumDiffTotalValues.Sum(x => x.Item2);
+                return SumDiffTotalValues.Sum(x => x.Value);
             }
         }
 
         public List<CalcPositionDatum> PositionData { get; set; }
         public List<string> Tickers {
             get {
-                return SumTotalValues.Select(x => x.Item1).ToList();
+                return SumTotalValues.Select(x => x.Key).ToList();
             }
         }
-        public List<Tuple<string, decimal>> SumTotalValues { get; set; }
-        public List<Tuple<string, decimal>> SumDiffTotalValues { get; set; }
+        public Dictionary<string,decimal> SumTotalValues { get; set; }
+        public Dictionary<string, decimal> SumDiffTotalValues { get; set; }
 
 
 
