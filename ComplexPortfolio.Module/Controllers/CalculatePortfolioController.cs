@@ -59,30 +59,30 @@ namespace ComplexPortfolio.Module.Controllers {
             }
         }
 
-        public Dictionary<String, decimal> GetAllTickersFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
+        public List<string> GetAllTickersFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
             var resultList = new List<string>();
             foreach(var datum in calcPortData) {
                 resultList = resultList.Concat(datum.Tickers).ToList();
             }
-            var uniqueList = resultList.Distinct<string>().OrderBy(x => x).Select(x => new KeyValuePair<string, decimal>(x, 0));
-            var res = new Dictionary<string, decimal>(uniqueList);
-            return res;
+            var uniqueList = resultList.Distinct<string>().OrderBy(x => x).ToList();
+            return uniqueList;
         }
 
         public void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
+            var tickers = GetAllTickersFromCalcPortfolioData(calcPortData);
             var currentColumn = 2;
             var currentRow = 7;
             wsWorker.SetCellValue(currentRow, currentColumn, "SumTotal");
             currentColumn++;
-            foreach(var tickerName in calcPortData[0].Tickers) {
+            foreach(var tickerName in tickers) {
                 wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
                 currentColumn++;
             }
             currentColumn++;
             wsWorker.SetCellValue(currentRow, currentColumn, "SumDiffTotal");
             currentColumn++;
-            foreach(var tickerName in calcPortData[0].Tickers) {
+            foreach(var tickerName in tickers) {
                 wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
                 currentColumn++;
             }
@@ -94,15 +94,16 @@ namespace ComplexPortfolio.Module.Controllers {
                 currentColumn++;
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumTotal);
                 foreach(var sumTolalValue in calcPortDatum.SumTotalValues) {
-                    currentColumn++;
-                    wsWorker.SetCellValue(currentRow, currentColumn, sumTolalValue.Value);
+                    var offSet = tickers.IndexOf(sumTolalValue.Key);
+                    var thisColumn = currentColumn + offSet + 1;
+                    wsWorker.SetCellValue(currentRow, thisColumn, sumTolalValue.Value);
                 }
-                currentColumn++;
-                currentColumn++;
+                currentColumn = currentColumn + tickers.Count + 2;
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumDiffTotal);
                 foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
-                    currentColumn++;
-                    wsWorker.SetCellValue(currentRow, currentColumn, sumDiffTolalValue.Value);
+                    var offSet = tickers.IndexOf(sumDiffTolalValue.Key);
+                    var thisColumn = currentColumn + offSet + 1;
+                    wsWorker.SetCellValue(currentRow, thisColumn, sumDiffTolalValue.Value);
                 }
             }
         }
