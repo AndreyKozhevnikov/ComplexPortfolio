@@ -23,7 +23,9 @@ namespace ComplexPortfolio.Module.Controllers {
             wb.LoadDocument(fileName);
             Worksheet ws = wb.Worksheets[0];
             var os = Application.CreateObjectSpace(typeof(Ticker));
-            for(int i = 2; i < 66; i++) {
+            var port = os.CreateObject<Portfolio>();
+            port.Name = "Funny";
+            for(int i = 2; i < 36; i++) {
                 var tickerName = ws.Cells[i, 1].Value.TextValue;
                 var ticker = os.FindObject<Ticker>(new BinaryOperator(nameof(Ticker.Name), tickerName));
                 if(ticker == null) {
@@ -31,11 +33,12 @@ namespace ComplexPortfolio.Module.Controllers {
                     ticker.Name = tickerName;
                     os.CommitChanges();
                 }
-                var position = os.FindObject<Position>(GroupOperator.And(new BinaryOperator(nameof(Position.Ticker), ticker), new BinaryOperator(nameof(Position.Comment), "export")));
+                var position = os.FindObject<Position>(GroupOperator.And(new BinaryOperator(nameof(Position.Ticker), ticker), new BinaryOperator(nameof(Position.Comment), "Funny")));
                 if(position == null) {
                     position = os.CreateObject<Position>();
                     position.Ticker = ticker;
-                    position.Comment = "export";
+                    position.Comment = "Funny";
+                    position.Portfolio = port;
                     os.CommitChanges();
                 }
                 var transaction = os.CreateObject<Transaction>();
