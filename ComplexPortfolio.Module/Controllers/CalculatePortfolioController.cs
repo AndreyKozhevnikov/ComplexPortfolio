@@ -60,8 +60,12 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         public Dictionary<String, decimal> GetAllTickersFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
-            var res = new Dictionary<string, decimal>();
-
+            var resultList = new List<string>();
+            foreach(var datum in calcPortData) {
+                resultList = resultList.Concat(datum.Tickers).ToList();
+            }
+            var uniqueList = resultList.Distinct<string>().OrderBy(x => x).Select(x => new KeyValuePair<string, decimal>(x, 0));
+            var res = new Dictionary<string, decimal>(uniqueList);
             return res;
         }
 

@@ -201,6 +201,8 @@ namespace Tests {
             var t11 = new TickerDayDatum(ticker1, DateTime.Today, 0);
             var p11 = new CalcPositionDatum(t11);
             c1.PositionData = new List<CalcPositionDatum>() { p11 };
+            cnt.CalculateSinglePorfolioDatum(c1);
+
 
             var c2 = new CalcPortfolioDatum(DateTime.Now);
             var t21 = new TickerDayDatum(ticker1, DateTime.Today, 0);
@@ -208,7 +210,7 @@ namespace Tests {
             var t22 = new TickerDayDatum(ticker2, DateTime.Today, 0);
             var p22 = new CalcPositionDatum(t22);
             c2.PositionData = new List<CalcPositionDatum>() { p21, p22 };
-
+            cnt.CalculateSinglePorfolioDatum(c2);
 
             var c3 = new CalcPortfolioDatum(DateTime.Now);
             var t31 = new TickerDayDatum(ticker2, DateTime.Today, 0);
@@ -216,6 +218,7 @@ namespace Tests {
             var t32 = new TickerDayDatum(ticker3, DateTime.Today, 0);
             var p32 = new CalcPositionDatum(t32);
             c3.PositionData = new List<CalcPositionDatum>() { p31, p32 };
+            cnt.CalculateSinglePorfolioDatum(c3);
 
             var c4 = new CalcPortfolioDatum(DateTime.Now);
             var t41 = new TickerDayDatum(ticker3, DateTime.Today, 0);
@@ -223,14 +226,17 @@ namespace Tests {
             var t42 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p42 = new CalcPositionDatum(t42);
             c4.PositionData = new List<CalcPositionDatum>() { p41, p42 };
+            cnt.CalculateSinglePorfolioDatum(c4);
 
             var c5 = new CalcPortfolioDatum(DateTime.Now);
             var t51 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p51 = new CalcPositionDatum(t51);
             c5.PositionData = new List<CalcPositionDatum>() { p51 };
+            cnt.CalculateSinglePorfolioDatum(c5);
 
             var inputList = new List<CalcPortfolioDatum>() { c1, c2, c3, c4, c5 };
 
+         //   var resultToPrint = cnt.CalculatePortfolioDataList(portfolio.Positions.ToList());
             //act
             var res = cnt.GetAllTickersFromCalcPortfolioData(inputList);
             //assert
