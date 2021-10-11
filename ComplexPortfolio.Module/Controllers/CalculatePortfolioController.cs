@@ -15,6 +15,19 @@ namespace ComplexPortfolio.Module.Controllers {
         public CalculatePortfolioController() {
             var exportToExcelAction = new SimpleAction(this, "ExportToExcel", PredefinedCategory.Edit);
             exportToExcelAction.Execute += ExportToExcelAction_Execute;
+
+            var calculateAction = new SimpleAction(this, "CalculateDayData", PredefinedCategory.Edit);
+            calculateAction.Execute += CalculateAction_Execute; ;
+        }
+
+        private void CalculateAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var portfolio = this.ViewCurrentObject;
+            var cnt = new CalculatePositionController();
+            var os = Application.CreateObjectSpace(typeof(Position));
+
+            foreach(var position in portfolio.Positions) {
+                cnt.CalculatePosition(position, os);
+            }
         }
 
         public List<CalcPortfolioDatum> CalculatePortfolioDataList(List<Position> positions) {
@@ -109,14 +122,8 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            CalculateAction_Execute(null, null);
             var portfolio = this.ViewCurrentObject;
-            var cnt = new CalculatePositionController();
-            var os = Application.CreateObjectSpace(typeof(Position));
-
-            foreach(var position in portfolio.Positions) {
-                cnt.CalculatePosition(position, os);
-            }
-
             var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
             using(Workbook workbook = new Workbook()) {
 

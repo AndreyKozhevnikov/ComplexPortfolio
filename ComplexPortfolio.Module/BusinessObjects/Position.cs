@@ -15,6 +15,27 @@ namespace ComplexPortfolio.Module.BusinessObjects {
     [Appearance("RedPriceObject", AppearanceItemType = "ViewItem", TargetItems = "Ticker", Criteria = "!AllowEdit", Context = "DetailView", Enabled = false)]
     public class Position : BaseObject {
         public Position(Session session) : base(session) {
+
+        }
+        protected override void OnChanged(string propertyName, object oldValue, object newValue) {
+            base.OnChanged(propertyName, oldValue, newValue);
+            if(propertyName == nameof(Position.Ticker)) {
+                ((Ticker)newValue).Changed += Position_Changed;
+                CalculateLastPrice(true);
+            }
+
+        }
+
+        private void Position_Changed(object sender, ObjectChangeEventArgs e) {
+            if(e.PropertyName == nameof(Ticker.DayData)) {
+                ((XPCollection<TickerDayDatum>)e.NewValue).CollectionChanged += Position_CollectionChanged;
+                CalculateLastPrice(true);
+            }
+
+        }
+
+        private void Position_CollectionChanged(object sender, XPCollectionChangedEventArgs e) {
+            CalculateLastPrice(true);
         }
 
         public Position() {
@@ -30,7 +51,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => ticker;
             set => SetPropertyValue(nameof(Ticker), ref ticker, value);
         }
-        
+
         [VisibleInListView(false)]
         public bool AllowEdit {
             get => allowEdit;
@@ -65,7 +86,48 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public int SharesCount {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
+        [PersistentAlias("Transactions.Sum(Amount*Price)/Transactions.Sum(Amount)")]
+        public decimal AveragePrice {
+            get { return Convert.ToDecimal(EvaluateAlias(nameof(AveragePrice))); }
+        }
+        [PersistentAlias("LastPrice*SharesCount")]
+        public decimal CurrentValue {
+            get { return Convert.ToDecimal(EvaluateAlias(nameof(CurrentValue))); }
+        }
+        [PersistentAlias("AveragePrice*SharesCount")]
+        public decimal InputValue {
+            get { return Convert.ToDecimal(EvaluateAlias(nameof(InputValue))); }
+        }
 
-        public List<CalcPositionDatum> CalculateData { get => calculateData;set=> SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
+        [PersistentAlias("(InputValue-CurrentValue)/InputValue")]
+        public double ValueChange {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
+        }
+
+
+
+        decimal _lastPrice;
+        bool _isLastPriceCalculated = false;
+        public decimal LastPrice {
+            get {
+                CalculateLastPrice(true);
+                return _lastPrice;
+
+            }
+        }
+        void CalculateLastPrice(bool ignore) {
+            if(_isLastPriceCalculated && !ignore) {
+                return;
+            }
+            if(ticker.DayData == null || ticker.DayData.Count == 0) {
+                return;
+            }
+            var maxDate = Ticker.DayData.Max(x => x.Date);
+            var lastPrice = Ticker.DayData.Where(x => x.Date == maxDate).First().Close;
+            _lastPrice = lastPrice;
+            _isLastPriceCalculated = true;
+        }
+
+        public List<CalcPositionDatum> CalculateData { get => calculateData; set => SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
     }
 }

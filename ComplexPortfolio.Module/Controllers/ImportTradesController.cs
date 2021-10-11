@@ -13,19 +13,19 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.Controllers {
     public class ImportTradesController : ObjectViewController<ListView,Transaction> {
         public ImportTradesController() {
-            var exportTradesAction = new SimpleAction(this, "ExportTrades", PredefinedCategory.Edit);
-            exportTradesAction.Execute += ExportTradesAction_Execute;
+            var exportTradesAction = new SimpleAction(this, "ImportTrades", PredefinedCategory.Edit);
+            exportTradesAction.Execute += ImportTradesAction_Execute;
         }
 
-        private void ExportTradesAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+        private void ImportTradesAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var fileName = @"c:\Dropbox\Stocks\MyTrades.xlsx";
             var wb = new Workbook();
             wb.LoadDocument(fileName);
             Worksheet ws = wb.Worksheets[0];
             var os = Application.CreateObjectSpace(typeof(Ticker));
-            var port = os.CreateObject<Portfolio>();
-            port.Name = "Funny";
-            for(int i = 2; i < 36; i++) {
+            var port = os.FindObject<Portfolio>(new BinaryOperator(nameof(Portfolio.Name),"Common"));
+            
+            for(int i = 1; i < 43; i++) {
                 var tickerName = ws.Cells[i, 1].Value.TextValue;
                 var ticker = os.FindObject<Ticker>(new BinaryOperator(nameof(Ticker.Name), tickerName));
                 if(ticker == null) {
@@ -33,11 +33,11 @@ namespace ComplexPortfolio.Module.Controllers {
                     ticker.Name = tickerName;
                     os.CommitChanges();
                 }
-                var position = os.FindObject<Position>(GroupOperator.And(new BinaryOperator(nameof(Position.Ticker), ticker), new BinaryOperator(nameof(Position.Comment), "Funny")));
+                var position = os.FindObject<Position>(GroupOperator.And(new BinaryOperator(nameof(Position.Ticker), ticker), new BinaryOperator(nameof(Position.Portfolio), port)));
                 if(position == null) {
                     position = os.CreateObject<Position>();
                     position.Ticker = ticker;
-                    position.Comment = "Funny";
+                    position.Comment = "CommonImport";
                     position.Portfolio = port;
                     os.CommitChanges();
                 }
