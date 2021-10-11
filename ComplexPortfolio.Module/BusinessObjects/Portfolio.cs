@@ -37,5 +37,10 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Position>(nameof(Positions));
             }
         }
+
+        [PersistentAlias("Positions.Sum(CurrentValue)")]
+        public decimal CurrentValue {
+            get { return Convert.ToDecimal (EvaluateAlias(nameof(CurrentValue))); }
+        }
     }
 }

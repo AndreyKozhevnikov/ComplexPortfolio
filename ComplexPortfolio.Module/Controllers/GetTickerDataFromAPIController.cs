@@ -14,7 +14,7 @@ using Tinkoff.Trading.OpenApi.Network;
 namespace ComplexPortfolio.Module.Controllers {
     public class GetTickerDataFromAPIController : ObjectViewController<ListView, Ticker> {
         public GetTickerDataFromAPIController() {
-            var getDataAction = new SimpleAction(this, "GetDataAPI", PredefinedCategory.Edit);
+            var getDataAction = new SimpleAction(this, "GetLastDataFromAPI", PredefinedCategory.Edit);
             getDataAction.Execute += GetDataAction_Execute;
         }
 
