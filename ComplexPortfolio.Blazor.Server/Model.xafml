@@ -4,7 +4,8 @@
     <Class Name="ComplexPortfolio.Module.BusinessObjects.Position">
       <OwnMembers>
         <Member Name="AveragePrice" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
-        <Member Name="ValueChange" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
+        <Member Name="InputValue" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
+        <Member Name="ValueChange" DisplayFormat="{0:p}" />
       </OwnMembers>
     </Class>
   </BOModel>
@@ -19,7 +20,10 @@
   <Views>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
-        <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" />
+        <ColumnInfo Id="LastPrice" Index="4" />
+        <ColumnInfo Id="InputValue" Index="5" />
+        <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" Index="6" />
+        <ColumnInfo Id="ValueChange" Index="7" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">

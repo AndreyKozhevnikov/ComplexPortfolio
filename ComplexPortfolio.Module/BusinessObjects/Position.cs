@@ -99,7 +99,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get { return Convert.ToDecimal(EvaluateAlias(nameof(InputValue))); }
         }
 
-        [PersistentAlias("(InputValue-CurrentValue)/InputValue")]
+        [PersistentAlias("(CurrentValue - InputValue)/InputValue")]
         public double ValueChange {
             get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
         }
