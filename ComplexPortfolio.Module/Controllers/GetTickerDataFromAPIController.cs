@@ -14,7 +14,7 @@ using Tinkoff.Trading.OpenApi.Network;
 namespace ComplexPortfolio.Module.Controllers {
     public class GetTickerDataFromAPIController : ObjectViewController<ListView, Ticker> {
         public GetTickerDataFromAPIController() {
-            var getDataAction = new SimpleAction(this, "GetLastDataFromAPI", PredefinedCategory.Edit);
+            var getDataAction = new SimpleAction(this, "GetAllDataFromAPI", PredefinedCategory.Edit);
             getDataAction.Execute += GetDataAction_Execute;
         }
 
@@ -57,6 +57,7 @@ namespace ComplexPortfolio.Module.Controllers {
                     d1 = existingDataDates.Max();
                 }
                 var figiAccs = await context.MarketSearchByTickerAsync(ticker.Name);
+               // var test=await context.ma
                 if(figiAccs.Instruments.Count == 0) {
                     continue;
                 }
@@ -66,6 +67,7 @@ namespace ComplexPortfolio.Module.Controllers {
                     CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
                 }
                 os.CommitChanges();
+                d1 = new DateTime(2021, 7, 1);
             }
 
 
