@@ -42,5 +42,10 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public decimal CurrentValue {
             get { return Convert.ToDecimal (EvaluateAlias(nameof(CurrentValue))); }
         }
+
+        [PersistentAlias("Positions.Sum(ValueChangeSum)")]
+        public decimal ValueChange {
+            get { return Convert.ToDecimal(EvaluateAlias(nameof(ValueChange))); }
+        }
     }
 }

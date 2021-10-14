@@ -52,10 +52,8 @@ namespace ComplexPortfolio.Module.Controllers {
                 if(existingDataDates.Count > 0) {
                     d1 = existingDataDates.Max();
                 }
-
-                // var test=await context.ma
-            //    var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
-                var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
+                var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
+               // var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
                 foreach(var c in candles) {
                     tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
                 }
