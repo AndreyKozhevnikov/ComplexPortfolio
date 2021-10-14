@@ -12,12 +12,8 @@ using Tinkoff.Trading.OpenApi.Models;
 using Tinkoff.Trading.OpenApi.Network;
 
 namespace ComplexPortfolio.Module.Controllers {
-    public class GetTickerDataFromAPIController : ObjectViewController<ListView, Ticker> {
-        public GetTickerDataFromAPIController() {
-            var getDataAction = new SimpleAction(this, "GetAllDataFromAPI", PredefinedCategory.Edit);
-            getDataAction.Execute += GetDataAction_Execute;
-        }
 
+    public class TickerDayDataFactory {
         public void CreateTickerDayDataFromCandle(Ticker ticker, CandlePayload candle, HashSet<DateTime> existingDataDates, IObjectSpace os) {
             if(existingDataDates.Contains(candle.Time.Date)) {
                 return;
@@ -32,42 +28,39 @@ namespace ComplexPortfolio.Module.Controllers {
             dayData.Volume = (double)candle.Volume;
             existingDataDates.Add(dayData.Date);
         }
-        private async void GetDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            var fileTokenName = @"c:\Skt\ttoken.txt";
-            var file = new System.IO.StreamReader(fileTokenName);
-            var token = file.ReadLine();
-            file.Close();
-            // для работы в песочнице используйте GetSandboxConnection
-            var connection = ConnectionFactory.GetSandboxConnection(token);
-            var context = connection.Context;
+    }
 
-            // вся работа происходит асинхронно через объект контекста
-            //  await context.RegisterAsync(Tinkoff.Trading.OpenApi.Models.BrokerAccountType.Tinkoff);
-            //var portfolio = await context.PortfolioAsync();
-            //var d1 = new DateTime(2020, 7, 1);
-            //var d2 = new DateTime(2021, 6, 30);
-            var d1 = new DateTime(2021, 7, 1);
+    public class UpdateAllTickersController : ObjectViewController<ListView, Ticker> {
+        public UpdateAllTickersController() {
+            var updateDataAction = new SimpleAction(this, "updateData", PredefinedCategory.Edit);
+            updateDataAction.Execute += updateDataAction_Execute;
+        }
+
+       
+        private async void updateDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+
+            var staticStartDate = new DateTime(DateTime.Today.Year, 2, 1);
+            var d1 = staticStartDate;
             var d2 = DateTime.Today.AddDays(-1);
             var os = Application.CreateObjectSpace(typeof(TickerDayDatum));
 
             var tickers = os.GetObjects<Ticker>();
+            var dataLoader = new GetTickerDataLoader();
+            var tickerFactory = new TickerDayDataFactory();
             foreach(var ticker in tickers) {
                 HashSet<DateTime> existingDataDates = new HashSet<DateTime>(ticker.DayData.Select(x => x.Date));
                 if(existingDataDates.Count > 0) {
                     d1 = existingDataDates.Max();
                 }
-                var figiAccs = await context.MarketSearchByTickerAsync(ticker.Name);
-               // var test=await context.ma
-                if(figiAccs.Instruments.Count == 0) {
-                    continue;
-                }
-                var figi = figiAccs.Instruments[0].Figi;
-                var data = await context.MarketCandlesAsync(figi, d1, d2, Tinkoff.Trading.OpenApi.Models.CandleInterval.Day);
-                foreach(var c in data.Candles) {
-                    CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
+
+                // var test=await context.ma
+            //    var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
+                var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
+                foreach(var c in candles) {
+                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
                 }
                 os.CommitChanges();
-                d1 = new DateTime(2021, 7, 1);
+                d1 = staticStartDate;
             }
 
 

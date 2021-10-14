@@ -134,7 +134,7 @@ namespace ComplexPortfolio.Module.Controllers {
 
                 workbook.EndUpdate();
                 string date = DateTime.Now.ToString("yyyy_MM_dd");
-                string fileName = string.Format(@"c:\temp\shares\TestDoc{0}.xlsx", date);
+                string fileName = string.Format(@"c:\temp\{0}-{1}.xlsx", portfolio.Name, date);
                 workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
             }
 

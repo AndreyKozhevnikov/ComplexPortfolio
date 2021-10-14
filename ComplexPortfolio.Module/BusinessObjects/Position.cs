@@ -99,9 +99,13 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get { return Convert.ToDecimal(EvaluateAlias(nameof(InputValue))); }
         }
 
-        [PersistentAlias("(CurrentValue - InputValue)/InputValue")]
-        public double ValueChange {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
+        [PersistentAlias("CurrentValue - InputValue")]
+        public double ValueChangeSum {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangeSum))); }
+        }
+        [PersistentAlias("ValueChangeSum/InputValue")]
+        public double ValueChangePercent {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercent))); }
         }
 
 
@@ -119,7 +123,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             if(_isLastPriceCalculated && !ignore) {
                 return;
             }
-            if(ticker.DayData == null || ticker.DayData.Count == 0) {
+            if(ticker == null || ticker.DayData == null || ticker.DayData.Count == 0) {
                 return;
             }
             var maxDate = Ticker.DayData.Max(x => x.Date);
