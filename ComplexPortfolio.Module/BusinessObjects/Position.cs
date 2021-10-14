@@ -46,6 +46,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         string comment;
         Ticker ticker;
         private List<CalcPositionDatum> calculateData;
+        [Association]
 
         public Ticker Ticker {
             get => ticker;

@@ -39,5 +39,11 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<TickerDayDatum>(nameof(DayData));
             }
         }
+        [Association]
+        public XPCollection<Position> Positions {
+            get {
+                return GetCollection<Position>(nameof(Positions));
+            }
+        }
     }
 }
