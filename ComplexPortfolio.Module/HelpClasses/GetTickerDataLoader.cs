@@ -20,7 +20,7 @@ namespace ComplexPortfolio.Module.Controllers {
             var d1 = new DateTime(year, 1, 1);
             var d2 = new DateTime(year, 12, 31);
             if(year == DateTime.Today.Year) {
-                d2 = DateTime.Today.AddDays(-1);
+                d2 = DateTime.Today;//.AddDays(-1);
             }
             return await GetTickerData(tickerName, d1, d2);
         }

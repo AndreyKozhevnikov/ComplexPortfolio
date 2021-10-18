@@ -41,7 +41,7 @@ namespace ComplexPortfolio.Module.Controllers {
 
             var staticStartDate = new DateTime(DateTime.Today.Year, 2, 1);
             var d1 = staticStartDate;
-            var d2 = DateTime.Today.AddDays(-1);
+            var d2 = DateTime.Today;//.AddDays(-1);
             var os = Application.CreateObjectSpace(typeof(TickerDayDatum));
 
             var tickers = os.GetObjects<Ticker>();
