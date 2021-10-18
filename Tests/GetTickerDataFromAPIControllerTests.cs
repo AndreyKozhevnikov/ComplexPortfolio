@@ -16,7 +16,7 @@ namespace Tests {
         [Test]
         public void CreateTickerDayDataFromCandle_Exists() {
             //arrange
-            var cnt = new UpdateAllTickersController();
+            var cnt = new TickerDayDataFactory();
             var d1 = new DateTime(2021, 10, 1);
             var osMock = new Mock<IObjectSpace>();
             osMock.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
@@ -35,7 +35,7 @@ namespace Tests {
         [Test]
         public void CreateTickerDayDataFromCandle_Exists_DiffTime() {
             //arrange
-            var cnt = new UpdateAllTickersController();
+            var cnt = new TickerDayDataFactory();
             var d1 = new DateTime(2021, 10, 1);
             var d11 = new DateTime(2021, 10, 1, 15, 0, 0);
             var osMock = new Mock<IObjectSpace>();
@@ -55,7 +55,7 @@ namespace Tests {
         [Test]
         public void CreateTickerDayDataFromCandle_DoesntExists() {
             //arrange
-            var cnt = new UpdateAllTickersController();
+            var cnt = new TickerDayDataFactory();
             var osMock = new Mock<IObjectSpace>();
             osMock.Setup(x => x.CreateObject<TickerDayDatum>()).Returns(new TickerDayDatum());
             var d1 = new DateTime(2021, 10, 2);
