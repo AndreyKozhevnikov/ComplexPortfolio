@@ -39,13 +39,13 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         [PersistentAlias("Positions.Sum(CurrentValue)")]
-        public decimal CurrentValue {
-            get { return Convert.ToDecimal (EvaluateAlias(nameof(CurrentValue))); }
+        public double CurrentValue {
+            get { return Convert.ToDouble (EvaluateAlias(nameof(CurrentValue))); }
         }
 
         [PersistentAlias("Positions.Sum(ValueChangeSum)")]
-        public decimal ValueChange {
-            get { return Convert.ToDecimal(EvaluateAlias(nameof(ValueChange))); }
+        public double ValueChange {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
         }
     }
 }

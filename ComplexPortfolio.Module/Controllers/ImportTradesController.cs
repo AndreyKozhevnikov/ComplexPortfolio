@@ -45,7 +45,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 transaction.Position = position;
                 transaction.Date =ws.Cells[i, 0].Value.DateTimeValue;
                 transaction.Amount =(int) ws.Cells[i, 2].Value.NumericValue;
-                transaction.Price =(decimal) ws.Cells[i, 3].Value.NumericValue;
+                transaction.Price =(double) ws.Cells[i, 3].Value.NumericValue;
                 transaction.Comment = ws.Cells[i, 6].Value.TextValue;
                 
             }

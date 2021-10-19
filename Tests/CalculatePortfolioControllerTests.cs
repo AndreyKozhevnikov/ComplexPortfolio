@@ -72,12 +72,12 @@ namespace Tests {
             position2.ValueDiff = -366;
             position2.ValueDiffTotal = 72;
 
-            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "FXGD" }, d1, 986.8m);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "FXGD" }, d1, 986.8);
             var position3 = new CalcPositionDatum(tickerDayData3);
             position3.SharesCount = 17;
-            position3.Value = 16775.6m;
+            position3.Value = 16775.6;
             position3.ValueDiff = 85;
-            position3.ValueDiffTotal = -887.4m;
+            position3.ValueDiffTotal = -887.4;
 
             var datum = new CalcPortfolioDatum(d1);
             datum.PositionData = new List<CalcPositionDatum>();
@@ -87,8 +87,8 @@ namespace Tests {
             //act
             cnt.CalculateSinglePorfolioDatum(datum);
             //assert
-            var lst1 = new Dictionary<string, decimal> { { "FXRB", 17670 }, { "FXRL", 18678 }, { "FXGD", 16775.6m } };
-            var lst2 = new Dictionary<string, decimal> { { "FXRB", 160 }, { "FXRL", 72 }, { "FXGD", -887.4m } };
+            var lst1 = new Dictionary<string, double> { { "FXRB", 17670 }, { "FXRL", 18678 }, { "FXGD", 16775.6 } };
+            var lst2 = new Dictionary<string, double> { { "FXRB", 160 }, { "FXRL", 72 }, { "FXGD", -887.4 } };
             var lst3 = new List<String>() { "FXRB", "FXRL", "FXGD" };
 
             Assert.AreEqual(53123.6, datum.SumTotal);
@@ -114,16 +114,16 @@ namespace Tests {
 
             var data1 = new CalcPortfolioDatum(d1);
 
-            data1.SumTotalValues = new Dictionary<string, decimal> { { "FXGD", 3 }, { "FXRB", 7 } };
-            data1.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXGD", 10 }, { "FXRB", 5 } };
+            data1.SumTotalValues = new Dictionary<string, double> { { "FXGD", 3 }, { "FXRB", 7 } };
+            data1.SumDiffTotalValues = new Dictionary<string, double> { { "FXGD", 10 }, { "FXRB", 5 } };
 
             var data2 = new CalcPortfolioDatum(d2);
-            data2.SumTotalValues = new Dictionary<string, decimal> { { "FXGD", 10 }, { "FXRB", 4 }, { "FXRL", 6 } };
-            data2.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXGD", 13 }, { "FXRB", 7 }, { "FXRL", 5 } };
+            data2.SumTotalValues = new Dictionary<string, double> { { "FXGD", 10 }, { "FXRB", 4 }, { "FXRL", 6 } };
+            data2.SumDiffTotalValues = new Dictionary<string, double> { { "FXGD", 13 }, { "FXRB", 7 }, { "FXRL", 5 } };
 
             var data3 = new CalcPortfolioDatum(d3);
-            data3.SumTotalValues = new Dictionary<string, decimal> { { "FXRB", 17 }, { "FXRL", 13 } };
-            data3.SumDiffTotalValues = new Dictionary<string, decimal> { { "FXRB", 23 }, { "FXRL", 12 } };
+            data3.SumTotalValues = new Dictionary<string, double> { { "FXRB", 17 }, { "FXRL", 13 } };
+            data3.SumDiffTotalValues = new Dictionary<string, double> { { "FXRB", 23 }, { "FXRL", 12 } };
 
             List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
             calcData.Add(data1);

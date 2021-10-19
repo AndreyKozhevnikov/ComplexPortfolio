@@ -19,17 +19,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
         }
 
-        public TickerDayDatum(Ticker _ticker, DateTime _date, decimal _close) {
+        public TickerDayDatum(Ticker _ticker, DateTime _date, double _close) {
             this.ticker = _ticker;
             this.date = _date;
             this.close = _close;
         }
 
         double volume;
-        decimal close;
-        decimal low;
-        decimal high;
-        decimal open;
+        double close;
+        double low;
+        double high;
+        double open;
         DateTime date;
         Ticker ticker;
 
@@ -46,22 +46,22 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
 
-        public decimal Open {
+        public double Open {
             get => open;
             set => SetPropertyValue(nameof(Open), ref open, value);
         }
 
-        public decimal High {
+        public double High {
             get => high;
             set => SetPropertyValue(nameof(High), ref high, value);
         }
 
-        public decimal Low {
+        public double Low {
             get => low;
             set => SetPropertyValue(nameof(Low), ref low, value);
         }
 
-        public decimal Close {
+        public double Close {
             get => close;
             set => SetPropertyValue(nameof(Close), ref close, value);
         }

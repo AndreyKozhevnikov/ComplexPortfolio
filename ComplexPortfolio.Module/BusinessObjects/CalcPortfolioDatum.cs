@@ -14,21 +14,19 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             this.date = _date;
         }
 
-        decimal sumDiffTotal;
-        // decimal sumTotal=-1;
         DateTime date;
         public DateTime Date {
             get => date;
             set => date = value;
         }
 
-        public decimal SumTotal {
+        public double SumTotal {
             get {
                 return SumTotalValues.Sum(x => x.Value);
             }
         }
 
-        public decimal SumDiffTotal {
+        public double SumDiffTotal {
             get {
                 return SumDiffTotalValues.Sum(x => x.Value);
             }
@@ -40,8 +38,8 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return SumTotalValues.Select(x => x.Key).ToList();
             }
         }
-        public Dictionary<string,decimal> SumTotalValues { get; set; }
-        public Dictionary<string, decimal> SumDiffTotalValues { get; set; }
+        public Dictionary<string, double> SumTotalValues { get; set; }
+        public Dictionary<string, double> SumDiffTotalValues { get; set; }
 
 
 

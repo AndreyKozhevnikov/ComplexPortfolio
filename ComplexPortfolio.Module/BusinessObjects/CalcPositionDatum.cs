@@ -14,10 +14,10 @@ namespace ComplexPortfolio.Module.BusinessObjects {
     public class CalcPositionDatum: NonPersistentLiteObject {
 
         string tickerName;
-        decimal valueTotal;
-        decimal valueDiff;
-        decimal _value;
-        decimal price;
+        double valueTotal;
+        double valueDiff;
+        double _value;
+        double price;
         int currentSharesCount;
         DateTime date;
 
@@ -37,22 +37,22 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => currentSharesCount = value;
         }
 
-        public decimal Price {
+        public double Price {
             get => price;
             set => price = value;
         }
 
-        public decimal Value {
+        public double Value {
             get => _value;
             set => _value = value;
         }
 
-        public decimal ValueDiff {
+        public double ValueDiff {
             get => valueDiff;
             set => valueDiff = value;
         }
 
-        public decimal ValueDiffTotal {
+        public double ValueDiffTotal {
             get => valueTotal;
             set => valueTotal = value;
         }

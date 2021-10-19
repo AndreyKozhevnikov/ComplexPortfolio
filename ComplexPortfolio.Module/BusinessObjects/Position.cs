@@ -88,16 +88,16 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
         }
         [PersistentAlias("Transactions.Sum(Amount*Price)/Transactions.Sum(Amount)")]
-        public decimal AveragePrice {
-            get { return Convert.ToDecimal(EvaluateAlias(nameof(AveragePrice))); }
+        public double AveragePrice {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(AveragePrice))); }
         }
         [PersistentAlias("LastPrice*SharesCount")]
-        public decimal CurrentValue {
-            get { return Convert.ToDecimal(EvaluateAlias(nameof(CurrentValue))); }
+        public double CurrentValue {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValue))); }
         }
         [PersistentAlias("AveragePrice*SharesCount")]
-        public decimal InputValue {
-            get { return Convert.ToDecimal(EvaluateAlias(nameof(InputValue))); }
+        public double InputValue {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(InputValue))); }
         }
 
         [PersistentAlias("CurrentValue - InputValue")]
@@ -111,9 +111,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
 
 
-        decimal _lastPrice;
+        double _lastPrice;
         bool _isLastPriceCalculated = false;
-        public decimal LastPrice {
+        public double LastPrice {
             get {
                 CalculateLastPrice(true);
                 return _lastPrice;

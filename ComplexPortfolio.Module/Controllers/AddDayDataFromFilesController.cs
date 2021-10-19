@@ -57,10 +57,10 @@ namespace ComplexPortfolio.Module.Controllers {
             price.Ticker = ticker;
 
             price.Date = dateTime;
-            price.Open =decimal.Parse( cells[4]);
-            price.High = decimal.Parse(cells[5]);
-            price.Low = decimal.Parse(cells[6]);
-            price.Close = decimal.Parse(cells[7]);
+            price.Open =double.Parse( cells[4]);
+            price.High = double.Parse(cells[5]);
+            price.Low = double.Parse(cells[6]);
+            price.Close = double.Parse(cells[7]);
             price.Volume = double.Parse(cells[8]);
             return price;
         }

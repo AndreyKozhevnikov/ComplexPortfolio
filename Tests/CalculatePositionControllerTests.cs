@@ -32,7 +32,7 @@ namespace Tests {
             var dayDataList = new List<TickerDayDatum>();
             dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 17), 3180));
             dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 18), 3184));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 19), 3157.5m));
+            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 19), 3157.5));
             dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 20), 3155));
             dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 22), 3180));
 

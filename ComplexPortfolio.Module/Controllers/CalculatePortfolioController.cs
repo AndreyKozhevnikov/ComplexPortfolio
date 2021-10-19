@@ -64,8 +64,8 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         public void CalculateSinglePorfolioDatum(CalcPortfolioDatum datum) {
-            datum.SumTotalValues = new Dictionary<string, decimal>();
-            datum.SumDiffTotalValues = new Dictionary<string, decimal>();
+            datum.SumTotalValues = new Dictionary<string, double>();
+            datum.SumDiffTotalValues = new Dictionary<string, double>();
             foreach(var p in datum.PositionData) {
                 datum.SumTotalValues[p.TickerName] = p.Value;
                 datum.SumDiffTotalValues[p.TickerName] = p.ValueDiffTotal;

@@ -14,7 +14,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Transaction() {
         }
 
-        public Transaction(DateTime __transactionDate, int _amount, decimal _price, TransactionDirectionEnum _direction) {
+        public Transaction(DateTime __transactionDate, int _amount, double _price, TransactionDirectionEnum _direction) {
             this.transationDate = __transactionDate;
             this.amount = _amount;
             this.price = _price;
@@ -23,7 +23,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
         string comment;
         int amount;
-        decimal price;
+        double price;
         
         DateTime transationDate;
         TransactionDirectionEnum direction;
@@ -37,7 +37,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => transationDate;
             set => SetPropertyValue(nameof(Date), ref transationDate, value);
         }
-        public decimal Price {
+        public double Price {
             get => price;
             set => SetPropertyValue(nameof(Price), ref price, value);
         }

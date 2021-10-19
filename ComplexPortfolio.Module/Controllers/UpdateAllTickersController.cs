@@ -21,10 +21,10 @@ namespace ComplexPortfolio.Module.Controllers {
             var dayData = os.CreateObject<TickerDayDatum>();
             dayData.Ticker = ticker;
             dayData.Date = candle.Time.Date;
-            dayData.Open = candle.Open;
-            dayData.High = candle.High;
-            dayData.Low = candle.Low;
-            dayData.Close = candle.Close;
+            dayData.Open = (double)candle.Open;
+            dayData.High = (double)candle.High;
+            dayData.Low = (double)candle.Low;
+            dayData.Close = (double)candle.Close;
             dayData.Volume = (double)candle.Volume;
             existingDataDates.Add(dayData.Date);
         }
@@ -36,7 +36,7 @@ namespace ComplexPortfolio.Module.Controllers {
             updateDataAction.Execute += updateDataAction_Execute;
         }
 
-       
+
         private async void updateDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
 
             var staticStartDate = new DateTime(DateTime.Today.Year, 2, 1);
@@ -53,7 +53,7 @@ namespace ComplexPortfolio.Module.Controllers {
                     d1 = existingDataDates.Max();
                 }
                 var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
-               // var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
+                // var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
                 foreach(var c in candles) {
                     tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os);
                 }

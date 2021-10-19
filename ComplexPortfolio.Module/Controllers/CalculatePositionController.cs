@@ -28,8 +28,8 @@ namespace ComplexPortfolio.Module.Controllers {
             var calcDataList = dayDataList.Where(x=>x.Date>=firstTransactionDay).OrderBy(x=>x.Date).Select(x=>new CalcPositionDatum(x)).ToList();
 
             int currentSharesCount = 0;
-            decimal currentValue = 0;
-            decimal currentValueTotal = 0;
+            double currentValue = 0;
+            double currentValueTotal = 0;
 
             foreach(var calcData in calcDataList) {
                 calcData.SharesCount = currentSharesCount;
