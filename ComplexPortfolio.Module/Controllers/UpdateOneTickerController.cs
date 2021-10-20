@@ -25,7 +25,7 @@ namespace ComplexPortfolio.Module.Controllers {
             while(workYear <= DateTime.Today.Year) {
                 var candles = await dataLoader.GetTickerYearData(ticker.Name, workYear);
                 foreach(var c in candles) {
-                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDates, os);
+                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDates, os,DateTime.Today);
                 }
                 workYear++;
             }
