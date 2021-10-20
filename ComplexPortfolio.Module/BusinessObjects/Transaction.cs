@@ -14,6 +14,11 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Transaction() {
         }
 
+        public override void AfterConstruction() {
+            base.AfterConstruction();
+            this.Date = DateTime.Today;
+        }
+
         public Transaction(DateTime __transactionDate, int _amount, double _price, TransactionDirectionEnum _direction) {
             this.transationDate = __transactionDate;
             this.amount = _amount;
