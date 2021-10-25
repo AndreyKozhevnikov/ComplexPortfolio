@@ -12,9 +12,13 @@ namespace ComplexPortfolio.Module.Controllers {
             reloadAction.Execute += ReloadAction_Execute;
         }
 
-        private async void ReloadAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+        private void ReloadAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var os = Application.CreateObjectSpace(typeof(Ticker));
             var ticker = os.GetObject((Ticker)View.CurrentObject);
+            ReloadAllDataForTicker(ticker, os);
+        }
+
+        public async void ReloadAllDataForTicker(Ticker ticker, IObjectSpace os) {
             os.Delete(ticker.DayData);
             os.CommitChanges();
             //todo
@@ -25,7 +29,7 @@ namespace ComplexPortfolio.Module.Controllers {
             while(workYear <= DateTime.Today.Year) {
                 var candles = await dataLoader.GetTickerYearData(ticker.Name, workYear);
                 foreach(var c in candles) {
-                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDates, os,DateTime.Today);
+                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDates, os, DateTime.Today);
                 }
                 workYear++;
             }

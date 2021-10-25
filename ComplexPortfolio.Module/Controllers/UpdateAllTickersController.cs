@@ -16,8 +16,18 @@ namespace ComplexPortfolio.Module.Controllers {
         public UpdateAllTickersController() {
             var updateDataAction = new SimpleAction(this, "updateData", PredefinedCategory.Edit);
             updateDataAction.Execute += updateDataAction_Execute;
-        }
 
+            var reloadAllDataAction = new SimpleAction(this, "reloadAllData", PredefinedCategory.Edit);
+            reloadAllDataAction.Execute += reloadAllDataAction_Execute;
+        }
+        private async void reloadAllDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var os = Application.CreateObjectSpace(typeof(TickerDayDatum));
+            var tickers = os.GetObjects<Ticker>();
+            var cnt = new UpdateOneTickerController();
+            foreach(var ticker in tickers) {
+                cnt.ReloadAllDataForTicker(ticker, os);
+            }
+        }
 
         private async void updateDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
 
@@ -37,7 +47,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
                 // var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
                 foreach(var c in candles) {
-                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os,DateTime.Today);
+                    tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os, DateTime.Today);
                 }
                 os.CommitChanges();
                 d1 = staticStartDate;
