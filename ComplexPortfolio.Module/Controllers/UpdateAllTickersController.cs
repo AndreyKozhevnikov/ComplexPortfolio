@@ -17,8 +17,8 @@ namespace ComplexPortfolio.Module.Controllers {
             var updateDataAction = new SimpleAction(this, "updateData", PredefinedCategory.Edit);
             updateDataAction.Execute += updateDataAction_Execute;
 
-            var reloadAllDataAction = new SimpleAction(this, "reloadAllData", PredefinedCategory.Edit);
-            reloadAllDataAction.Execute += reloadAllDataAction_Execute;
+            //var reloadAllDataAction = new SimpleAction(this, "reloadAllData", PredefinedCategory.Edit);
+            //reloadAllDataAction.Execute += reloadAllDataAction_Execute;
         }
         private async void reloadAllDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             var os = Application.CreateObjectSpace(typeof(TickerDayDatum));
