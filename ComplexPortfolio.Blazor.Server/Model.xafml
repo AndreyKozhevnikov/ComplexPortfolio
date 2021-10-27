@@ -5,6 +5,7 @@
       <OwnMembers>
         <Member Name="CurrentValue" DisplayFormat="{0:N0}" EditMask="#,###,##0" />
         <Member Name="ValueChange" DisplayFormat="{0:N0}" />
+        <Member Name="ValueChangePercent" DisplayFormat="{0:P1}" />
       </OwnMembers>
     </Class>
     <Class Name="ComplexPortfolio.Module.BusinessObjects.Position">
@@ -18,7 +19,7 @@
     </Class>
   </BOModel>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="21.1.5.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.1.6.0" IsNewNode="True" />
   </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">

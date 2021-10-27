@@ -47,5 +47,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public double ValueChange {
             get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
         }
+        [PersistentAlias("ValueChange/(CurrentValue-ValueChange)")]
+        public double ValueChangePercent {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercent))); }
+        }
     }
 }
