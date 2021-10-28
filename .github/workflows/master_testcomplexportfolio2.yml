@@ -22,7 +22,7 @@ jobs:
           dotnet-version: '5.0.x'
           include-prerelease: true
       - name: Add nuget source
-        run: nuget sources add -name "dx-packages" -source https://nuget.devexpress.com/api/ -StorePasswordInClearText -username 'test' -password ${{ secrets.DX_FEED }}
+        run: nuget sources add -name "dx-packages" -source https://nuget.devexpress.com/api/ -StorePasswordInClearText -username 'DevExpress' -password ${{ secrets.DX_FEED }}
       - name: Restore nuget 
         run: nuget restore      
 
