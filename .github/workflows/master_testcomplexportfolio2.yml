@@ -21,6 +21,10 @@ jobs:
         with:
           dotnet-version: '5.0.x'
           include-prerelease: true
+      - name: Add nuget source
+        run: nuget sources add -name "private-packages" -source https://nuget.devexpress.com/api/ -StorePasswordInClearText -username 'test' -password ${{ secrets.DX_FEED }}
+      - name: Restore nuget 
+        run: nuget restore      
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
