@@ -27,9 +27,17 @@
             this.module2 = new DevExpress.ExpressApp.Blazor.SystemModule.SystemBlazorModule();
             this.module3 = new ComplexPortfolio.Module.ComplexPortfolioModule();
             this.module4 = new ComplexPortfolio.Module.Blazor.ComplexPortfolioBlazorModule();
+            this.securityModule1 = new DevExpress.ExpressApp.Security.SecurityModule();
+            this.conditionalAppearanceModule = new DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule();
+            this.validationModule = new DevExpress.ExpressApp.Validation.ValidationModule();
+            this.validationBlazorModule = new DevExpress.ExpressApp.Validation.Blazor.ValidationBlazorModule();
 
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
-
+            //
+            // validationModule
+            //
+            this.validationModule.AllowValidationDetailsAccess = false;
+            // 
             // 
             // ComplexPortfolioBlazorApplication
             // 
@@ -39,6 +47,11 @@
             this.Modules.Add(this.module2);
             this.Modules.Add(this.module3);
             this.Modules.Add(this.module4);
+            this.Modules.Add(this.securityModule1);
+            this.Modules.Add(this.conditionalAppearanceModule);
+            this.Modules.Add(this.validationModule);
+            this.Modules.Add(this.validationBlazorModule);
+
             this.DatabaseVersionMismatch += new System.EventHandler<DevExpress.ExpressApp.DatabaseVersionMismatchEventArgs>(this.ComplexPortfolioBlazorApplication_DatabaseVersionMismatch);
 
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
@@ -51,5 +64,10 @@
         private DevExpress.ExpressApp.Blazor.SystemModule.SystemBlazorModule module2;
         private ComplexPortfolio.Module.ComplexPortfolioModule module3;
         private ComplexPortfolio.Module.Blazor.ComplexPortfolioBlazorModule module4;
+        private DevExpress.ExpressApp.Security.SecurityModule securityModule1;
+        private DevExpress.ExpressApp.ConditionalAppearance.ConditionalAppearanceModule conditionalAppearanceModule;
+        private DevExpress.ExpressApp.Validation.ValidationModule validationModule;
+        private DevExpress.ExpressApp.Validation.Blazor.ValidationBlazorModule validationBlazorModule;
+
     }
 }

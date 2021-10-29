@@ -4,6 +4,7 @@
     <Deterministic>false</Deterministic>
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+    <Configurations>Debug;Release;EasyTest</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Model.xafml" />
@@ -13,19 +14,31 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
+  
+  <ItemGroup Condition=" '$(Configuration)' == 'EasyTest' ">
+    <PackageReference Include="DevExpress.ExpressApp.EasyTest.BlazorAdapter" Version="21.2.2-beta" />
+  </ItemGroup>
+ <ItemGroup>
     <PackageReference Include="DevExpress.ExpressApp" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.CodeAnalysis" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.Validation.Blazor" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.Persistent.Base" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.CodeAnalysis" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.WebApi" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.Persistent.Base" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ComplexPortfolio.Module.Blazor\ComplexPortfolio.Module.Blazor.csproj">
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ComplexPortfolio.Module\ComplexPortfolio.Module.csproj">
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
+ <ItemGroup>
+   <ProjectReference Include="..\ComplexPortfolio.Module.Blazor\ComplexPortfolio.Module.Blazor.csproj" />
+   <ProjectReference Include="..\ComplexPortfolio.Module\ComplexPortfolio.Module.csproj" />
+ </ItemGroup>
 </Project>

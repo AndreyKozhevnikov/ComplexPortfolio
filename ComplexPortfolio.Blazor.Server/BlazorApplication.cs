@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DevExpress.ExpressApp.Xpo;
 using ComplexPortfolio.Blazor.Server.Services;
+using DevExpress.ExpressApp.Security.ClientServer;
+using DevExpress.ExpressApp.Security;
 
 namespace ComplexPortfolio.Blazor.Server {
     public partial class ComplexPortfolioBlazorApplication : BlazorApplication {
@@ -31,7 +33,7 @@ namespace ComplexPortfolio.Blazor.Server {
         }
         protected override void CreateDefaultObjectSpaceProvider(CreateCustomObjectSpaceProviderEventArgs args) {
             IXpoDataStoreProvider dataStoreProvider = GetDataStoreProvider(args.ConnectionString, args.Connection);
-            args.ObjectSpaceProviders.Add(new XPObjectSpaceProvider(dataStoreProvider, true));
+            args.ObjectSpaceProviders.Add(new SecuredObjectSpaceProvider((ISelectDataSecurityProvider)Security, dataStoreProvider, true));
             args.ObjectSpaceProviders.Add(new NonPersistentObjectSpaceProvider(TypesInfo, null));
         }
         private IXpoDataStoreProvider GetDataStoreProvider(string connectionString, System.Data.IDbConnection connection) {

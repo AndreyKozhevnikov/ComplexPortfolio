@@ -18,6 +18,14 @@ namespace ComplexPortfolio.Module.Blazor {
     [ToolboxItemFilter("Xaf.Platform.Blazor")]
     // For more typical usage scenarios, be sure to check out https://docs.devexpress.com/eXpressAppFramework/DevExpress.ExpressApp.ModuleBase.
     public sealed partial class ComplexPortfolioBlazorModule : ModuleBase {
+        private void Application_CreateCustomModelDifferenceStore(Object sender, CreateCustomModelDifferenceStoreEventArgs e) {
+            e.Store = new ModelDifferenceDbStore((XafApplication)sender, typeof(ModelDifference), true, "Blazor");
+            e.Handled = true;
+        }
+        private void Application_CreateCustomUserModelDifferenceStore(Object sender, CreateCustomModelDifferenceStoreEventArgs e) {
+            e.Store = new ModelDifferenceDbStore((XafApplication)sender, typeof(ModelDifference), false, "Blazor");
+            e.Handled = true;
+        }
         public ComplexPortfolioBlazorModule() {
             InitializeComponent();
         }
@@ -26,6 +34,8 @@ namespace ComplexPortfolio.Module.Blazor {
         }
         public override void Setup(XafApplication application) {
             base.Setup(application);
+            application.CreateCustomModelDifferenceStore += Application_CreateCustomModelDifferenceStore;
+          //  application.CreateCustomUserModelDifferenceStore += Application_CreateCustomUserModelDifferenceStore;
             // Manage various aspects of the application UI and behavior at the module level.
         }
     }

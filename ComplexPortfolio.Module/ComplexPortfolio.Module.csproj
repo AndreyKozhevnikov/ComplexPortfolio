@@ -4,6 +4,7 @@
     <Deterministic>false</Deterministic>
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
+     <Configurations>Debug;Release;EasyTest</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Model.DesignedDiffs.xafml" />
@@ -17,7 +18,9 @@
     <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.Persistent.Base" Version="21.2.2-beta" />
+      <PackageReference Include="DevExpress.ExpressApp.Validation" Version="21.2.2-beta" />
     <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="21.2.2-beta" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="21.2.2-beta" />
     <PackageReference Include="Tinkoff.Trading.OpenApi" Version="1.7.4" />
   </ItemGroup>
 </Project>
