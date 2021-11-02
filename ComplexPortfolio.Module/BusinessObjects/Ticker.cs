@@ -18,6 +18,8 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Ticker() {
 
         }
+        bool isCurrency;
+        Ticker _currency;
         string description;
         string name;
 
@@ -26,7 +28,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => name;
             set => SetPropertyValue(nameof(Name), ref name, value);
         }
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string Description {
             get => description;
@@ -45,5 +47,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Position>(nameof(Positions));
             }
         }
+
+        
+        public bool IsCurrency {
+            get => isCurrency;
+            set => SetPropertyValue(nameof(IsCurrency), ref isCurrency, value);
+        }
+        [DataSourceCriteria("IsCurrency")]
+        public Ticker Currency {
+            get => _currency;
+            set => SetPropertyValue(nameof(Currency), ref _currency, value);
+        }
+
     }
 }

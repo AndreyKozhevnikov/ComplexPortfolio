@@ -32,6 +32,8 @@ namespace ComplexPortfolio.Module.Controllers {
             //var portfolio = await context.PortfolioAsync();
             //var d1 = new DateTime(2020, 7, 1);
             //var d2 = new DateTime(2021, 6, 30);
+            //var test = await context.MarketCurrenciesAsync();
+            //USD000UTSTOM
             var figiAccs = await context.MarketSearchByTickerAsync(tickerName);
 
             if(figiAccs.Instruments.Count == 0) {

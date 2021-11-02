@@ -10,6 +10,15 @@ namespace ComplexPortfolio.Module.Controllers {
         public UpdateOneTickerController() {
             var reloadAction = new SimpleAction(this, "ReloadData", PredefinedCategory.Edit);
             reloadAction.Execute += ReloadAction_Execute;
+
+            var testAction = new SimpleAction(this, "Test", PredefinedCategory.Edit);
+            testAction.Execute += TestAction_Execute;
+        }
+
+        private async void TestAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var dataLoader = new GetTickerDataLoader();
+
+            var res =await dataLoader.GetTickerData("tspx", DateTime.Today.AddDays(-20), DateTime.Today);
         }
 
         private void ReloadAction_Execute(object sender, SimpleActionExecuteEventArgs e) {

@@ -42,6 +42,8 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
         }
 
+
+        string label;
         bool allowEdit;
         string comment;
         Ticker ticker;
@@ -82,6 +84,13 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set {
                 SetPropertyValue(nameof(Portfolio), ref _portfolio, value);
             }
+        }
+
+        
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string Label {
+            get => label;
+            set => SetPropertyValue(nameof(Label), ref label, value);
         }
         [PersistentAlias("Transactions.Sum(Amount)")]
         public int SharesCount {
