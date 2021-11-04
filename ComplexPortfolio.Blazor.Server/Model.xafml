@@ -11,15 +11,21 @@
     <Class Name="ComplexPortfolio.Module.BusinessObjects.Position">
       <OwnMembers>
         <Member Name="AveragePrice" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
+        <Member Name="AveragePriceRub" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
         <Member Name="CurrentValue" DisplayFormat="{0:N0}" />
+        <Member Name="CurrentValueRub" DisplayFormat="{0:N0}" />
         <Member Name="InputValue" DisplayFormat="{0:N0}" EditMask="#,###,##0.##" />
+        <Member Name="InputValueRub" DisplayFormat="{0:N0}" />
+        <Member Name="Test3" DisplayFormat="{0:N2}" />
         <Member Name="ValueChangePercent" DisplayFormat="{0:P0}" />
+        <Member Name="ValueChangePercentRub" DisplayFormat="{0:P0}" />
         <Member Name="ValueChangeSum" DisplayFormat="{0:N0}" />
+        <Member Name="ValueChangeSumRub" DisplayFormat="{0:N0}" />
       </OwnMembers>
     </Class>
   </BOModel>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="21.1.6.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.2.0" IsNewNode="True" />
   </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">
@@ -29,9 +35,17 @@
   <Views>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
-        <ColumnInfo Id="LastPrice" Index="4" />
-        <ColumnInfo Id="InputValue" Index="5" />
-        <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" Index="6" />
+        <ColumnInfo Id="LastPrice" Index="6" />
+        <ColumnInfo Id="LastPriceRub" Index="7" />
+        <ColumnInfo Id="InputValue" Index="8" />
+        <ColumnInfo Id="InputValueRub" Index="9" />
+        <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" Index="10" />
+        <ColumnInfo Id="CurrentValueRub" Index="11" />
+        <ColumnInfo Id="Test3" Index="12" />
+        <ColumnInfo Id="ValueChangeSum" Index="13" />
+        <ColumnInfo Id="ValueChangeSumRub" Index="14" />
+        <ColumnInfo Id="ValueChangePercent" Index="15" />
+        <ColumnInfo Id="ValueChangePercentRub" Index="16" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">

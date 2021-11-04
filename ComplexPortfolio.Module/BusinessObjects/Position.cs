@@ -86,7 +86,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string Label {
             get => label;
@@ -100,24 +100,51 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public double AveragePrice {
             get { return Convert.ToDouble(EvaluateAlias(nameof(AveragePrice))); }
         }
+        // [PersistentAlias("AveragePrice*LastPriceRub")]
+        public double AveragePriceRub {
+            get {
+                if(Ticker.Currency != null) {
+                    return AveragePrice * _lastCurrencyPrice;
+                } else {
+                    return AveragePrice;
+                }
+            }
+        }
+    
         [PersistentAlias("LastPrice*SharesCount")]
         public double CurrentValue {
             get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValue))); }
         }
+
+        [PersistentAlias("LastPriceRub*SharesCount")]
+        public double CurrentValueRub {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValueRub))); }
+        }
         [PersistentAlias("AveragePrice*SharesCount")]
         public double InputValue {
             get { return Convert.ToDouble(EvaluateAlias(nameof(InputValue))); }
+        }
+        [PersistentAlias("AveragePriceRub*SharesCount")]
+        public double InputValueRub {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(InputValueRub))); }
         }
 
         [PersistentAlias("CurrentValue - InputValue")]
         public double ValueChangeSum {
             get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangeSum))); }
         }
+        [PersistentAlias("CurrentValueRub - InputValueRub")]
+        public double ValueChangeSumRub {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangeSumRub))); }
+        }
         [PersistentAlias("ValueChangeSum/InputValue")]
         public double ValueChangePercent {
             get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercent))); }
         }
-
+        [PersistentAlias("ValueChangeSumRub/InputValueRub")]
+        public double ValueChangePercentRub {
+            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercentRub))); }
+        }
 
 
         double _lastPrice;
@@ -129,6 +156,16 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
             }
         }
+
+
+        double _lastRubPrice;
+        double _lastCurrencyPrice;
+        public double LastPriceRub {
+            get {
+                CalculateLastPrice(true);
+                return _lastRubPrice;
+            }
+        }
         void CalculateLastPrice(bool ignore) {
             if(_isLastPriceCalculated && !ignore) {
                 return;
@@ -138,6 +175,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
             var maxDate = Ticker.DayData.Max(x => x.Date);
             var lastPrice = Ticker.DayData.Where(x => x.Date == maxDate).First().Close;
+            if(Ticker.Currency != null) {
+                _lastCurrencyPrice = Ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
+                _lastRubPrice = lastPrice * _lastCurrencyPrice;
+            } else {
+                _lastRubPrice = lastPrice;
+            }
             _lastPrice = lastPrice;
             _isLastPriceCalculated = true;
         }

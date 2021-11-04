@@ -38,12 +38,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
-        [PersistentAlias("Positions.Sum(CurrentValue)")]
+        [PersistentAlias("Positions.Sum(CurrentValueRub)")]
         public double CurrentValue {
             get { return Convert.ToDouble (EvaluateAlias(nameof(CurrentValue))); }
         }
 
-        [PersistentAlias("Positions.Sum(ValueChangeSum)")]
+        [PersistentAlias("Positions.Sum(ValueChangeSumRub)")]
         public double ValueChange {
             get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
         }
