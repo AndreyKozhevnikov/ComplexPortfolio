@@ -16,7 +16,6 @@
         <Member Name="CurrentValueRub" DisplayFormat="{0:N0}" />
         <Member Name="InputValue" DisplayFormat="{0:N0}" EditMask="#,###,##0.##" />
         <Member Name="InputValueRub" DisplayFormat="{0:N0}" />
-        <Member Name="Test3" DisplayFormat="{0:N2}" />
         <Member Name="ValueChangePercent" DisplayFormat="{0:P0}" />
         <Member Name="ValueChangePercentRub" DisplayFormat="{0:P0}" />
         <Member Name="ValueChangeSum" DisplayFormat="{0:N0}" />
@@ -24,6 +23,18 @@
       </OwnMembers>
     </Class>
   </BOModel>
+  <NavigationItems>
+    <Items>
+      <Item Id="Default">
+        <Items>
+          <Item Id="Portfolio_ListView" Index="0" />
+          <Item Id="Position_ListView" Index="1" />
+          <Item Id="Ticker_ListView" Index="2" />
+          <Item Id="TickerDayDatum_ListView" Index="3" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
   <SchemaModules>
     <SchemaModule Name="SystemModule" Version="21.2.2.0" IsNewNode="True" />
   </SchemaModules>
@@ -41,7 +52,6 @@
         <ColumnInfo Id="InputValueRub" Index="9" />
         <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" Index="10" />
         <ColumnInfo Id="CurrentValueRub" Index="11" />
-        <ColumnInfo Id="Test3" Index="12" />
         <ColumnInfo Id="ValueChangeSum" Index="13" />
         <ColumnInfo Id="ValueChangeSumRub" Index="14" />
         <ColumnInfo Id="ValueChangePercent" Index="15" />
