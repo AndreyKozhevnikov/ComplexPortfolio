@@ -96,8 +96,10 @@ namespace ComplexPortfolio.Module.Controllers {
             var uniqueList = resultList.Distinct<string>().OrderBy(x => x).ToList();
             return uniqueList;
         }
-
         public void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
+            ExportToExcel_Tickers(wsWorker, calcPortData);
+        }
+        public int ExportToExcel_Tickers(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
             var tickers = GetAllTickersFromCalcPortfolioData(calcPortData);
             var currentColumn = 2;
@@ -108,7 +110,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
                 currentColumn++;
             }
-            currentColumn++;
+            currentColumn += 2;
             wsWorker.SetCellValue(currentRow, currentColumn, "SumDiffTotal");
             currentColumn++;
             foreach(var tickerName in tickers) {
@@ -128,6 +130,8 @@ namespace ComplexPortfolio.Module.Controllers {
                     wsWorker.SetCellValue(currentRow, thisColumn, sumTolalValue.Value);
                 }
                 currentColumn = currentColumn + tickers.Count + 2;
+                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
+                currentColumn++;
                 wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.SumDiffTotal);
                 foreach(var sumDiffTolalValue in calcPortDatum.SumDiffTotalValues) {
                     var offSet = tickers.IndexOf(sumDiffTolalValue.Key);
@@ -135,6 +139,7 @@ namespace ComplexPortfolio.Module.Controllers {
                     wsWorker.SetCellValue(currentRow, thisColumn, sumDiffTolalValue.Value);
                 }
             }
+            return currentColumn + tickers.Count;
         }
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {

@@ -99,7 +99,7 @@ namespace Tests {
 
         [Test]
         public void CalculateSinglePorfolioDatumTest_Labels() {
-            //todo: not all positions has labels
+
             //todo: print labels
             //todo: print dates with ticker, summaries_ticker,labels,labels_summaries (4 times)
             //arrange
@@ -263,17 +263,19 @@ namespace Tests {
 
 
             //act
-            cnt.ExportToExcel(wsWorkerMock.Object, calcData);
+            var lastColumn = cnt.ExportToExcel_Tickers(wsWorkerMock.Object, calcData);
             //assert
             wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "SumTotal"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXGD"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 4, "FXRB"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXRL"), Times.Once());
 
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 7, "SumDiffTotal"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "FXGD"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXRB"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXRL"), Times.Once());
+
+
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "SumDiffTotal"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXGD"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXRB"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 11, "FXRL"), Times.Once());
 
             wsWorkerMock.Verify(x => x.SetCellValue(8, 1, new DateTime(2020, 8, 20)), Times.Once());
 
@@ -281,9 +283,11 @@ namespace Tests {
             wsWorkerMock.Verify(x => x.SetCellValue(8, 3, 3), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(8, 4, 7), Times.Once());
 
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 7, 15), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 8, 10), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 9, 5), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 7, new DateTime(2020, 8, 20)), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 8, 15), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 9, 10), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(8, 10, 5), Times.Once());
 
             wsWorkerMock.Verify(x => x.SetCellValue(9, 1, new DateTime(2020, 8, 21)), Times.Once());
 
@@ -292,10 +296,12 @@ namespace Tests {
             wsWorkerMock.Verify(x => x.SetCellValue(9, 4, 4), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(9, 5, 6), Times.Once());
 
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 7, 25), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 8, 13), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 9, 7), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 10, 5), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 7, new DateTime(2020, 8, 21)), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 8, 25), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 9, 13), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 10, 7), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(9, 11, 5), Times.Once());
 
             wsWorkerMock.Verify(x => x.SetCellValue(10, 1, new DateTime(2020, 8, 22)), Times.Once());
 
@@ -303,93 +309,15 @@ namespace Tests {
             wsWorkerMock.Verify(x => x.SetCellValue(10, 4, 17), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(10, 5, 13), Times.Once());
 
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 7, 35), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 9, 23), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 12), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 7, new DateTime(2020, 8, 22)), Times.Once());
 
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 8, 35), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 23), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(10, 11, 12), Times.Once());
+            Assert.AreEqual(11, lastColumn);
         }
 
-        [Test]
-        public void ExportToExcel_WithLabel() {
-            // arrange
-            var cnt = new CalculatePortfolioController();
 
-            var wsWorkerMock = new Mock<IWorkSheetWorker>(MockBehavior.Strict);
-            wsWorkerMock.Setup(x => x.SetCellValue(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CellValue>()));
-
-            var d1 = new DateTime(2020, 8, 20);
-            var d2 = new DateTime(2020, 8, 21);
-            var d3 = new DateTime(2020, 8, 22);
-
-
-            var data1 = new CalcPortfolioDatum(d1);
-
-            data1.SumTotalValues = new Dictionary<string, double> { { "FXGD", 3 }, { "FXRB", 7 } };
-            data1.SumDiffTotalValues = new Dictionary<string, double> { { "FXGD", 10 }, { "FXRB", 5 } };
-
-            var data2 = new CalcPortfolioDatum(d2);
-            data2.SumTotalValues = new Dictionary<string, double> { { "FXGD", 10 }, { "FXRB", 4 }, { "FXRL", 6 } };
-            data2.SumDiffTotalValues = new Dictionary<string, double> { { "FXGD", 13 }, { "FXRB", 7 }, { "FXRL", 5 } };
-
-            var data3 = new CalcPortfolioDatum(d3);
-            data3.SumTotalValues = new Dictionary<string, double> { { "FXRB", 17 }, { "FXRL", 13 } };
-            data3.SumDiffTotalValues = new Dictionary<string, double> { { "FXRB", 23 }, { "FXRL", 12 } };
-
-            List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
-            calcData.Add(data1);
-            calcData.Add(data2);
-            calcData.Add(data3);
-
-
-
-
-
-            //act
-            cnt.ExportToExcel(wsWorkerMock.Object, calcData);
-            //assert
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "SumTotal"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXGD"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 4, "FXRB"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXRL"), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 7, "SumDiffTotal"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "FXGD"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXRB"), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXRL"), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 1, new DateTime(2020, 8, 20)), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 2, 10), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 3, 3), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 4, 7), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 7, 15), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 8, 10), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(8, 9, 5), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 1, new DateTime(2020, 8, 21)), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 2, 20), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 3, 10), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 4, 4), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 5, 6), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 7, 25), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 8, 13), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 9, 7), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(9, 10, 5), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 1, new DateTime(2020, 8, 22)), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 2, 30), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 4, 17), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 5, 13), Times.Once());
-
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 7, 35), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 9, 23), Times.Once());
-            wsWorkerMock.Verify(x => x.SetCellValue(10, 10, 12), Times.Once());
-
-        }
 
 
         [Test]
