@@ -37,6 +37,9 @@ namespace ComplexPortfolio.Module.Controllers {
             HashSet<DateTime> existingDates = new HashSet<DateTime>();
             while(workYear <= DateTime.Today.Year) {
                 var candles = await dataLoader.GetTickerYearData(ticker.Name, workYear);
+                if(candles == null) {
+                    return;
+                }
                 foreach(var c in candles) {
                     tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDates, os, DateTime.Today);
                 }

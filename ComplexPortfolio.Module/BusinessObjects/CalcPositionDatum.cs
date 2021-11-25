@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
     [DomainComponent]
     [DebuggerDisplay("Date - {Date}")]
-    public class CalcPositionDatum: NonPersistentLiteObject {
+    public class CalcPositionDatum : NonPersistentLiteObject {
 
+        string label;
         string tickerName;
         double valueTotal;
         double valueDiff;
@@ -25,6 +26,10 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             this.price = _dayData.Close;
             this.date = _dayData.Date;
             this.tickerName = _dayData.Ticker.Name;
+
+        }
+        public CalcPositionDatum(TickerDayDatum _dayData, string _label) : this(_dayData) {
+            this.label = _label;
         }
 
         public DateTime Date {
@@ -57,12 +62,23 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => valueTotal = value;
         }
 
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string TickerName {
             get => tickerName;
             set => tickerName = value;
         }
+
+
+
+
+        [Size(SizeAttribute.DefaultStringMappingFieldSize)]
+        public string Label {
+            get => label;
+            set => label = value;
+        }
+
+
 
     }
 }

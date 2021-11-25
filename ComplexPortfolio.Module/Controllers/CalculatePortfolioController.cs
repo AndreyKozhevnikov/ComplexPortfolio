@@ -66,9 +66,25 @@ namespace ComplexPortfolio.Module.Controllers {
         public void CalculateSinglePorfolioDatum(CalcPortfolioDatum datum) {
             datum.SumTotalValues = new Dictionary<string, double>();
             datum.SumDiffTotalValues = new Dictionary<string, double>();
+            datum.SumTotalValuesLabels = new Dictionary<string, double>();
+            datum.SumDiffTotalValuesLabels = new Dictionary<string, double>();
+            bool hasLabels = true;
             foreach(var p in datum.PositionData) {
                 datum.SumTotalValues[p.TickerName] = p.Value;
                 datum.SumDiffTotalValues[p.TickerName] = p.ValueDiffTotal;
+                if(string.IsNullOrEmpty(p.Label) || !hasLabels) {
+                    hasLabels = false;
+                    datum.SumTotalValuesLabels.Clear();
+                    datum.SumDiffTotalValuesLabels.Clear();
+                    continue;
+                }
+                if(datum.SumTotalValuesLabels.ContainsKey(p.Label)) {
+                    datum.SumTotalValuesLabels[p.Label] += p.Value;
+                    datum.SumDiffTotalValuesLabels[p.Label] += p.ValueDiffTotal;
+                } else {
+                    datum.SumTotalValuesLabels[p.Label] = p.Value;
+                    datum.SumDiffTotalValuesLabels[p.Label] = p.ValueDiffTotal;
+                }
             }
         }
 

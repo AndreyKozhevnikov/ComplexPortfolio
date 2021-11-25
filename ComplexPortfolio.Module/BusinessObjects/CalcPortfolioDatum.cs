@@ -38,10 +38,16 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return SumTotalValues.Select(x => x.Key).ToList();
             }
         }
+        public List<string> Labels {
+            get {
+                return SumTotalValuesLabels.Select(x => x.Key).ToList();
+            }
+        }
         public Dictionary<string, double> SumTotalValues { get; set; }
         public Dictionary<string, double> SumDiffTotalValues { get; set; }
 
-
+        public Dictionary<string, double> SumTotalValuesLabels { get; set; }
+        public Dictionary<string, double> SumDiffTotalValuesLabels { get; set; }
 
     }
 }

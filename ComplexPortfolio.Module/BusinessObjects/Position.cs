@@ -103,6 +103,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         // [PersistentAlias("AveragePrice*LastPriceRub")]
         public double AveragePriceRub {
             get {
+                if(Ticker == null) {
+                    return 0;
+                }
                 if(Ticker.Currency != null) {
                     return AveragePrice * _lastCurrencyPrice;
                 } else {

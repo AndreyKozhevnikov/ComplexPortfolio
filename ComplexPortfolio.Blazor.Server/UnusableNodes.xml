@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <BOModel Id="BOModel">
+    <Class Name="ComplexPortfolio.Module.BusinessObjects.Position">
+      <OwnMembers Id="OwnMembers">
+        <Member Name="Test3" DisplayFormat="{0:N2}" />
+      </OwnMembers>
+    </Class>
+  </BOModel>
+  <Views Id="Views">
+    <ListView Id="Portfolio_Positions_ListView">
+      <Columns Id="Columns">
+        <ColumnInfo Id="Test3" Index="12" />
+      </Columns>
+    </ListView>
+  </Views>
+</Application>
