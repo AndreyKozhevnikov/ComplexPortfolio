@@ -228,7 +228,7 @@ namespace Tests {
 
 
         [Test]
-        public void ExportToExcel() {
+        public void ExportToExcel_Tickers() {
             // arrange
             var cnt = new CalculatePortfolioController();
 
@@ -317,10 +317,42 @@ namespace Tests {
             Assert.AreEqual(11, lastColumn);
         }
 
-
-
-
         [Test]
+        public void ExportToExcel_Labels() {
+            var cnt = new CalculatePortfolioController();
+
+            var wsWorkerMock = new Mock<IWorkSheetWorker>(MockBehavior.Strict);
+            wsWorkerMock.Setup(x => x.SetCellValue(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CellValue>()));
+
+            var d1 = new DateTime(2020, 8, 20);
+            var d2 = new DateTime(2020, 8, 21);
+            var d3 = new DateTime(2020, 8, 22);
+
+
+            var data1 = new CalcPortfolioDatum(d1);
+
+            data1.SumTotalValuesLabels = new Dictionary<string, double> { { "RUS", 3 }, { "US", 15 } };
+            data1.SumDiffTotalValuesLabels = new Dictionary<string, double> { { "RUS", 10 }, { "US", 8 } };
+
+            var data2 = new CalcPortfolioDatum(d2);
+            data2.SumTotalValuesLabels = new Dictionary<string, double> { { "RUS", 16 }, { "US", 7 } };
+            data2.SumDiffTotalValuesLabels = new Dictionary<string, double> { { "RUS", 10 }, { "US", 8 } };
+
+            var data3 = new CalcPortfolioDatum(d3);
+            data3.SumTotalValuesLabels = new Dictionary<string, double> { { "RUS", 3 }, { "US", 15 } };
+            data3.SumDiffTotalValuesLabels = new Dictionary<string, double> { { "RUS", 10 }, { "US", 8 } };
+
+            List<CalcPortfolioDatum> calcData = new List<CalcPortfolioDatum>();
+            calcData.Add(data1);
+            calcData.Add(data2);
+            calcData.Add(data3);
+
+        }
+
+
+
+
+            [Test]
         public void GetAllTickersFromCalcPortfolioData() {
             //arrange
             var cnt = new CalculatePortfolioController();
