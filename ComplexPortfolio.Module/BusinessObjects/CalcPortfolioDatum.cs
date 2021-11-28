@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
 
+
     [DebuggerDisplay("Date - {Date}")]
     public class CalcPortfolioDatum : NonPersistentLiteObject {
         public CalcPortfolioDatum(DateTime _date) {
@@ -34,7 +35,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
-        public List<CalcPositionDatum> PositionData { get; set; }
+      
         public List<string> Tickers {
             get {
                 return SumTotalValues.Select(x => x.Key).ToList();

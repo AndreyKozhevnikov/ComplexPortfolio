@@ -21,9 +21,10 @@ namespace Tests {
             var d1 = new DateTime(2021, 8, 19);
             var d2 = new DateTime(2021, 8, 21);
             var d3 = new DateTime(2021, 8, 22);
-            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 0);
-            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 0);
-            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test1" }, d3, 0);
+            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 11);
+            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 22);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test2" }, d2, 33);
+            var tickerDayData4 = new TickerDayDatum(new Ticker() { Name = "test2" }, d3, 33);
             var calcData11 = new CalcPositionDatum(tickerDayData1);
             var calcData12 = new CalcPositionDatum(tickerDayData2);
             position1.CalculateData = new List<CalcPositionDatum>();
@@ -31,8 +32,8 @@ namespace Tests {
             position1.CalculateData.Add(calcData12);
 
             var position2 = new Position();
-            var calcData21 = new CalcPositionDatum(tickerDayData2);
-            var calcData22 = new CalcPositionDatum(tickerDayData3);
+            var calcData21 = new CalcPositionDatum(tickerDayData3);
+            var calcData22 = new CalcPositionDatum(tickerDayData4);
             position2.CalculateData = new List<CalcPositionDatum>();
             position2.CalculateData.Add(calcData21);
             position2.CalculateData.Add(calcData22);
@@ -44,15 +45,15 @@ namespace Tests {
             var res = cnt.CalculatePortfolioDataList(positions);
             //assert
             Assert.AreEqual(3, res.Count);
-            Assert.AreEqual(1, res[0].PositionData.Count);
-            Assert.AreEqual(2, res[1].PositionData.Count);
-            Assert.AreEqual(1, res[2].PositionData.Count);
+            Assert.AreEqual(1, res[0].SumTotalValues.Count); //check
+            Assert.AreEqual(2, res[1].SumTotalValues.Count);
+            Assert.AreEqual(1, res[2].SumTotalValues.Count);
             Assert.AreEqual(d1, res[0].Date);
             Assert.AreEqual(d2, res[1].Date);
             Assert.AreEqual(d3, res[2].Date);
         }
 
-        CalcPortfolioDatum CreatePlainCalcPortfolioDatum() {
+        List<CalcPositionDatum> CreatePlainPositions() {
             var d1 = new DateTime(2020, 8, 20);
 
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "FXRB" }, d1, 0);
@@ -73,16 +74,16 @@ namespace Tests {
             position3.ValueDiff = 85;
             position3.ValueDiffTotal = -887.4;
 
-            var datum = new CalcPortfolioDatum(d1);
-            datum.PositionData = new List<CalcPositionDatum>();
-            datum.PositionData.Add(position1);
-            datum.PositionData.Add(position2);
-            datum.PositionData.Add(position3);
-            return datum;
+
+            var list = new List<CalcPositionDatum>();
+            list.Add(position1);
+            list.Add(position2);
+            list.Add(position3);
+            return list;
         }
 
-        List<CalcPortfolioDatum> CreateSeveralDatumWithMissedTickers() {
-            var res = new List<CalcPortfolioDatum>();
+        List<List<CalcPositionDatum>> CreateSeveralDatumWithMissedTickers() {
+            var res = new List<List<CalcPositionDatum>>();
 
 
             var d1 = new DateTime(2020, 8, 19);
@@ -99,14 +100,14 @@ namespace Tests {
             position2.ValueDiff = -366;
             position2.ValueDiffTotal = 20;
 
-            var datum = new CalcPortfolioDatum(d1);
-            datum.PositionData = new List<CalcPositionDatum>();
-            datum.PositionData.Add(position1);
-            datum.PositionData.Add(position2);
 
-            res.Add(datum);
+            var r0 = new List<CalcPositionDatum>();
+            r0.Add(position1);
+            r0.Add(position2);
 
-            var r1 = CreatePlainCalcPortfolioDatum();
+            res.Add(r0);
+
+            var r1 = CreatePlainPositions();
             res.Add(r1);
             return res;
         }
@@ -116,9 +117,9 @@ namespace Tests {
         public void CalculateSinglePorfolioDatumTest() {
             //arrange
             var cnt = new CalculatePortfolioController();
-            var datum = CreatePlainCalcPortfolioDatum();
+            var list = CreatePlainPositions();
             //act
-            cnt.CalculateSinglePorfolioDatum(datum);
+            var datum = cnt.CalculateSinglePorfolioDatum(list);
             //assert
             var lst1 = new Dictionary<string, double> { { "FXRB", 17670 }, { "FXRL", 18678 }, { "FXGD", 16775.6 } };
             var lst2 = new Dictionary<string, double> { { "FXRB", 160 }, { "FXRL", 72 }, { "FXGD", -887.4 } };
@@ -135,19 +136,19 @@ namespace Tests {
         public void CreateExportBlocksFromPortfolioDatum() {
             //arrange
             var cnt = new CalculatePortfolioController();
-            var datum = CreatePlainCalcPortfolioDatum();
-            cnt.CalculateSinglePorfolioDatum(datum);
+            var list = CreatePlainPositions();
+            var datum = cnt.CalculateSinglePorfolioDatum(list);
             var calcList = new List<CalcPortfolioDatum>();
             calcList.Add(datum);
 
-            CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickets");
+            CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickers");
             ticketsBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
             var exportElement = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
             exportElement.Values = new double?[] { 16775.6, 17670, 18678 };
             exportElement.SumValue = 53123.6;
             ticketsBlock.Elements.Add(exportElement);
 
-            CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TicketsDiff");
+            CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TickersDiff");
             ticketsDiffBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
             var exportElementDiff = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
             exportElementDiff.Values = new double?[] { -887.4, 160, 72 };
@@ -160,12 +161,7 @@ namespace Tests {
             //act
             var res = cnt.CreateExportBlocksFromData(calcList);
             //assert
-            Assert.AreEqual(expectedRes[0].Names, res[0].Names);
-            Assert.AreEqual(expectedRes[0].Elements[0].Values, res[0].Elements[0].Values);
-            Assert.AreEqual(expectedRes[1].Elements[0].Values, res[1].Elements[0].Values);
-            Assert.AreEqual(expectedRes[1].Elements[0].SumValue, res[1].Elements[0].SumValue);
-            Assert.AreEqual(expectedRes[0].Elements[0].SumValue, res[0].Elements[0].SumValue);
-
+            Assert.AreEqual(expectedRes, res);
         }
 
         [Test]
@@ -174,7 +170,7 @@ namespace Tests {
             var cnt = new CalculatePortfolioController();
             var calcList = CreateSeveralDatumWithMissedTickers();
 
-            CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickets");
+            CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickers");
             ticketsBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
 
             var exportElement19 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 19));
@@ -188,7 +184,7 @@ namespace Tests {
             ticketsBlock.Elements.Add(exportElement19);
             ticketsBlock.Elements.Add(exportElement20);
 
-            CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TicketsDiff");
+            CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TickersDiff");
             ticketsDiffBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
 
             var exportElementDiff19 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 19));
@@ -204,27 +200,16 @@ namespace Tests {
 
 
             var expectedRes = new List<CalcPortfolioDatumExportBlock>() { ticketsBlock, ticketsDiffBlock };
-
+            List<CalcPortfolioDatum> list = new List<CalcPortfolioDatum>();
             foreach(var c in calcList) {
-                cnt.CalculateSinglePorfolioDatum(c);
+                var l = cnt.CalculateSinglePorfolioDatum(c);
+                list.Add(l);
             }
+
             //act
-            var res = cnt.CreateExportBlocksFromData(calcList);
+            var res = cnt.CreateExportBlocksFromData(list);
             //assert
-            Assert.AreEqual(expectedRes[0].Names, res[0].Names);
-            Assert.AreEqual(expectedRes[0].Elements[0].Values, res[0].Elements[0].Values);
-            Assert.AreEqual(expectedRes[0].Elements[0].SumValue, res[0].Elements[0].SumValue);
-
-            Assert.AreEqual(expectedRes[0].Elements[1].Values, res[0].Elements[1].Values);
-            Assert.AreEqual(expectedRes[0].Elements[1].SumValue, res[0].Elements[1].SumValue);
-
-            Assert.AreEqual(expectedRes[1].Elements[0].Values, res[1].Elements[0].Values);
-            Assert.AreEqual(expectedRes[1].Elements[0].SumValue, res[1].Elements[0].SumValue);
-
-            Assert.AreEqual(expectedRes[1].Elements[1].Values, res[1].Elements[1].Values);
-            Assert.AreEqual(expectedRes[1].Elements[1].SumValue, res[1].Elements[1].SumValue);
-
-
+            Assert.AreEqual(expectedRes, res);
         }
 
 
@@ -233,7 +218,6 @@ namespace Tests {
         public void CalculateSinglePorfolioDatumTest_Labels() {
 
             //todo: print labels
-            //todo: print dates with ticker, summaries_ticker,labels,labels_summaries (4 times)
             //arrange
             var cnt = new CalculatePortfolioController();
             var d1 = new DateTime(2020, 8, 20);
@@ -263,14 +247,14 @@ namespace Tests {
             position4.ValueDiffTotal = -568.4;
 
 
-            var datum = new CalcPortfolioDatum(d1);
-            datum.PositionData = new List<CalcPositionDatum>();
-            datum.PositionData.Add(position1);
-            datum.PositionData.Add(position2);
-            datum.PositionData.Add(position3);
-            datum.PositionData.Add(position4);
+
+            var list = new List<CalcPositionDatum>();
+            list.Add(position1);
+            list.Add(position2);
+            list.Add(position3);
+            list.Add(position4);
             //act
-            cnt.CalculateSinglePorfolioDatum(datum);
+            var datum = cnt.CalculateSinglePorfolioDatum(list);
             //assert
             var sumTotalValues = new Dictionary<string, double> { { "VTBX", 17670 }, { "TSPX", 18678 }, { "TMOS", 16775.6 }, { "FXUS", 8459.6 } };
             var sumDiffTotalValues = new Dictionary<string, double> { { "VTBX", 160 }, { "TSPX", 72 }, { "TMOS", -887.4 }, { "FXUS", -568.4 } };
@@ -327,14 +311,13 @@ namespace Tests {
             position4.ValueDiffTotal = -568.4;
 
 
-            var datum = new CalcPortfolioDatum(d1);
-            datum.PositionData = new List<CalcPositionDatum>();
-            datum.PositionData.Add(position1);
-            datum.PositionData.Add(position2);
-            datum.PositionData.Add(position3);
-            datum.PositionData.Add(position4);
+            var list = new List<CalcPositionDatum>();
+            list.Add(position1);
+            list.Add(position2);
+            list.Add(position3);
+            list.Add(position4);
             //act
-            cnt.CalculateSinglePorfolioDatum(datum);
+            var datum = cnt.CalculateSinglePorfolioDatum(list);
             //assert
             var sumTotalValues = new Dictionary<string, double> { { "VTBX", 17670 }, { "TSPX", 18678 }, { "TMOS", 16775.6 }, { "FXUS", 8459.6 } };
             var sumDiffTotalValues = new Dictionary<string, double> { { "VTBX", 160 }, { "TSPX", 72 }, { "TMOS", -887.4 }, { "FXUS", -568.4 } };
@@ -477,42 +460,38 @@ namespace Tests {
 
 
 
-            var c1 = new CalcPortfolioDatum(DateTime.Now);
             var t11 = new TickerDayDatum(ticker1, DateTime.Today, 0);
             var p11 = new CalcPositionDatum(t11);
-            c1.PositionData = new List<CalcPositionDatum>() { p11 };
-            cnt.CalculateSinglePorfolioDatum(c1);
+            var list1 = new List<CalcPositionDatum>() { p11 };
+            var c1 = cnt.CalculateSinglePorfolioDatum(list1);
 
 
-            var c2 = new CalcPortfolioDatum(DateTime.Now);
+
             var t21 = new TickerDayDatum(ticker1, DateTime.Today, 0);
             var p21 = new CalcPositionDatum(t21);
             var t22 = new TickerDayDatum(ticker2, DateTime.Today, 0);
             var p22 = new CalcPositionDatum(t22);
-            c2.PositionData = new List<CalcPositionDatum>() { p21, p22 };
-            cnt.CalculateSinglePorfolioDatum(c2);
+            var list2 = new List<CalcPositionDatum>() { p21, p22 };
+            var c2 = cnt.CalculateSinglePorfolioDatum(list2);
 
-            var c3 = new CalcPortfolioDatum(DateTime.Now);
             var t31 = new TickerDayDatum(ticker2, DateTime.Today, 0);
             var p31 = new CalcPositionDatum(t31);
             var t32 = new TickerDayDatum(ticker3, DateTime.Today, 0);
             var p32 = new CalcPositionDatum(t32);
-            c3.PositionData = new List<CalcPositionDatum>() { p31, p32 };
-            cnt.CalculateSinglePorfolioDatum(c3);
+            var list3 = new List<CalcPositionDatum>() { p31, p32 };
+            var c3 = cnt.CalculateSinglePorfolioDatum(list3);
 
-            var c4 = new CalcPortfolioDatum(DateTime.Now);
             var t41 = new TickerDayDatum(ticker3, DateTime.Today, 0);
             var p41 = new CalcPositionDatum(t41);
             var t42 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p42 = new CalcPositionDatum(t42);
-            c4.PositionData = new List<CalcPositionDatum>() { p41, p42 };
-            cnt.CalculateSinglePorfolioDatum(c4);
+            var list4 = new List<CalcPositionDatum>() { p41, p42 };
+            var c4 = cnt.CalculateSinglePorfolioDatum(list4);
 
-            var c5 = new CalcPortfolioDatum(DateTime.Now);
             var t51 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p51 = new CalcPositionDatum(t51);
-            c5.PositionData = new List<CalcPositionDatum>() { p51 };
-            cnt.CalculateSinglePorfolioDatum(c5);
+            var list5 = new List<CalcPositionDatum>() { p51 };
+            var c5 = cnt.CalculateSinglePorfolioDatum(list5);
 
             var inputList = new List<CalcPortfolioDatum>() { c1, c2, c3, c4, c5 };
 
@@ -540,42 +519,37 @@ namespace Tests {
 
 
 
-            var c1 = new CalcPortfolioDatum(DateTime.Now);
             var t11 = new TickerDayDatum(ticker1, DateTime.Today, 0);
             var p11 = new CalcPositionDatum(t11, "US");
-            c1.PositionData = new List<CalcPositionDatum>() { p11 };
-            cnt.CalculateSinglePorfolioDatum(c1);
+            var list1 = new List<CalcPositionDatum>() { p11 };
+            var c1 = cnt.CalculateSinglePorfolioDatum(list1);
 
 
-            var c2 = new CalcPortfolioDatum(DateTime.Now);
             var t21 = new TickerDayDatum(ticker1, DateTime.Today, 0);
             var p21 = new CalcPositionDatum(t21, "US");
             var t22 = new TickerDayDatum(ticker2, DateTime.Today, 0);
             var p22 = new CalcPositionDatum(t22, "RUS");
-            c2.PositionData = new List<CalcPositionDatum>() { p21, p22 };
-            cnt.CalculateSinglePorfolioDatum(c2);
+            var list2 = new List<CalcPositionDatum>() { p21, p22 };
+            var c2 = cnt.CalculateSinglePorfolioDatum(list2);
 
-            var c3 = new CalcPortfolioDatum(DateTime.Now);
             var t31 = new TickerDayDatum(ticker2, DateTime.Today, 0);
             var p31 = new CalcPositionDatum(t31, "RUS");
             var t32 = new TickerDayDatum(ticker3, DateTime.Today, 0);
             var p32 = new CalcPositionDatum(t32, "US");
-            c3.PositionData = new List<CalcPositionDatum>() { p31, p32 };
-            cnt.CalculateSinglePorfolioDatum(c3);
+            var list3 = new List<CalcPositionDatum>() { p31, p32 };
+            var c3 = cnt.CalculateSinglePorfolioDatum(list3);
 
-            var c4 = new CalcPortfolioDatum(DateTime.Now);
             var t41 = new TickerDayDatum(ticker3, DateTime.Today, 0);
             var p41 = new CalcPositionDatum(t41, "US");
             var t42 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p42 = new CalcPositionDatum(t42, "DM");
-            c4.PositionData = new List<CalcPositionDatum>() { p41, p42 };
-            cnt.CalculateSinglePorfolioDatum(c4);
+            var list4 = new List<CalcPositionDatum>() { p41, p42 };
+            var c4 = cnt.CalculateSinglePorfolioDatum(list4);
 
-            var c5 = new CalcPortfolioDatum(DateTime.Now);
             var t51 = new TickerDayDatum(ticker4, DateTime.Today, 0);
             var p51 = new CalcPositionDatum(t51, "DM");
-            c5.PositionData = new List<CalcPositionDatum>() { p51 };
-            cnt.CalculateSinglePorfolioDatum(c5);
+            var list5 = new List<CalcPositionDatum>() { p51 };
+            var c5 = cnt.CalculateSinglePorfolioDatum(list5);
 
             var inputList = new List<CalcPortfolioDatum>() { c1, c2, c3, c4, c5 };
 

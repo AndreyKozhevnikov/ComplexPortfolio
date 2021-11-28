@@ -53,9 +53,7 @@ namespace ComplexPortfolio.Module.Controllers {
                     }
                 }
                 if(tmpList.Count > 0) {
-                    var portfolioData = new CalcPortfolioDatum(startDate);
-                    portfolioData.PositionData = tmpList;
-                    CalculateSinglePorfolioDatum(portfolioData);
+                    var portfolioData = CalculateSinglePorfolioDatum(tmpList);
                     result.Add(portfolioData);
                 }
                 startDate = startDate.AddDays(1);
@@ -63,13 +61,14 @@ namespace ComplexPortfolio.Module.Controllers {
             return result;
         }
 
-        public void CalculateSinglePorfolioDatum(CalcPortfolioDatum datum) {
+        public CalcPortfolioDatum CalculateSinglePorfolioDatum(List<CalcPositionDatum> positionList) {
+            CalcPortfolioDatum datum = new CalcPortfolioDatum(positionList[0].Date);
             datum.SumTotalValues = new Dictionary<string, double>();
             datum.SumDiffTotalValues = new Dictionary<string, double>();
             datum.SumTotalValuesLabels = new Dictionary<string, double>();
             datum.SumDiffTotalValuesLabels = new Dictionary<string, double>();
             bool hasLabels = true;
-            foreach(var p in datum.PositionData) {
+            foreach(var p in positionList) {
                 datum.SumTotalValues[p.TickerName] = p.Value;
                 datum.SumDiffTotalValues[p.TickerName] = p.ValueDiffTotal;
                 if(string.IsNullOrEmpty(p.Label) || !hasLabels) {
@@ -86,9 +85,10 @@ namespace ComplexPortfolio.Module.Controllers {
                     datum.SumDiffTotalValuesLabels[p.Label] = p.ValueDiffTotal;
                 }
             }
+            return datum;
         }
         public List<CalcPortfolioDatumExportBlock> CreateExportBlocksFromData(List<CalcPortfolioDatum> calcPortData) {
-            
+
             var tickerNames = GetAllTickersFromCalcPortfolioData(calcPortData);
             var labelNames = GetAllLabelsFromCalcPortfolioData(calcPortData);
 
@@ -101,8 +101,8 @@ namespace ComplexPortfolio.Module.Controllers {
             var labelsDiffBlock = new CalcPortfolioDatumExportBlock("LabelsDiff");
 
             foreach(var calcData in calcPortData) {
-                var tickerElement = new CalcPortfolioDatumExportElement(calcData.Date,tickerNames.Count);
-                
+                var tickerElement = new CalcPortfolioDatumExportElement(calcData.Date, tickerNames.Count);
+
                 tickerElement.SumValue = calcData.SumTotal;
                 foreach(var position in calcData.SumTotalValues) {
                     var ind = tickerNames.IndexOf(position.Key);
@@ -110,7 +110,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
                 tickersBlock.Elements.Add(tickerElement);
 
-                var tickerDiffElement = new CalcPortfolioDatumExportElement(calcData.Date,tickerNames.Count);
+                var tickerDiffElement = new CalcPortfolioDatumExportElement(calcData.Date, tickerNames.Count);
                 tickerDiffElement.SumValue = calcData.SumDiffTotal;
                 foreach(var position in calcData.SumDiffTotalValues) {
                     var ind = tickerNames.IndexOf(position.Key);
