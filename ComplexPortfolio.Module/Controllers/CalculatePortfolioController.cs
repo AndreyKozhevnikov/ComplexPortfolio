@@ -87,7 +87,56 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
             }
         }
+        public List<CalcPortfolioDatumExportBlock> CreateExportBlocksFromData(List<CalcPortfolioDatum> calcPortData) {
+            
+            var tickerNames = GetAllTickersFromCalcPortfolioData(calcPortData);
+            var labelNames = GetAllLabelsFromCalcPortfolioData(calcPortData);
 
+            var tickersBlock = new CalcPortfolioDatumExportBlock("Tickers");
+            tickersBlock.Names = tickerNames;
+            var tickersDiffBlock = new CalcPortfolioDatumExportBlock("TickersDiff");
+            tickersDiffBlock.Names = tickerNames;
+
+            var labelsBlock = new CalcPortfolioDatumExportBlock("Labels");
+            var labelsDiffBlock = new CalcPortfolioDatumExportBlock("LabelsDiff");
+
+            foreach(var calcData in calcPortData) {
+                var tickerElement = new CalcPortfolioDatumExportElement(calcData.Date);
+                tickerElement.SumValue = calcData.SumTotal;
+                foreach(var position in calcData.SumTotalValues) {
+                    var ind = tickerNames.IndexOf(position.Key);
+                    tickerElement.Values[ind] = position.Value;
+                }
+                tickersBlock.Elements.Add(tickerElement);
+
+                var tickerDiffElement = new CalcPortfolioDatumExportElement(calcData.Date);
+                tickerDiffElement.SumValue = calcData.SumDiffTotal;
+                foreach(var position in calcData.SumDiffTotalValues) {
+                    var ind = tickerNames.IndexOf(position.Key);
+                    tickerDiffElement.Values[ind] = position.Value;
+                }
+                tickersDiffBlock.Elements.Add(tickerDiffElement);
+
+
+                //exportDatum.Date = calcData.Date;
+                //exportDatum.Names = tickers;
+                //exportDatum.Values = calcData.SumTotalValues;
+                //exportDatum.DiffValues = calcData.SumDiffTotalValues;
+                //exportData.Add(exportDatum);
+            }
+            var result = new List<CalcPortfolioDatumExportBlock>();
+            result.Add(tickersBlock);
+            result.Add(tickersDiffBlock);
+            return result;
+        }
+        public List<string> GetAllLabelsFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
+            var resultList = new List<string>();
+            foreach(var datum in calcPortData) {
+                resultList = resultList.Concat(datum.Labels).ToList();
+            }
+            var uniqueList = resultList.Distinct<string>().OrderBy(x => x).ToList();
+            return uniqueList;
+        }
         public List<string> GetAllTickersFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
             var resultList = new List<string>();
             foreach(var datum in calcPortData) {
@@ -97,68 +146,74 @@ namespace ComplexPortfolio.Module.Controllers {
             return uniqueList;
         }
         public void ExportToExcel(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
-            var lastColumn = ExportToExcel_Tickers(wsWorker, calcPortData);
+            List<CalcPortfolioDatumExportBlock> blocks = CreateExportBlocksFromData(calcPortData);
 
-        }
-        public void ExportToExcel_Labels(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData, int startColumn) {
-
-        }
-
-        public int ExportToExcelOneBlock(IWorkSheetWorker wsWorker, List<CalcPortfolioDatumExportBlock> exportList, int startRow, int startColumn) {
-            var currentColumn = startColumn;
-            var currentRow = startRow;
-            wsWorker.SetCellValue(currentRow, currentColumn, "SumTotal");
-            currentColumn++;
-            List<string> tickers = exportList[0].Names;
-            foreach(var tickerName in tickers) {
-                wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
-                currentColumn++;
+            var c = 1;
+            foreach(var block in blocks) {
+                c = ExportToExcelOneBlock(wsWorker, block, c);
+                c += 2;
             }
-            currentColumn += 2;
-            wsWorker.SetCellValue(currentRow, currentColumn, "SumDiffTotal");
-            currentColumn++;
-            foreach(var tickerName in tickers) {
-                wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
-                currentColumn++;
-            }
-
-            foreach(var calcPortDatum in exportList) {
-                currentColumn = 1;
-                currentRow++;
-                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
-                currentColumn++;
-                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Values.Sum(x => x.Value));
-                foreach(var sumTolalValue in calcPortDatum.Values) {
-                    var offSet = tickers.IndexOf(sumTolalValue.Key);
-                    var thisColumn = currentColumn + offSet + 1;
-                    wsWorker.SetCellValue(currentRow, thisColumn, sumTolalValue.Value);
-                }
-                currentColumn = currentColumn + tickers.Count + 2;
-                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
-                currentColumn++;
-                wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.DiffValues.Sum(x => x.Value));
-                foreach(var sumDiffTolalValue in calcPortDatum.DiffValues) {
-                    var offSet = tickers.IndexOf(sumDiffTolalValue.Key);
-                    var thisColumn = currentColumn + offSet + 1;
-                    wsWorker.SetCellValue(currentRow, thisColumn, sumDiffTolalValue.Value);
-                }
-            }
-            return currentColumn + tickers.Count;
         }
-        public int ExportToExcel_Tickers(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
-            var tickers = GetAllTickersFromCalcPortfolioData(calcPortData);
-            var exportData = new List<CalcPortfolioDatumExportBlock>();
-            foreach(var calcData in calcPortData) {
-                var exportDatum = new CalcPortfolioDatumExportBlock();
-                exportDatum.Date = calcData.Date;
-                exportDatum.Names = tickers;
-                exportDatum.Values = calcData.SumTotalValues;
-                exportDatum.DiffValues = calcData.SumDiffTotalValues;
-                exportData.Add(exportDatum);
-            }
-            return ExportToExcelOneBlock(wsWorker, exportData, 7, 2);
+
+
+        public int ExportToExcelOneBlock(IWorkSheetWorker wsWorker, CalcPortfolioDatumExportBlock block, int startColumn) {
+            //    var currentColumn = startColumn;
+            //    var currentRow = startRow;
+            //    wsWorker.SetCellValue(currentRow, currentColumn, "SumTotal");
+            //    currentColumn++;
+            //    List<string> tickers = exportList[0].Names;
+            //    foreach(var tickerName in tickers) {
+            //        wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
+            //        currentColumn++;
+            //    }
+            //    currentColumn += 2;
+            //    wsWorker.SetCellValue(currentRow, currentColumn, "SumDiffTotal");
+            //    currentColumn++;
+            //    foreach(var tickerName in tickers) {
+            //        wsWorker.SetCellValue(currentRow, currentColumn, tickerName);
+            //        currentColumn++;
+            //    }
+
+            //    foreach(var calcPortDatum in exportList) {
+            //        currentColumn = 1;
+            //        currentRow++;
+            //        wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
+            //        currentColumn++;
+            //        wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Values.Sum(x => x.Value));
+            //        foreach(var sumTolalValue in calcPortDatum.Values) {
+            //            var offSet = tickers.IndexOf(sumTolalValue.Key);
+            //            var thisColumn = currentColumn + offSet + 1;
+            //            wsWorker.SetCellValue(currentRow, thisColumn, sumTolalValue.Value);
+            //        }
+            //        currentColumn = currentColumn + tickers.Count + 2;
+            //        wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.Date);
+            //        currentColumn++;
+            //        wsWorker.SetCellValue(currentRow, currentColumn, calcPortDatum.DiffValues.Sum(x => x.Value));
+            //        foreach(var sumDiffTolalValue in calcPortDatum.DiffValues) {
+            //            var offSet = tickers.IndexOf(sumDiffTolalValue.Key);
+            //            var thisColumn = currentColumn + offSet + 1;
+            //            wsWorker.SetCellValue(currentRow, thisColumn, sumDiffTolalValue.Value);
+            //        }
+            //    }
+            //    return currentColumn + tickers.Count;
+            return 0;
         }
+        //public int ExportToExcel_Tickers(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
+
+        //    var tickers = GetAllTickersFromCalcPortfolioData(calcPortData);
+        //    var exportData = new List<CalcPortfolioDatumExportBlock>();
+        //    foreach(var calcData in calcPortData) {
+        //        var exportDatum = new CalcPortfolioDatumExportBlock();
+        //        exportDatum.Date = calcData.Date;
+        //        exportDatum.Names = tickers;
+        //        exportDatum.Values = calcData.SumTotalValues;
+        //        exportDatum.DiffValues = calcData.SumDiffTotalValues;
+        //        exportData.Add(exportDatum);
+        //    }
+        //    return ExportToExcelSeveralBlocks(wsWorker, exportData, 7, 2);
+        //}
+
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
             CalculateAction_Execute(null, null);
