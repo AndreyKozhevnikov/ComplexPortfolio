@@ -9,8 +9,11 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public CalcPortfolioDatumExportElement(DateTime _date) {
             Date = _date;
         }
+        public CalcPortfolioDatumExportElement(DateTime _date, int valuesCount):this(_date) {
+            Values = new double?[valuesCount];
+        }
         public DateTime Date { get; set; }
-        public List<double?> Values { get; set; }
+        public double?[] Values { get; set; }
         public double SumValue { get; set; }
     }
 

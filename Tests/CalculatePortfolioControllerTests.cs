@@ -143,14 +143,14 @@ namespace Tests {
             CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickets");
             ticketsBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
             var exportElement = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElement.Values = new List<double?> { 16775.6, 17670, 18678 };
+            exportElement.Values = new double?[] { 16775.6, 17670, 18678 };
             exportElement.SumValue = 53123.6;
             ticketsBlock.Elements.Add(exportElement);
 
             CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TicketsDiff");
             ticketsDiffBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
             var exportElementDiff = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElementDiff.Values = new List<double?> { -887.4, 160, 72 };
+            exportElementDiff.Values = new double?[] { -887.4, 160, 72 };
             exportElementDiff.SumValue = -655.4;
             ticketsDiffBlock.Elements.Add(exportElementDiff);
 
@@ -160,7 +160,11 @@ namespace Tests {
             //act
             var res = cnt.CreateExportBlocksFromData(calcList);
             //assert
-            Assert.AreEqual(expectedRes, res);
+            Assert.AreEqual(expectedRes[0].Names, res[0].Names);
+            Assert.AreEqual(expectedRes[0].Elements[0].Values, res[0].Elements[0].Values);
+            Assert.AreEqual(expectedRes[1].Elements[0].Values, res[1].Elements[0].Values);
+            Assert.AreEqual(expectedRes[1].Elements[0].SumValue, res[1].Elements[0].SumValue);
+            Assert.AreEqual(expectedRes[0].Elements[0].SumValue, res[0].Elements[0].SumValue);
 
         }
 
@@ -174,11 +178,11 @@ namespace Tests {
             ticketsBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
 
             var exportElement19 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 19));
-            exportElement19.Values = new List<double?> { null, 111, 222 };
+            exportElement19.Values = new double?[] { null, 111, 222 };
             exportElement19.SumValue = 333;
 
             var exportElement20 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElement20.Values = new List<double?> { 16775.6, 17670, 18678 };
+            exportElement20.Values = new double?[] { 16775.6, 17670, 18678 };
             exportElement20.SumValue = 53123.6;
 
             ticketsBlock.Elements.Add(exportElement19);
@@ -188,11 +192,11 @@ namespace Tests {
             ticketsDiffBlock.Names = new List<string> { "FXGD", "FXRB", "FXRL" };
 
             var exportElementDiff19 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 19));
-            exportElementDiff19.Values = new List<double?> { null, 10, 20 };
+            exportElementDiff19.Values = new double?[] { null, 10, 20 };
             exportElementDiff19.SumValue = 30;
 
             var exportElementDiff20 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElementDiff20.Values = new List<double?> { -887.4, 160, 72 };
+            exportElementDiff20.Values = new double?[] { -887.4, 160, 72 };
             exportElementDiff20.SumValue = -655.4;
 
             ticketsDiffBlock.Elements.Add(exportElementDiff19);
@@ -201,10 +205,25 @@ namespace Tests {
 
             var expectedRes = new List<CalcPortfolioDatumExportBlock>() { ticketsBlock, ticketsDiffBlock };
 
+            foreach(var c in calcList) {
+                cnt.CalculateSinglePorfolioDatum(c);
+            }
             //act
             var res = cnt.CreateExportBlocksFromData(calcList);
             //assert
-            Assert.AreEqual(expectedRes, res);
+            Assert.AreEqual(expectedRes[0].Names, res[0].Names);
+            Assert.AreEqual(expectedRes[0].Elements[0].Values, res[0].Elements[0].Values);
+            Assert.AreEqual(expectedRes[0].Elements[0].SumValue, res[0].Elements[0].SumValue);
+
+            Assert.AreEqual(expectedRes[0].Elements[1].Values, res[0].Elements[1].Values);
+            Assert.AreEqual(expectedRes[0].Elements[1].SumValue, res[0].Elements[1].SumValue);
+
+            Assert.AreEqual(expectedRes[1].Elements[0].Values, res[1].Elements[0].Values);
+            Assert.AreEqual(expectedRes[1].Elements[0].SumValue, res[1].Elements[0].SumValue);
+
+            Assert.AreEqual(expectedRes[1].Elements[1].Values, res[1].Elements[1].Values);
+            Assert.AreEqual(expectedRes[1].Elements[1].SumValue, res[1].Elements[1].SumValue);
+
 
         }
 
