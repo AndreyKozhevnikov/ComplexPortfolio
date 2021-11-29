@@ -71,6 +71,7 @@ namespace ComplexPortfolio.Module.Controllers {
             foreach(var p in positionList) {
                 datum.SumTotalValues[p.TickerName] = p.Value;
                 datum.SumDiffTotalValues[p.TickerName] = p.ValueDiffTotal;
+                
                 if(string.IsNullOrEmpty(p.Label) || !hasLabels) {
                     hasLabels = false;
                     datum.SumTotalValuesLabels.Clear();
@@ -98,7 +99,11 @@ namespace ComplexPortfolio.Module.Controllers {
             tickersDiffBlock.Names = tickerNames;
 
             var labelsBlock = new CalcPortfolioDatumExportBlock("Labels");
+            labelsBlock.Names = labelNames;
             var labelsDiffBlock = new CalcPortfolioDatumExportBlock("LabelsDiff");
+            labelsDiffBlock.Names = labelNames;
+
+            bool hasLabels = labelNames.Count > 0;
 
             foreach(var calcData in calcPortData) {
                 var tickerElement = new CalcPortfolioDatumExportElement(calcData.Date, tickerNames.Count);
@@ -118,18 +123,34 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
                 tickersDiffBlock.Elements.Add(tickerDiffElement);
 
+                if(hasLabels) {
+                    var labelElement = new CalcPortfolioDatumExportElement(calcData.Date, labelNames.Count);
+                    labelElement.SumValue = calcData.SumTotal;
+                    foreach(var position in calcData.SumTotalValuesLabels) {
+                        var ind = labelNames.IndexOf(position.Key);
+                        labelElement.Values[ind] = position.Value;
+                    }
+                    labelsBlock.Elements.Add(labelElement);
 
-                //exportDatum.Date = calcData.Date;
-                //exportDatum.Names = tickers;
-                //exportDatum.Values = calcData.SumTotalValues;
-                //exportDatum.DiffValues = calcData.SumDiffTotalValues;
-                //exportData.Add(exportDatum);
+                    var labelDiffElement = new CalcPortfolioDatumExportElement(calcData.Date, labelNames.Count);
+                    labelDiffElement.SumValue = calcData.SumDiffTotal;
+                    foreach(var position in calcData.SumDiffTotalValuesLabels) {
+                        var ind = labelNames.IndexOf(position.Key);
+                        labelDiffElement.Values[ind] = position.Value;
+                    }
+                    labelsDiffBlock.Elements.Add(labelDiffElement);
+                }
             }
             var result = new List<CalcPortfolioDatumExportBlock>();
             result.Add(tickersBlock);
             result.Add(tickersDiffBlock);
+            if(hasLabels) {
+                result.Add(labelsBlock);
+                result.Add(labelsDiffBlock);
+            }
             return result;
         }
+
         public List<string> GetAllLabelsFromCalcPortfolioData(List<CalcPortfolioDatum> calcPortData) {
             var resultList = new List<string>();
             foreach(var datum in calcPortData) {

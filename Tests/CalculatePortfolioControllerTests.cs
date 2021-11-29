@@ -165,6 +165,60 @@ namespace Tests {
         }
 
         [Test]
+        public void CreateExportBlocksFromPortfolioDatum_Labels() {
+            //arrange
+            var cnt = new CalculatePortfolioController();
+
+            var datum = new CalcPortfolioDatum(new DateTime(2020, 8, 20));
+            datum.SumTotalValues = new Dictionary<string, double>() { { "TSPX", 10 }, { "TMOS", 20 },{"FXUS",5 } };
+            datum.SumDiffTotalValues = new Dictionary<string, double>() { { "TSPX", 15 }, { "TMOS", 25 }, { "FXUS", 8 } };
+
+            datum.SumTotalValuesLabels = new Dictionary<string, double>() { { "RUS", 20 }, { "US", 15 } };
+            datum.SumDiffTotalValuesLabels = new Dictionary<string, double>() { { "RUS", 25 }, { "US", 23 } };
+
+            var calcList = new List<CalcPortfolioDatum>();
+            calcList.Add(datum);
+
+            CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickers");
+            ticketsBlock.Names = new List<string> { "FXUS", "TMOS", "TSPX" };
+            var exportElement = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
+            exportElement.Values = new double?[] {5, 20, 10 };
+            exportElement.SumValue = 35;
+            ticketsBlock.Elements.Add(exportElement);
+
+            CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TickersDiff");
+            ticketsDiffBlock.Names = new List<string> { "FXUS", "TMOS", "TSPX" };
+            var exportElementDiff = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
+            exportElementDiff.Values = new double?[] {8, 25, 15 };
+            exportElementDiff.SumValue = 48;
+            ticketsDiffBlock.Elements.Add(exportElementDiff);
+
+            CalcPortfolioDatumExportBlock labelsBlock = new CalcPortfolioDatumExportBlock("Labels");
+            labelsBlock.Names = new List<string> { "RUS", "US" };
+            var exportElementLabel = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
+            exportElementLabel.Values = new double?[] { 20, 15 };
+            exportElementLabel.SumValue = 35;
+            labelsBlock.Elements.Add(exportElementLabel);
+
+            CalcPortfolioDatumExportBlock labelsDiffBlock = new CalcPortfolioDatumExportBlock("LabelsDiff");
+            labelsDiffBlock.Names = new List<string> { "RUS", "US" };
+            var exportElementLabelDiff = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
+            exportElementLabelDiff.Values = new double?[] { 25, 23 };
+            exportElementLabelDiff.SumValue = 48;
+            labelsDiffBlock.Elements.Add(exportElementLabelDiff);
+
+
+            var expectedRes = new List<CalcPortfolioDatumExportBlock>() { ticketsBlock, ticketsDiffBlock, labelsBlock, labelsDiffBlock };
+
+            //act
+            var res = cnt.CreateExportBlocksFromData(calcList);
+            //assert
+            Assert.AreEqual(expectedRes, res);
+        }
+
+ 
+
+        [Test]
         public void CreateExportBlocksFromPortfolioDatum_SomeTickersMissed() {
             //arrange
             var cnt = new CalculatePortfolioController();
