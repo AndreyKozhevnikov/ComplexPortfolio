@@ -170,7 +170,7 @@ namespace Tests {
             var cnt = new CalculatePortfolioController();
 
             var datum = new CalcPortfolioDatum(new DateTime(2020, 8, 20));
-            datum.SumTotalValues = new Dictionary<string, double>() { { "TSPX", 10 }, { "TMOS", 20 },{"FXUS",5 } };
+            datum.SumTotalValues = new Dictionary<string, double>() { { "TSPX", 10 }, { "TMOS", 20 }, { "FXUS", 5 } };
             datum.SumDiffTotalValues = new Dictionary<string, double>() { { "TSPX", 15 }, { "TMOS", 25 }, { "FXUS", 8 } };
 
             datum.SumTotalValuesLabels = new Dictionary<string, double>() { { "RUS", 20 }, { "US", 15 } };
@@ -182,14 +182,14 @@ namespace Tests {
             CalcPortfolioDatumExportBlock ticketsBlock = new CalcPortfolioDatumExportBlock("Tickers");
             ticketsBlock.Names = new List<string> { "FXUS", "TMOS", "TSPX" };
             var exportElement = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElement.Values = new double?[] {5, 20, 10 };
+            exportElement.Values = new double?[] { 5, 20, 10 };
             exportElement.SumValue = 35;
             ticketsBlock.Elements.Add(exportElement);
 
             CalcPortfolioDatumExportBlock ticketsDiffBlock = new CalcPortfolioDatumExportBlock("TickersDiff");
             ticketsDiffBlock.Names = new List<string> { "FXUS", "TMOS", "TSPX" };
             var exportElementDiff = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 20));
-            exportElementDiff.Values = new double?[] {8, 25, 15 };
+            exportElementDiff.Values = new double?[] { 8, 25, 15 };
             exportElementDiff.SumValue = 48;
             ticketsDiffBlock.Elements.Add(exportElementDiff);
 
@@ -216,7 +216,7 @@ namespace Tests {
             Assert.AreEqual(expectedRes, res);
         }
 
- 
+
 
         [Test]
         public void CreateExportBlocksFromPortfolioDatum_SomeTickersMissed() {
@@ -397,7 +397,39 @@ namespace Tests {
         [Test]
 
         public void ExportToExcel_OneBlock() {
-            throw new Exception();
+            //arrange
+            var cnt = new CalculatePortfolioController();
+            var wsWorkerMock = new Mock<IWorkSheetWorker>();
+            var exportBlock = new CalcPortfolioDatumExportBlock("TestPrefix");
+            exportBlock.Names = new List<string>() { "Test1", "Test2" };
+            var el = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 15));
+            el.SumValue = 33;
+            el.Values = new double?[] { 11, 22 };
+
+            var el2 = new CalcPortfolioDatumExportElement(new DateTime(2020, 8, 16));
+            el2.SumValue = 99;
+            el2.Values = new double?[] { 44, 55 };
+            exportBlock.Elements.Add(el);
+            exportBlock.Elements.Add(el2);
+            //act
+            var finishColumn = cnt.ExportToExcelOneBlock(wsWorkerMock.Object, exportBlock, 1);
+            //assert
+            wsWorkerMock.Verify(x => x.SetCellValue(1, 2, "TestPrefix"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(1, 3, "Test1"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(1, 4, "Test2"), Times.Once());
+
+            wsWorkerMock.Verify(x => x.SetCellValue(2, 1, new DateTime(2020, 8, 15)), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(2, 2, 33), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(2, 3, 11), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(2, 4, 22), Times.Once());
+
+
+            wsWorkerMock.Verify(x => x.SetCellValue(3, 1, new DateTime(2020, 8, 16)), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(3, 2, 99), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(3, 3, 44), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(3, 4, 55), Times.Once());
+
+            Assert.AreEqual(4, finishColumn);
         }
 
 
