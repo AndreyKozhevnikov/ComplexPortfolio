@@ -172,16 +172,16 @@ namespace ComplexPortfolio.Module.Controllers {
 
             var c = 1;
             foreach(var block in blocks) {
-                c = ExportToExcelOneBlock(wsWorker, block, c);
+                c = ExportToExcelOneBlock(wsWorker, block, c, 7);
                 c += 2;
             }
         }
 
 
 
-        public int ExportToExcelOneBlock(IWorkSheetWorker wsWorker, CalcPortfolioDatumExportBlock block, int startColumn) {
+        public int ExportToExcelOneBlock(IWorkSheetWorker wsWorker, CalcPortfolioDatumExportBlock block, int startColumn, int startRow) {
             var currentColumn = startColumn + 1;
-            var currentRow = 1;
+            var currentRow = startRow;
             wsWorker.SetCellValue(currentRow, currentColumn, block.Prefix);
             currentColumn++;
             foreach(var name in block.Names) {

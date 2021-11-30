@@ -412,7 +412,7 @@ namespace Tests {
             exportBlock.Elements.Add(el);
             exportBlock.Elements.Add(el2);
             //act
-            var finishColumn = cnt.ExportToExcelOneBlock(wsWorkerMock.Object, exportBlock, 1);
+            var finishColumn = cnt.ExportToExcelOneBlock(wsWorkerMock.Object, exportBlock, 1, 1);
             //assert
             wsWorkerMock.Verify(x => x.SetCellValue(1, 2, "TestPrefix"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(1, 3, "Test1"), Times.Once());
@@ -439,8 +439,7 @@ namespace Tests {
             // arrange
             var cnt = new CalculatePortfolioController();
 
-            var wsWorkerMock = new Mock<IWorkSheetWorker>(MockBehavior.Strict);
-            wsWorkerMock.Setup(x => x.SetCellValue(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CellValue>()));
+            var wsWorkerMock = new Mock<IWorkSheetWorker>();
 
             var d1 = new DateTime(2020, 8, 20);
             var d2 = new DateTime(2020, 8, 21);
@@ -472,14 +471,14 @@ namespace Tests {
             //act
             cnt.ExportToExcel(wsWorkerMock.Object, calcData);
             //assert
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "SumTotal"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 2, "Tickers"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 3, "FXGD"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 4, "FXRB"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 5, "FXRL"), Times.Once());
 
 
 
-            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "SumDiffTotal"), Times.Once());
+            wsWorkerMock.Verify(x => x.SetCellValue(7, 8, "TickersDiff"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 9, "FXGD"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 10, "FXRB"), Times.Once());
             wsWorkerMock.Verify(x => x.SetCellValue(7, 11, "FXRL"), Times.Once());

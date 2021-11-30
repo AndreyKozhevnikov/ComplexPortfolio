@@ -43,6 +43,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
         public List<string> Labels {
             get {
+                if(SumDiffTotalValuesLabels == null) {
+                    return new List<string>();
+                }
                 return SumTotalValuesLabels.Select(x => x.Key).ToList();
             }
         }
