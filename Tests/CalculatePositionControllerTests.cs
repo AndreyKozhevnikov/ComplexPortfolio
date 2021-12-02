@@ -18,6 +18,7 @@ namespace Tests {
             //arrange
             var cnt = new CalculatePositionController();
             var pos = new Position();
+            pos.Label = "TestLabel";
             var ticker = new Ticker() { Name = "FXRL" };
             pos.Ticker = ticker;
             var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
@@ -47,6 +48,7 @@ namespace Tests {
             Assert.AreEqual(22260, pos.CalculateData[3].Value);
             Assert.AreEqual(175, pos.CalculateData[3].ValueDiff);
             Assert.AreEqual(-45, pos.CalculateData[3].ValueDiffTotal);
+            Assert.AreEqual("TestLabel", pos.CalculateData[3].Label);
 
         }
 

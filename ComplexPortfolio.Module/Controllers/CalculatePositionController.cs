@@ -35,6 +35,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 currencyDayDataList = objectSpace.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", position.Ticker.Currency.Name)).ToList();
             }
             foreach(var calcData in calcDataList) {
+                calcData.Label = position.Label;
                 calcData.SharesCount = currentSharesCount;
                 calcData.Value = calcData.Price * calcData.SharesCount;
                 double currencyValue;
