@@ -45,6 +45,9 @@ namespace ComplexPortfolio.Module.Controllers {
                     d1 = existingDataDates.Max();
                 }
                 var candles = await dataLoader.GetTickerData(ticker.Name, d1, d2);
+                if(candles == null) {
+                    continue;
+                }
                 // var candles = await dataLoader.GetTickerYearData(ticker.Name,2020);
                 foreach(var c in candles) {
                     tickerFactory.CreateTickerDayDataFromCandle(ticker, c, existingDataDates, os, DateTime.Today);
