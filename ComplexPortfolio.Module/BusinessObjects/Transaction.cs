@@ -10,10 +10,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
     public class Transaction : BaseObject {
         public Transaction(Session session) : base(session) {
         }
-
-        public Transaction() {
-        }
-
         public override void AfterConstruction() {
             base.AfterConstruction();
             this.Date = DateTime.Today;
