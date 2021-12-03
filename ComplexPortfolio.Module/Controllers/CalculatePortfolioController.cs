@@ -33,7 +33,9 @@ namespace ComplexPortfolio.Module.Controllers {
         public List<CalcPortfolioDatum> CalculatePortfolioDataList(List<Position> positions) {
             DateTime startDate = DateTime.Today;
             DateTime finishDate = DateTime.MinValue;
-            foreach(var p in positions) {
+            var positionsWithData = positions.Where(x => x.CalculateData.Count > 0);
+            foreach(var p in positionsWithData) {
+
                 var positionStartDate = p.CalculateData.Min(x => x.Date);
                 if(positionStartDate < startDate) {
                     startDate = positionStartDate;
@@ -46,7 +48,7 @@ namespace ComplexPortfolio.Module.Controllers {
             List<CalcPortfolioDatum> result = new List<CalcPortfolioDatum>();
             while(startDate <= finishDate) {
                 List<CalcPositionDatum> tmpList = new List<CalcPositionDatum>();
-                foreach(var p in positions) {
+                foreach(var p in positionsWithData) {
                     var positionData = p.CalculateData.Where(x => x.Date == startDate).FirstOrDefault();
                     if(positionData != null) {
                         tmpList.Add(positionData);

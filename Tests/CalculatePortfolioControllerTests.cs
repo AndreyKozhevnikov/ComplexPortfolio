@@ -53,6 +53,46 @@ namespace Tests {
             Assert.AreEqual(d3, res[2].Date);
         }
 
+        [Test]
+        public void CalculatePortfolio_NoPositionData() {
+            //scenario: a position opened today. As we got data for today-1 only - there is no position data for this position
+            //arrange
+            var cnt = new CalculatePortfolioController();
+            var position1 = new Position();
+            var d1 = new DateTime(2021, 8, 19);
+            var d2 = new DateTime(2021, 8, 21);
+            var d3 = new DateTime(2021, 8, 22);
+            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 11);
+            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 22);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test2" }, d2, 33);
+            var tickerDayData4 = new TickerDayDatum(new Ticker() { Name = "test2" }, d3, 33);
+            var calcData11 = new CalcPositionDatum(tickerDayData1);
+            var calcData12 = new CalcPositionDatum(tickerDayData2);
+            position1.CalculateData = new List<CalcPositionDatum>();
+            position1.CalculateData.Add(calcData11);
+            position1.CalculateData.Add(calcData12);
+
+            var position2 = new Position();
+            var calcData21 = new CalcPositionDatum(tickerDayData3);
+            var calcData22 = new CalcPositionDatum(tickerDayData4);
+            position2.CalculateData = new List<CalcPositionDatum>();
+            position2.CalculateData.Add(calcData21);
+            position2.CalculateData.Add(calcData22);
+
+            var position3 = new Position();
+            position3.CalculateData = new List<CalcPositionDatum>();
+
+            var positions = new List<Position>();
+            positions.Add(position1);
+            positions.Add(position2);
+            positions.Add(position3);
+            //act
+            //assert
+            Assert.DoesNotThrow(()=> cnt.CalculatePortfolioDataList(positions));
+           
+            
+        }
+
         List<CalcPositionDatum> CreatePlainPositions() {
             var d1 = new DateTime(2020, 8, 20);
 
