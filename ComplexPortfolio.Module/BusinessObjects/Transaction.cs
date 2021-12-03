@@ -1,4 +1,5 @@
-﻿using DevExpress.Persistent.BaseImpl;
+﻿using DevExpress.Persistent.Base;
+using DevExpress.Persistent.BaseImpl;
 using DevExpress.Xpo;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+    [DefaultClassOptions]
     public class Transaction : BaseObject {
         public Transaction(Session session) : base(session) {
         }

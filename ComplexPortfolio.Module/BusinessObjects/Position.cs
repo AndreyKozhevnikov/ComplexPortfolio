@@ -1,4 +1,5 @@
 ﻿using DevExpress.ExpressApp.ConditionalAppearance;
+using DevExpress.ExpressApp.DC;
 using DevExpress.Persistent.Base;
 using DevExpress.Persistent.BaseImpl;
 using DevExpress.Xpo;
@@ -13,13 +14,14 @@ namespace ComplexPortfolio.Module.BusinessObjects {
     [DefaultClassOptions]
     [DebuggerDisplay("Ticker - {Ticker.Name}")]
     [Appearance("RedPriceObject", AppearanceItemType = "ViewItem", TargetItems = "Ticker", Criteria = "!AllowEdit", Context = "DetailView", Enabled = false)]
+    [XafDefaultProperty(nameof(Comment))]
     public class Position : BaseObject {
         public Position(Session session) : base(session) {
 
         }
         protected override void OnChanged(string propertyName, object oldValue, object newValue) {
             base.OnChanged(propertyName, oldValue, newValue);
-            if(propertyName == nameof(Position.Ticker)) {
+            if(propertyName == nameof(Position.Ticker) && newValue != null) {
                 ((Ticker)newValue).Changed += Position_Changed;
                 CalculateLastPrice(true);
             }
@@ -113,7 +115,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 }
             }
         }
-    
+
         [PersistentAlias("LastPrice*SharesCount")]
         public double CurrentValue {
             get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValue))); }

@@ -22,6 +22,11 @@
         <Member Name="ValueChangeSumRub" DisplayFormat="{0:N0}" />
       </OwnMembers>
     </Class>
+    <Class Name="ComplexPortfolio.Module.BusinessObjects.Transaction">
+      <OwnMembers>
+        <Member Name="Position" LookupProperty="Comment" />
+      </OwnMembers>
+    </Class>
   </BOModel>
   <NavigationItems>
     <Items>
@@ -36,7 +41,7 @@
     </Items>
   </NavigationItems>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="21.2.2.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.3.0" IsNewNode="True" />
   </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">
@@ -46,6 +51,7 @@
   <Views>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
+        <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
         <ColumnInfo Id="LastPrice" Index="6" />
         <ColumnInfo Id="LastPriceRub" Index="7" />
         <ColumnInfo Id="InputValue" Index="8" />
@@ -63,6 +69,16 @@
         <ColumnInfo Id="LastPrice" Index="5" />
         <ColumnInfo Id="InputValue" Index="6" />
         <ColumnInfo Id="CurrentValue" Index="7" SortIndex="0" SortOrder="Descending" />
+      </Columns>
+    </ListView>
+    <ListView Id="Position_Transactions_ListView">
+      <Columns>
+        <ColumnInfo Id="Date" SortIndex="0" SortOrder="Ascending" />
+      </Columns>
+    </ListView>
+    <ListView Id="Ticker_DayData_ListView">
+      <Columns>
+        <ColumnInfo Id="Date" SortIndex="0" SortOrder="Descending" />
       </Columns>
     </ListView>
   </Views>
