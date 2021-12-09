@@ -11,21 +11,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.Controllers {
-    public class CalculatePortfolioController : ObjectViewController<DetailView, Portfolio> {
+    public class CalculatePortfolioController : ViewController {
         public CalculatePortfolioController() {
+            TargetObjectType = typeof(Portfolio);
             var exportToExcelAction = new SimpleAction(this, "ExportToExcel", PredefinedCategory.Edit);
+            exportToExcelAction.SelectionDependencyType = SelectionDependencyType.RequireMultipleObjects;
             exportToExcelAction.Execute += ExportToExcelAction_Execute;
-
-            var calculateAction = new SimpleAction(this, "CalculateDayData", PredefinedCategory.Edit);
-            calculateAction.Execute += CalculateAction_Execute; ;
         }
 
-        private void CalculateAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            var portfolio = this.ViewCurrentObject;
+        void CalculatePositionsForPortfolio(Portfolio port, IObjectSpace os) {
             var cnt = new CalculatePositionController();
-            var os = Application.CreateObjectSpace(typeof(Position));
-
-            foreach(var position in portfolio.Positions) {
+            foreach(var position in port.Positions) {
                 cnt.CalculatePosition(position, os);
             }
         }
@@ -205,26 +201,10 @@ namespace ComplexPortfolio.Module.Controllers {
             }
             return currentColumn;
         }
-        //public int ExportToExcel_Tickers(IWorkSheetWorker wsWorker, List<CalcPortfolioDatum> calcPortData) {
 
-        //    var tickers = GetAllTickersFromCalcPortfolioData(calcPortData);
-        //    var exportData = new List<CalcPortfolioDatumExportBlock>();
-        //    foreach(var calcData in calcPortData) {
-        //        var exportDatum = new CalcPortfolioDatumExportBlock();
-        //        exportDatum.Date = calcData.Date;
-        //        exportDatum.Names = tickers;
-        //        exportDatum.Values = calcData.SumTotalValues;
-        //        exportDatum.DiffValues = calcData.SumDiffTotalValues;
-        //        exportData.Add(exportDatum);
-        //    }
-        //    return ExportToExcelSeveralBlocks(wsWorker, exportData, 7, 2);
-        //}
-
-
-        private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            CalculateAction_Execute(null, null);
-            var portfolio = this.ViewCurrentObject;
-            var resultToPrint = CalculatePortfolioDataList(portfolio.Positions.ToList());
+        void ExportPortfolio(Portfolio port, IObjectSpace os) {
+            CalculatePositionsForPortfolio(port, os);
+            var resultToPrint = CalculatePortfolioDataList(port.Positions.ToList());
             using(Workbook workbook = new Workbook()) {
 
                 var wsWorker = new WorkSheetWorker();
@@ -234,10 +214,16 @@ namespace ComplexPortfolio.Module.Controllers {
 
                 workbook.EndUpdate();
                 string date = DateTime.Now.ToString("yyyy_MM_dd");
-                string fileName = string.Format(@"c:\temp\{0}-{1}.xlsx", portfolio.Name, date);
+                string fileName = string.Format(@"c:\temp\{0}-{1}.xlsx", port.Name, date);
                 workbook.SaveDocument(fileName, DocumentFormat.Xlsx);
             }
+        }
 
+        private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var os = Application.CreateObjectSpace(typeof(Portfolio));
+            foreach(var port in View.SelectedObjects) {
+                ExportPortfolio((Portfolio)port, os);
+            }
         }
     }
 }

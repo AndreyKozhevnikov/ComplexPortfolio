@@ -51,6 +51,7 @@
   <Views>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
+        <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
         <ColumnInfo Id="LastPrice" Index="6" />
         <ColumnInfo Id="LastPriceRub" Index="7" />
