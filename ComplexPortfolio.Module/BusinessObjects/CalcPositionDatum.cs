@@ -52,12 +52,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => _value = value;
         }
 
-        public double ValueDiff {
+        public double Profit {
             get => valueDiff;
             set => valueDiff = value;
         }
 
-        public double ValueDiffTotal {
+        public double ProfitTotal {
             get => valueTotal;
             set => valueTotal = value;
         }

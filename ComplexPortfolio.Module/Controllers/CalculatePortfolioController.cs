@@ -68,7 +68,7 @@ namespace ComplexPortfolio.Module.Controllers {
             bool hasLabels = true;
             foreach(var p in positionList) {
                 datum.SumTotalValues[p.TickerName] = p.Value;
-                datum.SumDiffTotalValues[p.TickerName] = p.ValueDiffTotal;
+                datum.SumDiffTotalValues[p.TickerName] = p.ProfitTotal;
 
                 if(string.IsNullOrEmpty(p.Label) || !hasLabels) {
                     hasLabels = false;
@@ -78,10 +78,10 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
                 if(datum.SumTotalValuesLabels.ContainsKey(p.Label)) {
                     datum.SumTotalValuesLabels[p.Label] += p.Value;
-                    datum.SumDiffTotalValuesLabels[p.Label] += p.ValueDiffTotal;
+                    datum.SumDiffTotalValuesLabels[p.Label] += p.ProfitTotal;
                 } else {
                     datum.SumTotalValuesLabels[p.Label] = p.Value;
-                    datum.SumDiffTotalValuesLabels[p.Label] = p.ValueDiffTotal;
+                    datum.SumDiffTotalValuesLabels[p.Label] = p.ProfitTotal;
                 }
             }
             return datum;

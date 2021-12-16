@@ -99,20 +99,20 @@ namespace Tests {
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "FXRB" }, d1, 0);
             var position1 = new CalcPositionDatum(tickerDayData1);
             position1.Value = 17670;
-            position1.ValueDiff = 0;
-            position1.ValueDiffTotal = 160;
+            position1.Profit = 0;
+            position1.ProfitTotal = 160;
 
             var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "FXRL" }, d1, 0);
             var position2 = new CalcPositionDatum(tickerDayData2);
             position2.Value = 18678;
-            position2.ValueDiff = -366;
-            position2.ValueDiffTotal = 72;
+            position2.Profit = -366;
+            position2.ProfitTotal = 72;
 
             var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "FXGD" }, d1, 0);
             var position3 = new CalcPositionDatum(tickerDayData3);
             position3.Value = 16775.6;
-            position3.ValueDiff = 85;
-            position3.ValueDiffTotal = -887.4;
+            position3.Profit = 85;
+            position3.ProfitTotal = -887.4;
 
 
             var list = new List<CalcPositionDatum>();
@@ -131,14 +131,14 @@ namespace Tests {
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "FXRB" }, d1, 0);
             var position1 = new CalcPositionDatum(tickerDayData1);
             position1.Value = 111;
-            position1.ValueDiff = 0;
-            position1.ValueDiffTotal = 10;
+            position1.Profit = 0;
+            position1.ProfitTotal = 10;
 
             var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "FXRL" }, d1, 0);
             var position2 = new CalcPositionDatum(tickerDayData2);
             position2.Value = 222;
-            position2.ValueDiff = -366;
-            position2.ValueDiffTotal = 20;
+            position2.Profit = -366;
+            position2.ProfitTotal = 20;
 
 
             var r0 = new List<CalcPositionDatum>();
@@ -319,26 +319,26 @@ namespace Tests {
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "VTBX" }, d1, 0);
             var position1 = new CalcPositionDatum(tickerDayData1, "RUS");
             position1.Value = 17670;
-            position1.ValueDiff = 0;
-            position1.ValueDiffTotal = 160;
+            position1.Profit = 0;
+            position1.ProfitTotal = 160;
 
             var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "TSPX" }, d1, 0);
             var position2 = new CalcPositionDatum(tickerDayData2, "US");
             position2.Value = 18678;
-            position2.ValueDiff = -366;
-            position2.ValueDiffTotal = 72;
+            position2.Profit = -366;
+            position2.ProfitTotal = 72;
 
             var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "TMOS" }, d1, 0);
             var position3 = new CalcPositionDatum(tickerDayData3, "RUS");
             position3.Value = 16775.6;
-            position3.ValueDiff = 85;
-            position3.ValueDiffTotal = -887.4;
+            position3.Profit = 85;
+            position3.ProfitTotal = -887.4;
 
             var tickerDayData4 = new TickerDayDatum(new Ticker() { Name = "FXUS" }, d1, 0);
             var position4 = new CalcPositionDatum(tickerDayData4, "US");
             position4.Value = 8459.6;
-            position4.ValueDiff = 234;
-            position4.ValueDiffTotal = -568.4;
+            position4.Profit = 234;
+            position4.ProfitTotal = -568.4;
 
 
 
@@ -383,26 +383,26 @@ namespace Tests {
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "VTBX" }, d1, 0);
             var position1 = new CalcPositionDatum(tickerDayData1, "RUS");
             position1.Value = 17670;
-            position1.ValueDiff = 0;
-            position1.ValueDiffTotal = 160;
+            position1.Profit = 0;
+            position1.ProfitTotal = 160;
 
             var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "TSPX" }, d1, 0);
             var position2 = new CalcPositionDatum(tickerDayData2);
             position2.Value = 18678;
-            position2.ValueDiff = -366;
-            position2.ValueDiffTotal = 72;
+            position2.Profit = -366;
+            position2.ProfitTotal = 72;
 
             var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "TMOS" }, d1, 0);
             var position3 = new CalcPositionDatum(tickerDayData3, "RUS");
             position3.Value = 16775.6;
-            position3.ValueDiff = 85;
-            position3.ValueDiffTotal = -887.4;
+            position3.Profit = 85;
+            position3.ProfitTotal = -887.4;
 
             var tickerDayData4 = new TickerDayDatum(new Ticker() { Name = "FXUS" }, d1, 0);
             var position4 = new CalcPositionDatum(tickerDayData4, "US");
             position4.Value = 8459.6;
-            position4.ValueDiff = 234;
-            position4.ValueDiffTotal = -568.4;
+            position4.Profit = 234;
+            position4.ProfitTotal = -568.4;
 
 
             var list = new List<CalcPositionDatum>();
