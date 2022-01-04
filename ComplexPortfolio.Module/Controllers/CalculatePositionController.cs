@@ -86,13 +86,15 @@ namespace ComplexPortfolio.Module.Controllers {
             if(ticker.DayData != null && ticker.DayData.Count > 0) {
                 var maxDate = ticker.DayData.Max(x => x.Date);
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
-                //if(Ticker.Currency != null) {
-                //    _lastCurrencyPrice = Ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
-                //    _lastRubPrice = lastPrice * _lastCurrencyPrice;
-                //} else {
-                //    _lastRubPrice = lastPrice;
-                //}
+                double _lastRubPrice = 0;
+                if(ticker.Currency != null) {
+                    var _lastCurrencyPrice = ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
+                    _lastRubPrice = lastPrice * _lastCurrencyPrice;
+                } else {
+                    _lastRubPrice = lastPrice;
+                }
                 summary.LastPrice = lastPrice;
+                summary.LastPriceRub = _lastRubPrice;
             }
             return summary;
         }

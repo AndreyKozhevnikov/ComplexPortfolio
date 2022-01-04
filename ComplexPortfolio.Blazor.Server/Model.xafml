@@ -40,6 +40,7 @@
         <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
         <ColumnInfo Id="Last Price" PropertyName="Summary.LastPrice" IsNewNode="True" />
+        <ColumnInfo Id="Last Price Rub" PropertyName="Summary.LastPriceRub" IsNewNode="True" />
         <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
       </Columns>

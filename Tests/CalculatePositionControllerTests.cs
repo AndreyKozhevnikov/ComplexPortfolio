@@ -339,5 +339,60 @@ namespace Tests {
             //assert
             Assert.AreEqual(16, res.LastPrice);
         }
+
+        [Test]
+        public void CalculatePositionSummary_LastPriceRub() {
+            //arrange
+            var cnt = new CalculatePositionController();
+
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<TickerDayDatum>();
+            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 25);
+            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 35);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+
+
+            var currency = new Mock<ITicker>();
+            var myCurrencyDataList = new List<TickerDayDatum>();
+            var dc1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 10);
+            var dc2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 20);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            currency.Setup(x => x.DayData).Returns(myCurrencyDataList);
+            ticker.Setup(x => x.Currency).Returns(currency.Object);
+
+            var lst = new List<Transaction>();
+            //act
+            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            //assert
+            Assert.AreEqual(700, res.LastPriceRub);
+        }
+
+        [Test]
+        public void CalculatePositionSummary_LastPriceRub_NoCurrency() {
+            //arrange
+            var cnt = new CalculatePositionController();
+
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<TickerDayDatum>();
+            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 45);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+
+
+          
+
+            var lst = new List<Transaction>();
+            //act
+            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            //assert
+            Assert.AreEqual(45, res.LastPriceRub);
+        }
     }
 }

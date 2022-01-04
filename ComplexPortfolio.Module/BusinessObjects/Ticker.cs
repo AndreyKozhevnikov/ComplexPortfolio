@@ -12,6 +12,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
     public interface ITicker {
         List<TickerDayDatum> DayData { get; }
+        ITicker Currency{ get; }
     }
 
     [DebuggerDisplay("Name - {Name}")]
@@ -65,5 +66,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
         List<TickerDayDatum> ITicker.DayData => DayData.ToList();
+
+        ITicker ITicker.Currency => Currency;
     }
 }
