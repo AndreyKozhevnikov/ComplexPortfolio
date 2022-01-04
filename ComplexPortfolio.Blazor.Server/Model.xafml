@@ -39,15 +39,13 @@
       <Columns>
         <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
-        <ColumnInfo Id="LastPrice" Index="6" />
-        <ColumnInfo Id="LastPriceRub" Index="7" />
+        <ColumnInfo Id="Last Price" PropertyName="Summary.LastPrice" IsNewNode="True" />
         <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">
       <Columns>
-        <ColumnInfo Id="LastPrice" Index="5" />
         <ColumnInfo Id="SharesCount" PropertyName="Summary.SharesCount" IsNewNode="True" />
         <ColumnInfo Id="Summary" Removed="True" />
       </Columns>

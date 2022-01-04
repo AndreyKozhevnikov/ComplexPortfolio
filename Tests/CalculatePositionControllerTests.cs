@@ -62,7 +62,7 @@ namespace Tests {
             pos.Ticker = ticker;
             var trans1 = new Transaction(new DateTime(2021, 11, 16), 1, 98, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2021, 11, 18), 2, 117, TransactionDirectionEnum.Buy);
-            var trans3 = new Transaction(new DateTime(2021, 11, 19), 1, 134, TransactionDirectionEnum.Sell );
+            var trans3 = new Transaction(new DateTime(2021, 11, 19), 1, 134, TransactionDirectionEnum.Sell);
             var trans4 = new Transaction(new DateTime(2021, 11, 20), 2, 138, TransactionDirectionEnum.Sell);
             pos.Transactions.Add(trans1);
             pos.Transactions.Add(trans2);
@@ -86,7 +86,7 @@ namespace Tests {
             cnt.CalculatePosition(pos, osMock.Object);
             //assert
             Assert.AreEqual(6, pos.CalculateData.Count);
-            
+
             Assert.AreEqual(1, pos.CalculateData[0].SharesCount);
             Assert.AreEqual(100, pos.CalculateData[0].Value);
             Assert.AreEqual(2, pos.CalculateData[0].Profit);
@@ -274,7 +274,7 @@ namespace Tests {
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act
-            cnt.PopulateCalcDataWithTransactionsData(calcData, lst,1);
+            cnt.PopulateCalcDataWithTransactionsData(calcData, lst, 1);
             //assert
             Assert.AreEqual(20145, calcData.Value);
             Assert.AreEqual(9, calcData.SharesCount);
@@ -305,18 +305,39 @@ namespace Tests {
         public void CalculatePositionSummary_SharesCount() {
             //arrange
             var cnt = new CalculatePositionController();
-           
+
             var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2020, 8, 18), 1, 3195, TransactionDirectionEnum.Sell);
             var lst = new List<Transaction>();
             lst.Add(trans1);
             lst.Add(trans2);
             //act
-            var res = cnt.CalculatePositionSummary(lst);
+            var res = cnt.CalculatePositionSummary(lst, new Mock<ITicker>().Object);
             //assert
             Assert.AreEqual(4, res.SharesCount);
+        }
 
+        [Test]
+        public void CalculatePositionSummary_LastPrice() {
+            //arrange
+            var cnt = new CalculatePositionController();
 
+            var ticker = new Mock<ITicker>();
+            var myDayDataList = new List<TickerDayDatum>();
+            var d1 = new TickerDayDatum(null,new DateTime(2022,1,1),15);
+            var d2 = new TickerDayDatum(null,new DateTime(2022,1,2),16);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+            //var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
+            //var trans2 = new Transaction(new DateTime(2020, 8, 18), 1, 3195, TransactionDirectionEnum.Sell);
+            var lst = new List<Transaction>();
+            //lst.Add(trans1);
+            //lst.Add(trans2);
+            //act
+            var res = cnt.CalculatePositionSummary(lst,ticker.Object);
+            //assert
+            Assert.AreEqual(16, res.LastPrice);
         }
     }
 }

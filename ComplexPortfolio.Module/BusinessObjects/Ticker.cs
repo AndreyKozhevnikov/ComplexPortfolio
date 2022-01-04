@@ -9,9 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+
+    public interface ITicker {
+        List<TickerDayDatum> DayData { get; }
+    }
+
     [DebuggerDisplay("Name - {Name}")]
     [DefaultClassOptions]
-    public class Ticker : BaseObject {
+    public class Ticker : BaseObject, ITicker {
         public Ticker(Session session) : base(session) {
         }
 
@@ -48,7 +53,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
-        
+
         public bool IsCurrency {
             get => isCurrency;
             set => SetPropertyValue(nameof(IsCurrency), ref isCurrency, value);
@@ -59,5 +64,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => SetPropertyValue(nameof(Currency), ref _currency, value);
         }
 
+        List<TickerDayDatum> ITicker.DayData => DayData.ToList();
     }
 }

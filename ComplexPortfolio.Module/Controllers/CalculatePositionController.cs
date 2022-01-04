@@ -70,20 +70,31 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
             }
             position.CalculateData = calcDataList;
-            position.Summary = CalculatePositionSummary(position.Transactions.ToList());
+            position.Summary = CalculatePositionSummary(position.Transactions.ToList(), position.Ticker);
         }
 
-        public PositionSummary CalculatePositionSummary(List<Transaction> transactions) {
-            var sum = new PositionSummary();
+        public PositionSummary CalculatePositionSummary(List<Transaction> transactions, ITicker ticker) {
+            var summary = new PositionSummary();
 
             foreach(var trans in transactions) {
                 if(trans.Direction == TransactionDirectionEnum.Buy) {
-                    sum.SharesCount += trans.Amount;
+                    summary.SharesCount += trans.Amount;
                 } else {
-                    sum.SharesCount -= trans.Amount;
+                    summary.SharesCount -= trans.Amount;
                 }
             }
-            return sum;
+            if(ticker.DayData != null && ticker.DayData.Count > 0) {
+                var maxDate = ticker.DayData.Max(x => x.Date);
+                var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
+                //if(Ticker.Currency != null) {
+                //    _lastCurrencyPrice = Ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
+                //    _lastRubPrice = lastPrice * _lastCurrencyPrice;
+                //} else {
+                //    _lastRubPrice = lastPrice;
+                //}
+                summary.LastPrice = lastPrice;
+            }
+            return summary;
         }
 
         public void PopulateCalcDataWithTransactionsData(CalcPositionDatum dayData, List<Transaction> transactions, double currencyValue) {
