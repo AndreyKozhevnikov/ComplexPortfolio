@@ -8,27 +8,6 @@
     </ActionToContainerMapping>
   </ActionDesign>
   <BOModel>
-    <Class Name="ComplexPortfolio.Module.BusinessObjects.Portfolio">
-      <OwnMembers>
-        <Member Name="CurrentValue" DisplayFormat="{0:N0}" EditMask="#,###,##0" />
-        <Member Name="ValueChange" DisplayFormat="{0:N0}" />
-        <Member Name="ValueChangePercent" DisplayFormat="{0:P1}" />
-      </OwnMembers>
-    </Class>
-    <Class Name="ComplexPortfolio.Module.BusinessObjects.Position">
-      <OwnMembers>
-        <Member Name="AveragePrice" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
-        <Member Name="AveragePriceRub" DisplayFormat="{0:#,###,##0.##}" EditMask="#,###,##0.##" />
-        <Member Name="CurrentValue" DisplayFormat="{0:N0}" />
-        <Member Name="CurrentValueRub" DisplayFormat="{0:N0}" />
-        <Member Name="InputValue" DisplayFormat="{0:N0}" EditMask="#,###,##0.##" />
-        <Member Name="InputValueRub" DisplayFormat="{0:N0}" />
-        <Member Name="ValueChangePercent" DisplayFormat="{0:P0}" />
-        <Member Name="ValueChangePercentRub" DisplayFormat="{0:P0}" />
-        <Member Name="ValueChangeSum" DisplayFormat="{0:N0}" />
-        <Member Name="ValueChangeSumRub" DisplayFormat="{0:N0}" />
-      </OwnMembers>
-    </Class>
     <Class Name="ComplexPortfolio.Module.BusinessObjects.Transaction">
       <OwnMembers>
         <Member Name="Position" LookupProperty="Comment" />
@@ -62,21 +41,15 @@
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
         <ColumnInfo Id="LastPrice" Index="6" />
         <ColumnInfo Id="LastPriceRub" Index="7" />
-        <ColumnInfo Id="InputValue" Index="8" />
-        <ColumnInfo Id="InputValueRub" Index="9" />
-        <ColumnInfo Id="CurrentValue" SortIndex="0" SortOrder="Descending" Index="10" />
-        <ColumnInfo Id="CurrentValueRub" Index="11" />
-        <ColumnInfo Id="ValueChangeSum" Index="13" />
-        <ColumnInfo Id="ValueChangeSumRub" Index="14" />
-        <ColumnInfo Id="ValueChangePercent" Index="15" />
-        <ColumnInfo Id="ValueChangePercentRub" Index="16" />
+        <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" IsNewNode="True" />
+        <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">
       <Columns>
         <ColumnInfo Id="LastPrice" Index="5" />
-        <ColumnInfo Id="InputValue" Index="6" />
-        <ColumnInfo Id="CurrentValue" Index="7" SortIndex="0" SortOrder="Descending" />
+        <ColumnInfo Id="SharesCount" PropertyName="Summary.SharesCount" IsNewNode="True" />
+        <ColumnInfo Id="Summary" Removed="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_Transactions_ListView">

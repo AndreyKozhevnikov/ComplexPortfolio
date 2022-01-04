@@ -38,7 +38,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 calcData.Label = position.Label;
                 var startSharesCount = currentSharesCount;
                 var transactions = position.Transactions.Where(x => x.Date == calcData.Date).ToList();
-               
+
                 var transactionInShares = 0;
                 var transactionOutShares = 0;
                 double transactionProfit = 0;
@@ -67,9 +67,23 @@ namespace ComplexPortfolio.Module.Controllers {
                     calcData.Value = calcData.Value * currencyValue;
                     calcData.Profit = calcData.Profit * currencyValue;
                     calcData.ProfitTotal = calcData.ProfitTotal * currencyValue;
-                } 
+                }
             }
             position.CalculateData = calcDataList;
+            position.Summary = CalculatePositionSummary(position.Transactions.ToList());
+        }
+
+        public PositionSummary CalculatePositionSummary(List<Transaction> transactions) {
+            var sum = new PositionSummary();
+
+            foreach(var trans in transactions) {
+                if(trans.Direction == TransactionDirectionEnum.Buy) {
+                    sum.SharesCount += trans.Amount;
+                } else {
+                    sum.SharesCount -= trans.Amount;
+                }
+            }
+            return sum;
         }
 
         public void PopulateCalcDataWithTransactionsData(CalcPositionDatum dayData, List<Transaction> transactions, double currencyValue) {

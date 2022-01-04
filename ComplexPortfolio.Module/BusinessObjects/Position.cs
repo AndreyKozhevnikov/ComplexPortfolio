@@ -18,7 +18,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
     [XafDefaultProperty(nameof(Comment))]
     public class Position : BaseObject {
         public Position(Session session) : base(session) {
-
+            this.Summary = new PositionSummary();
         }
         protected override void OnChanged(string propertyName, object oldValue, object newValue) {
             base.OnChanged(propertyName, oldValue, newValue);
@@ -136,6 +136,11 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             _isLastPriceCalculated = true;
         }
 
-        public List<CalcPositionDatum> CalculateData { get => calculateData; set => SetPropertyValue(nameof(CalculateData), ref calculateData, value); }
+        public List<CalcPositionDatum> CalculateData {
+            get => calculateData; 
+            set => SetPropertyValue(nameof(CalculateData), ref calculateData, value);
+        }
+        [NonPersistent]
+        public PositionSummary Summary{ get; set; }
     }
 }

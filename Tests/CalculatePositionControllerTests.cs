@@ -301,5 +301,22 @@ namespace Tests {
             Assert.AreEqual(7, calcData.SharesCount);
 
         }
+        [Test]
+        public void CalculatePositionSummary_SharesCount() {
+            //arrange
+            var cnt = new CalculatePositionController();
+           
+            var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
+            var trans2 = new Transaction(new DateTime(2020, 8, 18), 1, 3195, TransactionDirectionEnum.Sell);
+            var lst = new List<Transaction>();
+            lst.Add(trans1);
+            lst.Add(trans2);
+            //act
+            var res = cnt.CalculatePositionSummary(lst);
+            //assert
+            Assert.AreEqual(4, res.SharesCount);
+
+
+        }
     }
 }

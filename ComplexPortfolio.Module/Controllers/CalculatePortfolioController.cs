@@ -17,6 +17,17 @@ namespace ComplexPortfolio.Module.Controllers {
             var exportToExcelAction = new SimpleAction(this, "ExportToExcel", PredefinedCategory.Edit);
             exportToExcelAction.SelectionDependencyType = SelectionDependencyType.RequireMultipleObjects;
             exportToExcelAction.Execute += ExportToExcelAction_Execute;
+
+            var calcPosition = new SimpleAction(this, "calcPosition", PredefinedCategory.Edit);
+            calcPosition.SelectionDependencyType = SelectionDependencyType.RequireMultipleObjects;
+            calcPosition.Execute += CalcPosition_Execute;
+        }
+
+        private void CalcPosition_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var os = Application.CreateObjectSpace(typeof(Portfolio));
+            foreach(var port in View.SelectedObjects) {
+                CalculatePositionsForPortfolio((Portfolio)port, os);
+            }
         }
 
         void CalculatePositionsForPortfolio(Portfolio port, IObjectSpace os) {
