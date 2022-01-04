@@ -37,19 +37,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Position>(nameof(Positions));
             }
         }
-
-        [PersistentAlias("Positions.Sum(CurrentValueRub)")]
-        public double CurrentValue {
-            get { return Convert.ToDouble (EvaluateAlias(nameof(CurrentValue))); }
-        }
-
-        [PersistentAlias("Positions.Sum(ValueChangeSumRub)")]
-        public double ValueChange {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChange))); }
-        }
-        [PersistentAlias("ValueChange/(CurrentValue-ValueChange)")]
-        public double ValueChangePercent {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercent))); }
-        }
+       
     }
 }

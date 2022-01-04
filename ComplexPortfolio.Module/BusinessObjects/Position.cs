@@ -24,7 +24,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             base.OnChanged(propertyName, oldValue, newValue);
             if(propertyName == nameof(Position.Ticker) && newValue != null) {
                 ((Ticker)newValue).Changed += Position_Changed;
-                CalculateLastPrice(true);
+                CalculateLastPrice();
             }
 
         }
@@ -32,13 +32,13 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         private void Position_Changed(object sender, ObjectChangeEventArgs e) {
             if(e.PropertyName == nameof(Ticker.DayData)) {
                 ((XPCollection<TickerDayDatum>)e.NewValue).CollectionChanged += Position_CollectionChanged;
-                CalculateLastPrice(true);
+                CalculateLastPrice();
             }
 
         }
 
         private void Position_CollectionChanged(object sender, XPCollectionChangedEventArgs e) {
-            CalculateLastPrice(true);
+            CalculateLastPrice();
         }
 
         public Position() {
@@ -95,69 +95,14 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => label;
             set => SetPropertyValue(nameof(Label), ref label, value);
         }
-        [PersistentAlias("Transactions.Sum(Amount)")]
-        public int SharesCount {
-            get { return Convert.ToInt32(EvaluateAlias(nameof(SharesCount))); }
-        }
-        [PersistentAlias("Transactions.Sum(Amount*Price)/Transactions.Sum(Amount)")]
-        public double AveragePrice {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(AveragePrice))); }
-        }
-        // [PersistentAlias("AveragePrice*LastPriceRub")]
-        public double AveragePriceRub {
-            get {
-                if(Ticker == null) {
-                    return 0;
-                }
-                if(Ticker.Currency != null) {
-                    return AveragePrice * _lastCurrencyPrice;
-                } else {
-                    return AveragePrice;
-                }
-            }
-        }
-
-        [PersistentAlias("LastPrice*SharesCount")]
-        public double CurrentValue {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValue))); }
-        }
-
-        [PersistentAlias("LastPriceRub*SharesCount")]
-        public double CurrentValueRub {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(CurrentValueRub))); }
-        }
-        [PersistentAlias("AveragePrice*SharesCount")]
-        public double InputValue {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(InputValue))); }
-        }
-        [PersistentAlias("AveragePriceRub*SharesCount")]
-        public double InputValueRub {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(InputValueRub))); }
-        }
-
-        [PersistentAlias("CurrentValue - InputValue")]
-        public double ValueChangeSum {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangeSum))); }
-        }
-        [PersistentAlias("CurrentValueRub - InputValueRub")]
-        public double ValueChangeSumRub {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangeSumRub))); }
-        }
-        [PersistentAlias("ValueChangeSum/InputValue")]
-        public double ValueChangePercent {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercent))); }
-        }
-        [PersistentAlias("ValueChangeSumRub/InputValueRub")]
-        public double ValueChangePercentRub {
-            get { return Convert.ToDouble(EvaluateAlias(nameof(ValueChangePercentRub))); }
-        }
+     
 
 
         double _lastPrice;
         bool _isLastPriceCalculated = false;
         public double LastPrice {
             get {
-                CalculateLastPrice(true);
+                CalculateLastPrice();
                 return _lastPrice;
 
             }
@@ -168,12 +113,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         double _lastCurrencyPrice;
         public double LastPriceRub {
             get {
-                CalculateLastPrice(true);
+                CalculateLastPrice();
                 return _lastRubPrice;
             }
         }
-        void CalculateLastPrice(bool ignore) {
-            if(_isLastPriceCalculated && !ignore) {
+        void CalculateLastPrice() {
+            if(_isLastPriceCalculated ) {
                 return;
             }
             if(ticker == null || ticker.DayData == null || ticker.DayData.Count == 0) {
