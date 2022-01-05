@@ -39,14 +39,17 @@
       <Columns>
         <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
-        <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n0}" IsNewNode="True" />
-        <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" IsNewNode="True" />
-        <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
-        <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" IsNewNode="True" />
-        <ColumnInfo Id="Last Price" PropertyName="Summary.LastPrice" IsNewNode="True" />
-        <ColumnInfo Id="Last Price Rub" PropertyName="Summary.LastPriceRub" IsNewNode="True" />
-        <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" IsNewNode="True" />
+        <ColumnInfo Id="Last Price" PropertyName="Summary.LastPrice" Index="3" IsNewNode="True" />
+        <ColumnInfo Id="Last Price Rub" PropertyName="Summary.LastPriceRub" Index="4" IsNewNode="True" />
+        <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n0}" Index="5" IsNewNode="True" />
+        <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" Index="6" IsNewNode="True" />
+        <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" Index="7" IsNewNode="True" />
+        <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" Index="8" IsNewNode="True" />
+        <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" Index="9" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
+        <ColumnInfo Id="Total Profit5" PropertyName="Summary.TotalProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
+        <ColumnInfo Id="Virtual Profit" PropertyName="Summary.VirtualProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
+        <ColumnInfo Id="Virtual Profit Percent" PropertyName="Summary.VirtualProfitPercent" DisplayFormat="{0:p0}" IsNewNode="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">

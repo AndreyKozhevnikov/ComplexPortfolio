@@ -517,41 +517,13 @@ namespace Tests {
             Assert.AreEqual(7, res.SharesCount);
             Assert.AreEqual(560, res.CurrentValue);
             Assert.AreEqual(10, res.AveragePrice);
-        }
-
-
-        [Test]
-        public void CalculatePositionSummary_FixedProfit() {
-            //arrange
-            var cnt = new CalculatePositionController();
-
-            var ticker = new Mock<ITicker>();
-
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
-            myDayDataList.Add(d1);
-            myDayDataList.Add(d2);
-            ticker.Setup(x => x.DayData).Returns(myDayDataList);
-
-
-
-
-            var lst = new List<Transaction>();
-            var trans1 = new Transaction(new DateTime(2020, 8, 18), 10, 10, TransactionDirectionEnum.Buy);
-            var trans2 = new Transaction(new DateTime(2020, 8, 19), 5, 15, TransactionDirectionEnum.Sell);
-            var trans3 = new Transaction(new DateTime(2020, 8, 20), 5, 20, TransactionDirectionEnum.Buy);
-            var trans4 = new Transaction(new DateTime(2020, 8, 21), 8, 5, TransactionDirectionEnum.Sell);
-            var trans5 = new Transaction(new DateTime(2020, 8, 21), 5, 6, TransactionDirectionEnum.Buy);
-            lst.Add(trans1);
-            lst.Add(trans2);
-            lst.Add(trans3);
-            lst.Add(trans4);
-            lst.Add(trans5);
-            //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
-            //assert
             Assert.AreEqual(-45, res.FixedProfit);
+            Assert.AreEqual(490, res.VirtualProfit);
+            Assert.AreEqual(7, res.VirtualProfitPercent);
+            Assert.AreEqual(445, res.TotalProfit);
         }
+
+
+     
     }
 }

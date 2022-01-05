@@ -11,6 +11,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public double InputValue { get; set; }
         public double FixedProfit { get; set; }
         public double AveragePrice { get; set; }
+        public double VirtualProfit{ get; set; }
+        public double VirtualProfitPercent{ get; set; }
+        public double TotalProfit { get; set; }
 
     }
 }
