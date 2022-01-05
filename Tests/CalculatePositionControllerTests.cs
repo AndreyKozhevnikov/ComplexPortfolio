@@ -516,6 +516,7 @@ namespace Tests {
             Assert.AreEqual(70, res.InputValue);
             Assert.AreEqual(7, res.SharesCount);
             Assert.AreEqual(560, res.CurrentValue);
+            Assert.AreEqual(10, res.AveragePrice);
         }
 
 

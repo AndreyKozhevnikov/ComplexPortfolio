@@ -39,6 +39,7 @@
       <Columns>
         <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
+        <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n0}" IsNewNode="True" />
         <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" IsNewNode="True" />
         <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
         <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" IsNewNode="True" />

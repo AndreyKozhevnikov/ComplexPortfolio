@@ -107,6 +107,7 @@ namespace ComplexPortfolio.Module.Controllers {
             }
             summary.SharesCount = inputPosition.Sum(x => x.Item1);
             summary.InputValue = inputPosition.Sum(x => x.Item1 * x.Item2);
+            summary.AveragePrice = summary.InputValue / summary.SharesCount;
             summary.FixedProfit = fixedProfit;
 
             if(ticker.DayData != null && ticker.DayData.Count > 0) {
