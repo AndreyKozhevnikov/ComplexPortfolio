@@ -70,7 +70,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
             }
             position.CalculateData = calcDataList;
-            position.Summary = CalculatePositionSummary(position.Transactions.OrderBy(x=>x.Date).ToList(), position.Ticker);
+            position.Summary = CalculatePositionSummary(position.Transactions.OrderBy(x => x.Date).ToList(), position.Ticker);
         }
 
         public PositionSummary CalculatePositionSummary(List<Transaction> transactions, ITicker ticker) {
@@ -78,25 +78,28 @@ namespace ComplexPortfolio.Module.Controllers {
 
 
             var inputPosition = new List<Tuple<int, double>>();
-
+            double fixedProfit = 0;
             foreach(var trans in transactions) {
                 switch(trans.Direction) {
                     case TransactionDirectionEnum.Buy:
                         inputPosition.Add(new Tuple<int, double>(trans.Amount, trans.Price));
                         break;
                     case TransactionDirectionEnum.Sell:
-                        var currentAmount = trans.Amount;
-                        while(currentAmount > 0) {
+                        var transAmount = trans.Amount;
+                        while(transAmount > 0) {
                             var firstInput = inputPosition[0];
                             var amount = firstInput.Item1;
                             var price = firstInput.Item2;
-                            if(currentAmount >= amount) {
+                            if(transAmount >= amount) {
                                 inputPosition.Remove(firstInput);
-                                currentAmount -= amount;
+                                transAmount -= amount;
+                                fixedProfit += (amount * (trans.Price - price));
                             } else {
-                                var newAmount = amount - currentAmount;
+                                var newAmount = amount - transAmount;
                                 inputPosition[0] = new Tuple<int, double>(newAmount, price);
-                                currentAmount = 0;
+                                fixedProfit += (transAmount * (trans.Price - price));
+                                transAmount = 0;
+
                             }
                         }
                         break;
@@ -104,6 +107,8 @@ namespace ComplexPortfolio.Module.Controllers {
             }
             summary.SharesCount = inputPosition.Sum(x => x.Item1);
             summary.InputValue = inputPosition.Sum(x => x.Item1 * x.Item2);
+            summary.FixedProfit = fixedProfit;
+
             if(ticker.DayData != null && ticker.DayData.Count > 0) {
                 var maxDate = ticker.DayData.Max(x => x.Date);
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;

@@ -9,5 +9,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public double LastPriceRub { get; set; }
         public double CurrentValue { get; set; }
         public double InputValue { get; set; }
+        public double FixedProfit { get; set; }
+
     }
 }

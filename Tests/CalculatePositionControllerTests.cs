@@ -550,7 +550,7 @@ namespace Tests {
             //act
             var res = cnt.CalculatePositionSummary(lst, ticker.Object);
             //assert
-//            Assert.AreEqual(-70, res.FixedProfit);
+            Assert.AreEqual(-45, res.FixedProfit);
         }
     }
 }
