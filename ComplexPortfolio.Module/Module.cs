@@ -31,7 +31,16 @@ namespace ComplexPortfolio.Module {
         }
         public override void Setup(XafApplication application) {
             base.Setup(application);
+            application.ObjectSpaceCreated += Application_ObjectSpaceCreated;
             // Manage various aspects of the application UI and behavior at the module level.
+        }
+        private void Application_ObjectSpaceCreated(object sender, ObjectSpaceCreatedEventArgs e) {
+            CompositeObjectSpace compositeObjectSpace = e.ObjectSpace as CompositeObjectSpace;
+            if(compositeObjectSpace != null) {
+                if(!(compositeObjectSpace.Owner is CompositeObjectSpace)) {
+                    compositeObjectSpace.PopulateAdditionalObjectSpaces((XafApplication)sender);
+                }
+            }
         }
         public override void CustomizeTypesInfo(ITypesInfo typesInfo) {
             base.CustomizeTypesInfo(typesInfo);

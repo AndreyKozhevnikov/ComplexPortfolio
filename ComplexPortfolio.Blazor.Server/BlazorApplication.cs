@@ -13,6 +13,7 @@ namespace ComplexPortfolio.Blazor.Server {
     public partial class ComplexPortfolioBlazorApplication : BlazorApplication {
         public ComplexPortfolioBlazorApplication() {
             InitializeComponent();
+            
         }
         protected override void OnSetupStarted() {
             base.OnSetupStarted();

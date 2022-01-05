@@ -70,19 +70,40 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
             }
             position.CalculateData = calcDataList;
-            position.Summary = CalculatePositionSummary(position.Transactions.ToList(), position.Ticker);
+            position.Summary = CalculatePositionSummary(position.Transactions.OrderBy(x=>x.Date).ToList(), position.Ticker);
         }
 
         public PositionSummary CalculatePositionSummary(List<Transaction> transactions, ITicker ticker) {
             var summary = new PositionSummary();
 
+
+            var inputPosition = new List<Tuple<int, double>>();
+
             foreach(var trans in transactions) {
-                if(trans.Direction == TransactionDirectionEnum.Buy) {
-                    summary.SharesCount += trans.Amount;
-                } else {
-                    summary.SharesCount -= trans.Amount;
+                switch(trans.Direction) {
+                    case TransactionDirectionEnum.Buy:
+                        inputPosition.Add(new Tuple<int, double>(trans.Amount, trans.Price));
+                        break;
+                    case TransactionDirectionEnum.Sell:
+                        var currentAmount = trans.Amount;
+                        while(currentAmount > 0) {
+                            var firstInput = inputPosition[0];
+                            var amount = firstInput.Item1;
+                            var price = firstInput.Item2;
+                            if(currentAmount >= amount) {
+                                inputPosition.Remove(firstInput);
+                                currentAmount -= amount;
+                            } else {
+                                var newAmount = amount - currentAmount;
+                                inputPosition[0] = new Tuple<int, double>(newAmount, price);
+                                currentAmount = 0;
+                            }
+                        }
+                        break;
                 }
             }
+            summary.SharesCount = inputPosition.Sum(x => x.Item1);
+            summary.InputValue = inputPosition.Sum(x => x.Item1 * x.Item2);
             if(ticker.DayData != null && ticker.DayData.Count > 0) {
                 var maxDate = ticker.DayData.Max(x => x.Date);
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
