@@ -95,6 +95,7 @@ namespace ComplexPortfolio.Module.Controllers {
                 }
                 summary.LastPrice = lastPrice;
                 summary.LastPriceRub = _lastRubPrice;
+                summary.CurrentValue = _lastRubPrice * summary.SharesCount;
             }
             return summary;
         }

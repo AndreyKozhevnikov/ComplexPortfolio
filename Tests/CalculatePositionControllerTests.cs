@@ -394,5 +394,32 @@ namespace Tests {
             //assert
             Assert.AreEqual(45, res.LastPriceRub);
         }
+        [Test]
+        public void CalculatePositionSummary_CurrentValue() {
+            //arrange
+            var cnt = new CalculatePositionController();
+
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<TickerDayDatum>();
+            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+
+
+
+
+            var lst = new List<Transaction>();
+            var trans1 = new Transaction(new DateTime(2020, 8, 18), 15, 3190, TransactionDirectionEnum.Buy);
+            var trans2 = new Transaction(new DateTime(2020, 8, 18), 11, 3195, TransactionDirectionEnum.Sell);
+            lst.Add(trans1);
+            lst.Add(trans2);
+            //act
+            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            //assert
+            Assert.AreEqual(320, res.CurrentValue);
+        }
     }
 }
