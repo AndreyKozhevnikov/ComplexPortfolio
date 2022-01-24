@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
 
     public interface ITicker {
-        List<TickerDayDatum> DayData { get; }
+        List<ITickerDayDatum> DayData { get; }
         ITicker Currency{ get; }
+        string Name{ get; }
     }
 
     [DebuggerDisplay("Name - {Name}")]
@@ -65,7 +66,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => SetPropertyValue(nameof(Currency), ref _currency, value);
         }
 
-        List<TickerDayDatum> ITicker.DayData => DayData.ToList();
+        List<ITickerDayDatum> ITicker.DayData => DayData.Cast<ITickerDayDatum>().ToList();
 
         ITicker ITicker.Currency => Currency;
     }

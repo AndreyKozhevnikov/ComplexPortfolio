@@ -9,20 +9,31 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+
+    public interface ITickerDayDatum {
+        double Close{ get; set; }
+        DateTime Date{ get; set; }
+
+        ITicker Ticker{ get;  }
+    }
+
     [DefaultClassOptions]
     [DebuggerDisplay("Ticker-{Ticker.Name},Date-{Date}")]
-    public class TickerDayDatum : BaseObject {
+    public class TickerDayDatum : BaseObject, ITickerDayDatum {
         public TickerDayDatum(Session session) : base(session) {
         }
 
-        public TickerDayDatum() {
+        public TickerDayDatum() { //todo: only for tests? remove.
 
         }
+        public TickerDayDatum(DateTime _date, double _close) {
 
-        public TickerDayDatum(Ticker _ticker, DateTime _date, double _close) {
-            this.ticker = _ticker;
             this.date = _date;
             this.close = _close;
+        }
+        public TickerDayDatum(Ticker _ticker, DateTime _date, double _close) : this(_date, _close) {
+            this.ticker = _ticker;
+
         }
 
         double volume;
@@ -70,5 +81,6 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => volume;
             set => SetPropertyValue(nameof(Volume), ref volume, value);
         }
+        ITicker ITickerDayDatum.Ticker { get => Ticker; }
     }
 }

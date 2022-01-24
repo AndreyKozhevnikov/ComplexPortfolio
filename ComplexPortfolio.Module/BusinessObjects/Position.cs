@@ -12,11 +12,19 @@ using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
 
+    public interface IPosition {
+        ITicker Ticker{ get; }
+        List<Transaction> Transactions{ get; }
+        string Label{ get; }
+        List<CalcPositionDatum> CalculateData{ get; set; }
+        PositionSummary Summary { get; set; }
+    }
+
     [DefaultClassOptions]
     [DebuggerDisplay("Ticker - {Ticker.Name}")]
     [Appearance("RedPriceObject", AppearanceItemType = "ViewItem", TargetItems = "Ticker", Criteria = "!AllowEdit", Context = "DetailView", Enabled = false)]
     [XafDefaultProperty(nameof(Comment))]
-    public class Position : BaseObject {
+    public class Position : BaseObject, IPosition {
         public Position(Session session) : base(session) {
             this.Summary = new PositionSummary();
         }
@@ -87,5 +95,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
         [NonPersistent]
         public PositionSummary Summary{ get; set; }
+
+        ITicker IPosition.Ticker => Ticker;
+
+        List<Transaction> IPosition.Transactions => Transactions.ToList();
     }
 }

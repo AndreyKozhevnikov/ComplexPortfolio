@@ -17,11 +17,11 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         private void AddDayDataAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            CalculatePosition(this.ViewCurrentObject, this.ObjectSpace);
+            CalculatePosition(this.ViewCurrentObject);
         }
 
-        public void CalculatePosition(Position position, IObjectSpace objectSpace) {
-            var dayDataList = objectSpace.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", position.Ticker.Name)).ToList();
+        public List<CalcPositionDatum> CalculatePositionData(IPosition position) {
+            var dayDataList = position.Ticker.DayData;
 
             var firstTransactionDay = position.Transactions.Min(x => x.Date);
 
@@ -30,10 +30,6 @@ namespace ComplexPortfolio.Module.Controllers {
             int currentSharesCount = 0;
             double currentProfitTotal = 0;
             double prevPrice = 0;
-            List<TickerDayDatum> currencyDayDataList = null;
-            if(position.Ticker.Currency != null) {
-                currencyDayDataList = objectSpace.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", position.Ticker.Currency.Name)).ToList();
-            }
             foreach(var calcData in calcDataList) {
                 calcData.Label = position.Label;
                 var startSharesCount = currentSharesCount;
@@ -63,17 +59,26 @@ namespace ComplexPortfolio.Module.Controllers {
                 prevPrice = calcData.Price;
                 double currencyValue;
                 if(position.Ticker.Currency != null) {
-                    currencyValue = currencyDayDataList.Where(x => x.Date == calcData.Date).First().Close;
+                    currencyValue = position.Ticker.Currency.DayData.Where(x => x.Date == calcData.Date).First().Close;
                     calcData.Value = calcData.Value * currencyValue;
                     calcData.Profit = calcData.Profit * currencyValue;
                     calcData.ProfitTotal = calcData.ProfitTotal * currencyValue;
                 }
             }
-            position.CalculateData = calcDataList;
-            position.Summary = CalculatePositionSummary(position.Transactions.OrderBy(x => x.Date).ToList(), position.Ticker);
+            return calcDataList;
         }
 
-        public PositionSummary CalculatePositionSummary(List<Transaction> transactions, ITicker ticker) {
+
+        public void CalculatePosition(IPosition position) {
+            position.CalculateData = CalculatePositionData(position);
+            position.Summary = CalculatePositionSummary(position);
+        }
+
+        public PositionSummary CalculatePositionSummary(IPosition position) {
+
+            var transactions = position.Transactions.OrderBy(x => x.Date).ToList();
+            var ticker = position.Ticker;
+
             var summary = new PositionSummary();
 
 
@@ -105,28 +110,32 @@ namespace ComplexPortfolio.Module.Controllers {
                         break;
                 }
             }
+            summary.FixedProfit = fixedProfit;
             summary.SharesCount = inputPosition.Sum(x => x.Item1);
             summary.InputValue = inputPosition.Sum(x => x.Item1 * x.Item2);
             summary.AveragePrice = summary.InputValue / summary.SharesCount;
-          
 
-            if(ticker.DayData != null && ticker.DayData.Count > 0) {
-                var maxDate = ticker.DayData.Max(x => x.Date);
+            double lastCurrencyPrice = 1;
+            DateTime maxDate = DateTime.MinValue;
+            if( ticker.DayData != null && ticker.DayData.Count > 0) {//todo: only for tests? remove?
+                maxDate = ticker.DayData.Max(x => x.Date);
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
-                double _lastRubPrice = 0;
-                if(ticker.Currency != null) {
-                    var _lastCurrencyPrice = ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
-                    _lastRubPrice = lastPrice * _lastCurrencyPrice;
-                } else {
-                    _lastRubPrice = lastPrice;
-                }
                 summary.LastPrice = lastPrice;
-                summary.LastPriceRub = _lastRubPrice;
-                summary.CurrentValue = _lastRubPrice * summary.SharesCount;
+            }
+
+            summary.LastPriceRub = summary.LastPrice;
+            summary.CurrentValue = summary.LastPrice * summary.SharesCount;
+            if(ticker.Currency != null) {
+                lastCurrencyPrice = ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
+                summary.LastPriceRub = summary.LastPrice * lastCurrencyPrice;
+                summary.FixedProfit = summary.FixedProfit * lastCurrencyPrice;
+                summary.InputValue = summary.InputValue * lastCurrencyPrice;
+                summary.AveragePrice = summary.AveragePrice * lastCurrencyPrice;
+                summary.CurrentValue = summary.CurrentValue * lastCurrencyPrice;
             }
             summary.VirtualProfit = summary.CurrentValue - summary.InputValue;
             summary.VirtualProfitPercent = summary.VirtualProfit / summary.InputValue;
-            summary.FixedProfit = fixedProfit;
+
             summary.TotalProfit = summary.FixedProfit + summary.VirtualProfit;
             return summary;
         }

@@ -24,16 +24,15 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         private void CalcPosition_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            var os = Application.CreateObjectSpace(typeof(Portfolio));
             foreach(var port in View.SelectedObjects) {
-                CalculatePositionsForPortfolio((Portfolio)port, os);
+                CalculatePositionsForPortfolio((Portfolio)port);
             }
         }
 
-        void CalculatePositionsForPortfolio(Portfolio port, IObjectSpace os) {
+        void CalculatePositionsForPortfolio(Portfolio port) {
             var cnt = new CalculatePositionController();
             foreach(var position in port.Positions) {
-                cnt.CalculatePosition(position, os);
+                cnt.CalculatePosition(position);
             }
         }
 
@@ -213,8 +212,8 @@ namespace ComplexPortfolio.Module.Controllers {
             return currentColumn;
         }
 
-        void ExportPortfolio(Portfolio port, IObjectSpace os) {
-            CalculatePositionsForPortfolio(port, os);
+        void ExportPortfolio(Portfolio port) {
+            CalculatePositionsForPortfolio(port);
             var resultToPrint = CalculatePortfolioDataList(port.Positions.ToList());
             using(Workbook workbook = new Workbook()) {
 
@@ -231,9 +230,8 @@ namespace ComplexPortfolio.Module.Controllers {
         }
 
         private void ExportToExcelAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
-            var os = Application.CreateObjectSpace(typeof(Portfolio));
             foreach(var port in View.SelectedObjects) {
-                ExportPortfolio((Portfolio)port, os);
+                ExportPortfolio((Portfolio)port);
             }
         }
     }

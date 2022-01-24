@@ -17,167 +17,191 @@ namespace Tests {
         public void CalculatePosition() {
             //arrange
             var cnt = new CalculatePositionController();
-            var pos = new Position();
-            pos.Label = "TestLabel";
-            var ticker = new Ticker() { Name = "FXRL" };
-            pos.Ticker = ticker;
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Label).Returns("TestLabel");
+            var ticker = new Mock<ITicker>();
+            //  ticker.Setup(x=>x.n)
+            //new Ticker() { Name = "FXRL" };
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2020, 8, 18), 1, 3195, TransactionDirectionEnum.Buy);
             var trans3 = new Transaction(new DateTime(2020, 8, 19), 1, 3160, TransactionDirectionEnum.Buy);
-            pos.Transactions.Add(trans1);
-            pos.Transactions.Add(trans2);
-            pos.Transactions.Add(trans3);
+            var posTrans = new List<Transaction>();
+            posTrans.Add(trans1);
+            posTrans.Add(trans2);
+            posTrans.Add(trans3);
 
-            var osMock = new Mock<IObjectSpace>();
+            pos.Setup(x => x.Transactions).Returns(posTrans);
+            //pos.Transactions.Add(trans1);
+            //pos.Transactions.Add(trans2);
+            //pos.Transactions.Add(trans3);
 
-            var dayDataList = new List<TickerDayDatum>();
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 17), 3180));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 18), 3184));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 19), 3157.5));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 20), 3155));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 22), 3180));
 
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
+            var dayDataList = new List<ITickerDayDatum>();
+
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 17), 3180));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 18), 3184));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 19), 3157.5));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 20), 3155));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 22), 3180));
+
+            ticker.Setup(x => x.DayData).Returns(dayDataList);
+
+            // osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
 
             //act
-            cnt.CalculatePosition(pos, osMock.Object);
+            var res = cnt.CalculatePositionData(pos.Object);
             //assert
-            Assert.AreEqual(4, pos.CalculateData.Count);
-            Assert.AreEqual(7, pos.CalculateData[3].SharesCount);
-            Assert.AreEqual(3180, pos.CalculateData[3].Price);
-            Assert.AreEqual(22260, pos.CalculateData[3].Value);
-            Assert.AreEqual(175, pos.CalculateData[3].Profit);
-            Assert.AreEqual(-45, pos.CalculateData[3].ProfitTotal);
-            Assert.AreEqual("TestLabel", pos.CalculateData[3].Label);
+            Assert.AreEqual(4, res.Count);
+            Assert.AreEqual(7, res[3].SharesCount);
+            Assert.AreEqual(3180, res[3].Price);
+            Assert.AreEqual(22260, res[3].Value);
+            Assert.AreEqual(175, res[3].Profit);
+            Assert.AreEqual(-45, res[3].ProfitTotal);
+            Assert.AreEqual("TestLabel", res[3].Label);
 
+        }
+
+        ITickerDayDatum CreateDayDatum(Mock<ITicker> ticker, DateTime date, double close) {
+            var dayMock = new Mock<ITickerDayDatum>();
+            dayMock.Setup(x => x.Close).Returns(close);
+            dayMock.Setup(x => x.Date).Returns(date);
+            if(ticker != null) {
+                dayMock.Setup(x => x.Ticker).Returns(ticker.Object);
+            } else {
+                dayMock.Setup(x => x.Ticker).Returns(new Mock<ITicker>().Object);
+            }
+            return dayMock.Object;
         }
 
         [Test]
         public void CalculatePosition_sell() {
             //arrange
             var cnt = new CalculatePositionController();
-            var pos = new Position();
-            pos.Label = "TestLabel";
-            var ticker = new Ticker() { Name = "FXRL" };
-            pos.Ticker = ticker;
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Label).Returns("TestLabel");
+            var ticker = new Mock<ITicker>();
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             var trans1 = new Transaction(new DateTime(2021, 11, 16), 1, 98, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2021, 11, 18), 2, 117, TransactionDirectionEnum.Buy);
             var trans3 = new Transaction(new DateTime(2021, 11, 19), 1, 134, TransactionDirectionEnum.Sell);
             var trans4 = new Transaction(new DateTime(2021, 11, 20), 2, 138, TransactionDirectionEnum.Sell);
-            pos.Transactions.Add(trans1);
-            pos.Transactions.Add(trans2);
-            pos.Transactions.Add(trans3);
-            pos.Transactions.Add(trans4);
+            var posTrans = new List<Transaction>();
+            posTrans.Add(trans1);
+            posTrans.Add(trans2);
+            posTrans.Add(trans3);
+            posTrans.Add(trans4);
 
-            var osMock = new Mock<IObjectSpace>();
+            pos.Setup(x => x.Transactions).Returns(posTrans);
+            var dayDataList = new List<ITickerDayDatum>();
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 15), 90));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 16), 100));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 17), 110));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 18), 120));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 19), 130));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 20), 140));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 21), 150));
 
-            var dayDataList = new List<TickerDayDatum>();
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 15), 90));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 16), 100));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 17), 110));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 18), 120));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 19), 130));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 20), 140));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 21), 150));
-
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
+            ticker.Setup(x => x.DayData).Returns(dayDataList);
 
             //act
-            cnt.CalculatePosition(pos, osMock.Object);
+            var res = cnt.CalculatePositionData(pos.Object);
             //assert
-            Assert.AreEqual(6, pos.CalculateData.Count);
+            Assert.AreEqual(6, res.Count);
 
-            Assert.AreEqual(1, pos.CalculateData[0].SharesCount);
-            Assert.AreEqual(100, pos.CalculateData[0].Value);
-            Assert.AreEqual(2, pos.CalculateData[0].Profit);
-            Assert.AreEqual(2, pos.CalculateData[0].ProfitTotal);
+            Assert.AreEqual(1, res[0].SharesCount);
+            Assert.AreEqual(100, res[0].Value);
+            Assert.AreEqual(2, res[0].Profit);
+            Assert.AreEqual(2, res[0].ProfitTotal);
 
-            Assert.AreEqual(1, pos.CalculateData[1].SharesCount);
-            Assert.AreEqual(110, pos.CalculateData[1].Value);
-            Assert.AreEqual(10, pos.CalculateData[1].Profit);
-            Assert.AreEqual(12, pos.CalculateData[1].ProfitTotal);
+            Assert.AreEqual(1, res[1].SharesCount);
+            Assert.AreEqual(110, res[1].Value);
+            Assert.AreEqual(10, res[1].Profit);
+            Assert.AreEqual(12, res[1].ProfitTotal);
 
-            Assert.AreEqual(3, pos.CalculateData[2].SharesCount);
-            Assert.AreEqual(360, pos.CalculateData[2].Value);
-            Assert.AreEqual(16, pos.CalculateData[2].Profit);
-            Assert.AreEqual(28, pos.CalculateData[2].ProfitTotal);
+            Assert.AreEqual(3, res[2].SharesCount);
+            Assert.AreEqual(360, res[2].Value);
+            Assert.AreEqual(16, res[2].Profit);
+            Assert.AreEqual(28, res[2].ProfitTotal);
 
-            Assert.AreEqual(2, pos.CalculateData[3].SharesCount);
-            Assert.AreEqual(260, pos.CalculateData[3].Value);
-            Assert.AreEqual(34, pos.CalculateData[3].Profit);
-            Assert.AreEqual(62, pos.CalculateData[3].ProfitTotal);
+            Assert.AreEqual(2, res[3].SharesCount);
+            Assert.AreEqual(260, res[3].Value);
+            Assert.AreEqual(34, res[3].Profit);
+            Assert.AreEqual(62, res[3].ProfitTotal);
 
-            Assert.AreEqual(0, pos.CalculateData[4].SharesCount);
-            Assert.AreEqual(0, pos.CalculateData[4].Value);
-            Assert.AreEqual(16, pos.CalculateData[4].Profit);
-            Assert.AreEqual(78, pos.CalculateData[4].ProfitTotal);
+            Assert.AreEqual(0, res[4].SharesCount);
+            Assert.AreEqual(0, res[4].Value);
+            Assert.AreEqual(16, res[4].Profit);
+            Assert.AreEqual(78, res[4].ProfitTotal);
 
 
 
-            Assert.AreEqual("TestLabel", pos.CalculateData[3].Label);
+            Assert.AreEqual("TestLabel", res[3].Label);
 
         }
+
         [Test]
         public void CalculatePosition_sellv2() {
             //arrange
             var cnt = new CalculatePositionController();
-            var pos = new Position();
-            pos.Label = "TestLabel";
-            var ticker = new Ticker() { Name = "FXRL" };
-            pos.Ticker = ticker;
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Label).Returns("TestLabel");
+            var ticker = new Mock<ITicker>();
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             var trans1 = new Transaction(new DateTime(2021, 11, 16), 3, 10, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2021, 11, 17), 1, 14, TransactionDirectionEnum.Buy);
             var trans3 = new Transaction(new DateTime(2021, 11, 20), 1, 28, TransactionDirectionEnum.Sell);
-            pos.Transactions.Add(trans1);
-            pos.Transactions.Add(trans2);
-            pos.Transactions.Add(trans3);
 
-            var osMock = new Mock<IObjectSpace>();
+            var posTrans = new List<Transaction>();
+            posTrans.Add(trans1);
+            posTrans.Add(trans2);
+            posTrans.Add(trans3);
+            pos.Setup(x => x.Transactions).Returns(posTrans);
 
-            var dayDataList = new List<TickerDayDatum>();
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 15), 5));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 16), 10));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 17), 15));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 18), 20));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 19), 17));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 20), 25));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 21), 20));
+            var dayDataList = new List<ITickerDayDatum>();
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 15), 5));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 16), 10));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 17), 15));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 18), 20));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 19), 17));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 20), 25));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 21), 20));
 
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
+            ticker.Setup(x => x.DayData).Returns(dayDataList);
 
             //act
-            cnt.CalculatePosition(pos, osMock.Object);
+            var res = cnt.CalculatePositionData(pos.Object);
             //assert
-            Assert.AreEqual(6, pos.CalculateData.Count);
-            Assert.AreEqual(3, pos.CalculateData[0].SharesCount);
-            Assert.AreEqual(30, pos.CalculateData[0].Value);
-            Assert.AreEqual(0, pos.CalculateData[0].Profit);
-            Assert.AreEqual(0, pos.CalculateData[0].ProfitTotal);
+            Assert.AreEqual(6, res.Count);
+            Assert.AreEqual(3, res[0].SharesCount);
+            Assert.AreEqual(30, res[0].Value);
+            Assert.AreEqual(0, res[0].Profit);
+            Assert.AreEqual(0, res[0].ProfitTotal);
 
-            Assert.AreEqual(4, pos.CalculateData[1].SharesCount);
-            Assert.AreEqual(60, pos.CalculateData[1].Value);
-            Assert.AreEqual(16, pos.CalculateData[1].Profit);
-            Assert.AreEqual(16, pos.CalculateData[1].ProfitTotal);
+            Assert.AreEqual(4, res[1].SharesCount);
+            Assert.AreEqual(60, res[1].Value);
+            Assert.AreEqual(16, res[1].Profit);
+            Assert.AreEqual(16, res[1].ProfitTotal);
 
-            Assert.AreEqual(4, pos.CalculateData[2].SharesCount);
-            Assert.AreEqual(80, pos.CalculateData[2].Value);
-            Assert.AreEqual(20, pos.CalculateData[2].Profit);
-            Assert.AreEqual(36, pos.CalculateData[2].ProfitTotal);
+            Assert.AreEqual(4, res[2].SharesCount);
+            Assert.AreEqual(80, res[2].Value);
+            Assert.AreEqual(20, res[2].Profit);
+            Assert.AreEqual(36, res[2].ProfitTotal);
 
-            Assert.AreEqual(4, pos.CalculateData[3].SharesCount);
-            Assert.AreEqual(68, pos.CalculateData[3].Value);
-            Assert.AreEqual(-12, pos.CalculateData[3].Profit);
-            Assert.AreEqual(24, pos.CalculateData[3].ProfitTotal);
+            Assert.AreEqual(4, res[3].SharesCount);
+            Assert.AreEqual(68, res[3].Value);
+            Assert.AreEqual(-12, res[3].Profit);
+            Assert.AreEqual(24, res[3].ProfitTotal);
 
-            Assert.AreEqual(3, pos.CalculateData[4].SharesCount);
-            Assert.AreEqual(75, pos.CalculateData[4].Value);
-            Assert.AreEqual(35, pos.CalculateData[4].Profit);
-            Assert.AreEqual(59, pos.CalculateData[4].ProfitTotal);
+            Assert.AreEqual(3, res[4].SharesCount);
+            Assert.AreEqual(75, res[4].Value);
+            Assert.AreEqual(35, res[4].Profit);
+            Assert.AreEqual(59, res[4].ProfitTotal);
 
-            Assert.AreEqual(3, pos.CalculateData[5].SharesCount);
-            Assert.AreEqual(60, pos.CalculateData[5].Value);
-            Assert.AreEqual(-15, pos.CalculateData[5].Profit);
-            Assert.AreEqual(44, pos.CalculateData[5].ProfitTotal);
+            Assert.AreEqual(3, res[5].SharesCount);
+            Assert.AreEqual(60, res[5].Value);
+            Assert.AreEqual(-15, res[5].Profit);
+            Assert.AreEqual(44, res[5].ProfitTotal);
 
         }
 
@@ -185,34 +209,34 @@ namespace Tests {
         public void CalculatePosition_sellv3() {
             //arrange
             var cnt = new CalculatePositionController();
-            var pos = new Position();
-            pos.Label = "TestLabel";
-            var ticker = new Ticker() { Name = "FXRL" };
-            pos.Ticker = ticker;
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Label).Returns("TestLabel");
+            var ticker = new Mock<ITicker>();
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             var trans0 = new Transaction(new DateTime(2021, 11, 15), 3, 5, TransactionDirectionEnum.Buy);
             var trans1 = new Transaction(new DateTime(2021, 11, 16), 1, 8, TransactionDirectionEnum.Buy);
             var trans2 = new Transaction(new DateTime(2021, 11, 16), 2, 7, TransactionDirectionEnum.Sell);
-            pos.Transactions.Add(trans0);
-            pos.Transactions.Add(trans1);
-            pos.Transactions.Add(trans2);
+            var posTrans = new List<Transaction>();
+            posTrans.Add(trans0);
+            posTrans.Add(trans1);
+            posTrans.Add(trans2);
+            pos.Setup(x => x.Transactions).Returns(posTrans);
 
-            var osMock = new Mock<IObjectSpace>();
+            var dayDataList = new List<ITickerDayDatum>();
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 15), 5));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2021, 11, 16), 10));
 
-            var dayDataList = new List<TickerDayDatum>();
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 15), 5));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2021, 11, 16), 10));
-
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "FXRL"))).Returns(dayDataList);
+            ticker.Setup(x => x.DayData).Returns(dayDataList);
 
             //act
-            cnt.CalculatePosition(pos, osMock.Object);
+            var res = cnt.CalculatePositionData(pos.Object);
             //assert
-            Assert.AreEqual(2, pos.CalculateData.Count);
+            Assert.AreEqual(2, res.Count);
 
-            Assert.AreEqual(2, pos.CalculateData[1].SharesCount);
-            Assert.AreEqual(20, pos.CalculateData[1].Value);
-            Assert.AreEqual(11, pos.CalculateData[1].Profit);
-            Assert.AreEqual(11, pos.CalculateData[1].ProfitTotal);
+            Assert.AreEqual(2, res[1].SharesCount);
+            Assert.AreEqual(20, res[1].Value);
+            Assert.AreEqual(11, res[1].Profit);
+            Assert.AreEqual(11, res[1].ProfitTotal);
         }
 
 
@@ -220,43 +244,46 @@ namespace Tests {
         public void CalculatePosition_US() {
             //arrange
             var cnt = new CalculatePositionController();
-            var pos = new Position();
-            var usTicker = new Ticker() { Name = "US", IsCurrency = true };
-            var ticker = new Ticker() { Name = "TSPX", Currency = usTicker };
-            pos.Ticker = ticker;
+            var pos = new Mock<IPosition>();
+            var usTicker = new Mock<ITicker>();// { Name = "US", IsCurrency = true };
+            usTicker.Setup(x => x.Name).Returns("US");
+
+            var ticker = new Mock<ITicker>();// { Name = "TSPX", Currency = usTicker };
+            ticker.Setup(x => x.Currency).Returns(usTicker.Object);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
+            var posTrans = new List<Transaction>();
             var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 100, TransactionDirectionEnum.Buy);
 
-            pos.Transactions.Add(trans1);
+            posTrans.Add(trans1);
+            pos.Setup(x => x.Transactions).Returns(posTrans);
 
 
-            var osMock = new Mock<IObjectSpace>();
+            var dayDataList = new List<ITickerDayDatum>();
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 17), 95));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 18), 110));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 19), 120));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 20), 130));
+            dayDataList.Add(CreateDayDatum(ticker, new DateTime(2020, 8, 22), 140));
 
-            var dayDataList = new List<TickerDayDatum>();
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 17), 95));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 18), 110));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 19), 120));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 20), 130));
-            dayDataList.Add(new TickerDayDatum(ticker, new DateTime(2020, 8, 22), 140));
+            var usDayDataList = new List<ITickerDayDatum>();
+            usDayDataList.Add(CreateDayDatum(usTicker, new DateTime(2020, 8, 17), 50));
+            usDayDataList.Add(CreateDayDatum(usTicker, new DateTime(2020, 8, 18), 60));
+            usDayDataList.Add(CreateDayDatum(usTicker, new DateTime(2020, 8, 19), 70));
+            usDayDataList.Add(CreateDayDatum(usTicker, new DateTime(2020, 8, 20), 80));
+            usDayDataList.Add(CreateDayDatum(usTicker, new DateTime(2020, 8, 22), 90));
 
-            var usDayDataList = new List<TickerDayDatum>();
-            usDayDataList.Add(new TickerDayDatum(usTicker, new DateTime(2020, 8, 17), 50));
-            usDayDataList.Add(new TickerDayDatum(usTicker, new DateTime(2020, 8, 18), 60));
-            usDayDataList.Add(new TickerDayDatum(usTicker, new DateTime(2020, 8, 19), 70));
-            usDayDataList.Add(new TickerDayDatum(usTicker, new DateTime(2020, 8, 20), 80));
-            usDayDataList.Add(new TickerDayDatum(usTicker, new DateTime(2020, 8, 22), 90));
-
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "TSPX"))).Returns(dayDataList);
-            osMock.Setup(x => x.GetObjects<TickerDayDatum>(new BinaryOperator("Ticker.Name", "US"))).Returns(usDayDataList);
+            ticker.Setup(x => x.DayData).Returns(dayDataList);
+            usTicker.Setup(x => x.DayData).Returns(usDayDataList);
 
             //act
-            cnt.CalculatePosition(pos, osMock.Object);
+            var res = cnt.CalculatePositionData(pos.Object);
             //assert
-            Assert.AreEqual(4, pos.CalculateData.Count);
-            Assert.AreEqual(5, pos.CalculateData[3].SharesCount);
-            Assert.AreEqual(140, pos.CalculateData[3].Price);
-            Assert.AreEqual(63000, pos.CalculateData[3].Value);
-            Assert.AreEqual(4500, pos.CalculateData[3].Profit);
-            Assert.AreEqual(18000, pos.CalculateData[3].ProfitTotal);
+            Assert.AreEqual(4, res.Count);
+            Assert.AreEqual(5, res[3].SharesCount);
+            Assert.AreEqual(140, res[3].Price);
+            Assert.AreEqual(63000, res[3].Value);
+            Assert.AreEqual(4500, res[3].Profit);
+            Assert.AreEqual(18000, res[3].ProfitTotal);
 
         }
 
@@ -270,7 +297,7 @@ namespace Tests {
             lst.Add(trans1);
             lst.Add(trans2);
 
-            var calcData = new CalcPositionDatum(new TickerDayDatum(new Ticker() { Name = "Test1" }, new DateTime(2020, 8, 20), 0));
+            var calcData = new CalcPositionDatum(CreateDayDatum(null, new DateTime(2020, 8, 20), 0));
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act
@@ -291,7 +318,7 @@ namespace Tests {
             lst.Add(trans1);
             lst.Add(trans2);
 
-            var calcData = new CalcPositionDatum(new TickerDayDatum(new Ticker() { Name = "Test1" }, new DateTime(2020, 8, 20), 0));
+            var calcData = new CalcPositionDatum(CreateDayDatum(null, new DateTime(2020, 8, 20), 0));
             calcData.SharesCount = 3;
             calcData.Value = 1000;
             //act
@@ -301,9 +328,12 @@ namespace Tests {
             Assert.AreEqual(7, calcData.SharesCount);
 
         }
+
         [Test]
         public void CalculatePositionSummary_SharesCount() {
             //arrange
+
+
             var cnt = new CalculatePositionController();
 
             var trans1 = new Transaction(new DateTime(2020, 8, 18), 5, 3190, TransactionDirectionEnum.Buy);
@@ -311,11 +341,17 @@ namespace Tests {
             var lst = new List<Transaction>();
             lst.Add(trans1);
             lst.Add(trans2);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(new Mock<ITicker>().Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, new Mock<ITicker>().Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(4, res.SharesCount);
         }
+
+
+
 
         [Test]
         public void CalculatePositionSummary_LastPrice() {
@@ -323,9 +359,9 @@ namespace Tests {
             var cnt = new CalculatePositionController();
 
             var ticker = new Mock<ITicker>();
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null,new DateTime(2022,1,1),15);
-            var d2 = new TickerDayDatum(null,new DateTime(2022,1,2),16);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 15);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 16);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
@@ -334,8 +370,11 @@ namespace Tests {
             var lst = new List<Transaction>();
             //lst.Add(trans1);
             //lst.Add(trans2);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst,ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(16, res.LastPrice);
         }
@@ -347,26 +386,29 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 25);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 35);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 25);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 35);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
 
 
             var currency = new Mock<ITicker>();
-            var myCurrencyDataList = new List<TickerDayDatum>();
-            var dc1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 10);
-            var dc2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 20);
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 10);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 20);
             myCurrencyDataList.Add(dc1);
             myCurrencyDataList.Add(dc2);
             currency.Setup(x => x.DayData).Returns(myCurrencyDataList);
             ticker.Setup(x => x.Currency).Returns(currency.Object);
 
             var lst = new List<Transaction>();
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(700, res.LastPriceRub);
         }
@@ -378,22 +420,26 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 45);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 45);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
 
 
-          
+
 
             var lst = new List<Transaction>();
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(45, res.LastPriceRub);
         }
+
         [Test]
         public void CalculatePositionSummary_CurrentValue() {
             //arrange
@@ -401,9 +447,9 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
@@ -416,8 +462,11 @@ namespace Tests {
             var trans2 = new Transaction(new DateTime(2020, 8, 18), 11, 3195, TransactionDirectionEnum.Sell);
             lst.Add(trans1);
             lst.Add(trans2);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(320, res.CurrentValue);
         }
@@ -428,9 +477,9 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
@@ -443,8 +492,11 @@ namespace Tests {
             var trans2 = new Transaction(new DateTime(2020, 8, 18), 11, 3195, TransactionDirectionEnum.Sell);
             lst.Add(trans1);
             lst.Add(trans2);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(12760, res.InputValue);
         }
@@ -457,9 +509,9 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
@@ -476,8 +528,11 @@ namespace Tests {
             lst.Add(trans2);
             lst.Add(trans3);
             lst.Add(trans4);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(280, res.InputValue);
         }
@@ -489,9 +544,9 @@ namespace Tests {
 
             var ticker = new Mock<ITicker>();
 
-            var myDayDataList = new List<TickerDayDatum>();
-            var d1 = new TickerDayDatum(null, new DateTime(2022, 1, 1), 55);
-            var d2 = new TickerDayDatum(null, new DateTime(2022, 1, 2), 80);
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
             myDayDataList.Add(d1);
             myDayDataList.Add(d2);
             ticker.Setup(x => x.DayData).Returns(myDayDataList);
@@ -510,8 +565,11 @@ namespace Tests {
             lst.Add(trans3);
             lst.Add(trans4);
             lst.Add(trans5);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
             //act
-            var res = cnt.CalculatePositionSummary(lst, ticker.Object);
+            var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
             Assert.AreEqual(70, res.InputValue);
             Assert.AreEqual(7, res.SharesCount);
@@ -523,7 +581,55 @@ namespace Tests {
             Assert.AreEqual(445, res.TotalProfit);
         }
 
+        [Test]
+        public void CalculatePositionSummary_InputValue_2_Currency() {
+            //arrange
+            var cnt = new CalculatePositionController();
 
-     
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+            var currency = new Mock<ITicker>();
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 10);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 30);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            currency.Setup(x => x.DayData).Returns(myCurrencyDataList);
+            ticker.Setup(x => x.Currency).Returns(currency.Object);
+
+
+
+            var lst = new List<Transaction>();
+            var trans1 = new Transaction(new DateTime(2020, 8, 18), 10, 10, TransactionDirectionEnum.Buy);
+            var trans2 = new Transaction(new DateTime(2020, 8, 19), 5, 15, TransactionDirectionEnum.Sell);
+            var trans3 = new Transaction(new DateTime(2020, 8, 20), 5, 20, TransactionDirectionEnum.Buy);
+            var trans4 = new Transaction(new DateTime(2020, 8, 21), 8, 5, TransactionDirectionEnum.Sell);
+            var trans5 = new Transaction(new DateTime(2020, 8, 21), 5, 6, TransactionDirectionEnum.Buy);
+            lst.Add(trans1);
+            lst.Add(trans2);
+            lst.Add(trans3);
+            lst.Add(trans4);
+            lst.Add(trans5);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
+            //act
+            var res = cnt.CalculatePositionSummary(pos.Object);
+            //assert
+            Assert.AreEqual(2100, res.InputValue);
+            Assert.AreEqual(7, res.SharesCount);
+            Assert.AreEqual(16800, res.CurrentValue);
+            Assert.AreEqual(300, res.AveragePrice);
+            Assert.AreEqual(-1350, res.FixedProfit);
+            Assert.AreEqual(14700, res.VirtualProfit);
+            Assert.AreEqual(7, res.VirtualProfitPercent);
+            Assert.AreEqual(13350, res.TotalProfit);
+        }
     }
 }

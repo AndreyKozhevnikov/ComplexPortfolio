@@ -22,7 +22,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         int currentSharesCount;
         DateTime date;
 
-        public CalcPositionDatum(TickerDayDatum _dayData) {
+        public CalcPositionDatum(ITickerDayDatum _dayData) {
             this.price = _dayData.Close;
             this.date = _dayData.Date;
             this.tickerName = _dayData.Ticker.Name;
