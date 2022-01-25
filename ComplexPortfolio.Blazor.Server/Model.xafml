@@ -44,7 +44,7 @@
         <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n6}" Index="5" IsNewNode="True" />
         <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" Index="6" IsNewNode="True" />
         <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" Index="7" IsNewNode="True" />
-        <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n6}" EditMask="n0" Index="8" IsNewNode="True" />
+        <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" Index="8" IsNewNode="True" />
         <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" Index="9" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
         <ColumnInfo Id="Total Profit5" PropertyName="Summary.TotalProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
