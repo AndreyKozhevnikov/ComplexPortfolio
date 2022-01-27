@@ -633,5 +633,35 @@ namespace Tests {
             Assert.AreEqual(13350, res.TotalProfit);
             Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent,2));
         }
+
+        [Test]
+        [Ignore("todo")]
+        public void CalculatePositionSummary_InputValue_3_EmptyPosition() {
+            //arrange
+            var cnt = new CalculatePositionController();
+
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+
+            var lst = new List<Transaction>();
+            var trans1 = new Transaction(new DateTime(2020, 8, 18), 10, 10, TransactionDirectionEnum.Buy);
+            var trans2 = new Transaction(new DateTime(2020, 8, 19), 10, 15, TransactionDirectionEnum.Sell);
+            lst.Add(trans1);
+            lst.Add(trans2);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
+            //act
+            var res = cnt.CalculatePositionSummary(pos.Object);
+            //assert
+           
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent, 2)); //for now it is infinity
+        }
     }
 }

@@ -42,6 +42,9 @@
    <ProjectReference Include="..\ComplexPortfolio.Module\ComplexPortfolio.Module.csproj" />
  </ItemGroup>
  <ItemGroup>
+   <None Update="UnusableNodes.xml">
+     <DependentUpon>Model.xafml</DependentUpon>
+   </None>
    <None Update="UnusableNodes1.xml">
      <DependentUpon>Model.xafml</DependentUpon>
    </None>
