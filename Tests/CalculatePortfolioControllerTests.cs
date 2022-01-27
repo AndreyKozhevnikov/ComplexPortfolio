@@ -685,6 +685,27 @@ namespace Tests {
 
         }
 
+        [Test]
+        public void CalculatePortfolioSummary() {
+            //arrange
+            var pos1 = new PositionSummary();
+            pos1.InputValue = 20;
+            pos1.CurrentValue = 50;
+            pos1.TotalProfit = 30;
+            
+            var pos2 = new PositionSummary();
+            pos2.InputValue = 30;
+            pos2.CurrentValue = 150;
+            pos2.TotalProfit = 120;
+            var lst = new List<PositionSummary>() { pos1, pos2 };
+            var cnt = new CalculatePortfolioController();
+            //act
+            var res = cnt.CalculatePortfolioSummary(lst);
+            //assert
+            Assert.AreEqual(200, res.CurrentValue);
+            Assert.AreEqual(150, res.TotalProfit);
+            Assert.AreEqual(3, res.TotalProfitPercent);
 
+        }
     }
 }

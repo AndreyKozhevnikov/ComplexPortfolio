@@ -35,6 +35,31 @@
     </PropertyEditor>
   </ViewItems>
   <Views>
+    <DetailView Id="Portfolio_DetailView">
+      <Items>
+        <PropertyEditor Id="CurrentValue" PropertyName="Summary.CurrentValue" DisplayFormat="{0:N0}" EditMask="N0" IsNewNode="True" />
+        <PropertyEditor Id="Summary" Removed="True" />
+        <PropertyEditor Id="TotalProfit" PropertyName="Summary.TotalProfit" DisplayFormat="{0:N0}" EditMask="N0" IsNewNode="True" />
+        <PropertyEditor Id="TotalProfitPercent" PropertyName="Summary.TotalProfitPercent" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="36.81318681318681">
+            <LayoutGroup Id="Portfolio" RelativeSize="100">
+              <LayoutItem Id="Name" RelativeSize="23.880597014925375" />
+              <LayoutItem Id="Description" RelativeSize="17.91044776119403" />
+              <LayoutItem Id="CurrentValue" ViewItem="CurrentValue" Index="2" RelativeSize="17.91044776119403" IsNewNode="True" />
+              <LayoutItem Id="TotalProfit" ViewItem="TotalProfit" Index="3" RelativeSize="17.91044776119403" IsNewNode="True" />
+              <LayoutItem Id="TotalProfitPercent" ViewItem="TotalProfitPercent" Index="4" RelativeSize="22.388059701492537" IsNewNode="True" />
+              <LayoutItem Id="Summary" Index="5" RelativeSize="29.67032967032967" Removed="True" />
+            </LayoutGroup>
+          </LayoutGroup>
+          <LayoutGroup Id="Positions_Group" Direction="Vertical" RelativeSize="63.18681318681319">
+            <LayoutItem Id="Positions" RelativeSize="100" />
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
         <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
@@ -48,8 +73,8 @@
         <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" Index="9" IsNewNode="True" />
         <ColumnInfo Id="Virtual Profit" PropertyName="Summary.VirtualProfit" DisplayFormat="{0:n0}" Index="10" IsNewNode="True" />
         <ColumnInfo Id="Total Profit5" PropertyName="Summary.TotalProfit" DisplayFormat="{0:n0}" Index="11" IsNewNode="True" />
-        <ColumnInfo Id="@977c9260-4937-4bf7-aba0-17f0489b8456" PropertyName="Summary.TotalProfitPercent" DisplayFormat="{0:P2}" EditMask="P2" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
+        <ColumnInfo Id="TotalProfitPercent" PropertyName="Summary.TotalProfitPercent" DisplayFormat="{0:P2}" EditMask="P2" IsNewNode="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">

@@ -34,6 +34,20 @@ namespace ComplexPortfolio.Module.Controllers {
             foreach(var position in port.Positions) {
                 cnt.CalculatePosition(position);
             }
+            var allPositionsSummary = port.Positions.Select(x => x.Summary).ToList();
+            port.Summary = CalculatePortfolioSummary(allPositionsSummary);
+        }
+
+        public PortfolioSummary CalculatePortfolioSummary(List<PositionSummary> allPositionsSummary) {
+            var res = new PortfolioSummary();
+            double input = 0;
+            foreach(var p in allPositionsSummary) {
+                res.TotalProfit += p.TotalProfit;
+                input += p.InputValue;
+                res.CurrentValue += p.CurrentValue;
+            }
+            res.TotalProfitPercent = res.TotalProfit / input;
+            return res;
         }
 
         public List<CalcPortfolioDatum> CalculatePortfolioDataList(List<Position> positions) {

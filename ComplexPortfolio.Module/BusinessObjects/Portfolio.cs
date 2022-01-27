@@ -24,7 +24,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => name;
             set => SetPropertyValue(nameof(Name), ref name, value);
         }
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string Description {
             get => description;
@@ -37,6 +37,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return GetCollection<Position>(nameof(Positions));
             }
         }
-       
+
+        PortfolioSummary _summary;
+        [NonPersistent]
+        public PortfolioSummary Summary {
+            get {
+                return _summary;
+            }
+            set {
+                SetPropertyValue(nameof(Summary), ref _summary, value);
+            }
+        }
+
     }
 }

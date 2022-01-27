@@ -2,6 +2,8 @@
 using DevExpress.ExpressApp.DC;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+
+
     [DomainComponent]
     public class PositionSummary : NonPersistentBaseObject {
         public int SharesCount { get; set; }
