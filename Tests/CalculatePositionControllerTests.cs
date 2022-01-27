@@ -577,8 +577,9 @@ namespace Tests {
             Assert.AreEqual(10, res.AveragePrice);
             Assert.AreEqual(-45, res.FixedProfit);
             Assert.AreEqual(490, res.VirtualProfit);
-            Assert.AreEqual(7, res.VirtualProfitPercent);
+            //Assert.AreEqual(7, res.VirtualProfitPercent);
             Assert.AreEqual(445, res.TotalProfit);
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent,2));
         }
 
         [Test]
@@ -628,8 +629,9 @@ namespace Tests {
             Assert.AreEqual(300, res.AveragePrice);
             Assert.AreEqual(-1350, res.FixedProfit);
             Assert.AreEqual(14700, res.VirtualProfit);
-            Assert.AreEqual(7, res.VirtualProfitPercent);
+            //Assert.AreEqual(7, res.VirtualProfitPercent);
             Assert.AreEqual(13350, res.TotalProfit);
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent,2));
         }
     }
 }

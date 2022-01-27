@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Application>
+  <Views Id="Views">
+    <ListView Id="Portfolio_Positions_ListView">
+      <Columns Id="Columns">
+        <ColumnInfo Id="Virtual Profit Percent" PropertyName="Summary.VirtualProfitPercent" DisplayFormat="{0:p0}" />
+      </Columns>
+    </ListView>
+  </Views>
+</Application>

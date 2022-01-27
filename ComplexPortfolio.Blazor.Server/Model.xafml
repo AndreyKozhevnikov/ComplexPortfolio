@@ -46,10 +46,10 @@
         <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" Index="7" IsNewNode="True" />
         <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" Index="8" IsNewNode="True" />
         <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" Index="9" IsNewNode="True" />
+        <ColumnInfo Id="Virtual Profit" PropertyName="Summary.VirtualProfit" DisplayFormat="{0:n0}" Index="10" IsNewNode="True" />
+        <ColumnInfo Id="Total Profit5" PropertyName="Summary.TotalProfit" DisplayFormat="{0:n0}" Index="11" IsNewNode="True" />
+        <ColumnInfo Id="@977c9260-4937-4bf7-aba0-17f0489b8456" PropertyName="Summary.TotalProfitPercent" DisplayFormat="{0:P2}" EditMask="P2" IsNewNode="True" />
         <ColumnInfo Id="Summary" PropertyName="Summary.SharesCount" Removed="True" />
-        <ColumnInfo Id="Total Profit5" PropertyName="Summary.TotalProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
-        <ColumnInfo Id="Virtual Profit" PropertyName="Summary.VirtualProfit" DisplayFormat="{0:n0}" IsNewNode="True" />
-        <ColumnInfo Id="Virtual Profit Percent" PropertyName="Summary.VirtualProfitPercent" DisplayFormat="{0:p0}" IsNewNode="True" />
       </Columns>
     </ListView>
     <ListView Id="Position_ListView">

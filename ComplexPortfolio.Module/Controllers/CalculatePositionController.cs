@@ -134,9 +134,9 @@ namespace ComplexPortfolio.Module.Controllers {
                 summary.CurrentValue = summary.CurrentValue * lastCurrencyPrice;
             }
             summary.VirtualProfit = summary.CurrentValue - summary.InputValue;
-            summary.VirtualProfitPercent = summary.VirtualProfit / summary.InputValue;
 
             summary.TotalProfit = summary.FixedProfit + summary.VirtualProfit;
+            summary.TotalProfitPercent = summary.TotalProfit / summary.InputValue;
             return summary;
         }
 
