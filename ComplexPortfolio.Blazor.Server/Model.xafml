@@ -35,6 +35,30 @@
     </PropertyEditor>
   </ViewItems>
   <Views>
+    <DetailView Id="Account_DetailView">
+      <Items>
+        <PropertyEditor Id="Summary.TickersData" PropertyName="Summary.TickersData" IsNewNode="True" />
+      </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="16.986301369863014">
+            <LayoutGroup Id="Account" RelativeSize="100">
+              <LayoutItem Id="Name" RelativeSize="51.61290322580645" />
+              <LayoutItem Id="Summary" RelativeSize="48.38709677419355" />
+            </LayoutGroup>
+          </LayoutGroup>
+          <TabbedGroup Id="Item1" CaptionLocation="Top" Index="1" RelativeSize="83.01369863013699" IsNewNode="True">
+            <LayoutGroup Id="Transactions_Group" ShowCaption="True" Caption="Transactions" Index="0" RelativeSize="100" IsNewNode="True">
+              <LayoutItem Id="Transactions" ViewItem="Transactions" Index="0" RelativeSize="100" IsNewNode="True" />
+            </LayoutGroup>
+            <LayoutGroup Id="Item2" ShowCaption="True" CaptionLocation="Top" Direction="Vertical" Index="1" RelativeSize="100" Caption="Item2" IsNewNode="True">
+              <LayoutItem Id="Summary.TickersData" ViewItem="Summary.TickersData" Index="0" RelativeSize="100" IsNewNode="True" />
+            </LayoutGroup>
+          </TabbedGroup>
+          <LayoutGroup Id="Transactions_Group" Removed="True" />
+        </LayoutGroup>
+      </Layout>
+    </DetailView>
     <DetailView Id="Portfolio_DetailView">
       <Items>
         <PropertyEditor Id="CurrentValue" PropertyName="Summary.CurrentValue" DisplayFormat="{0:N0}" EditMask="N0" IsNewNode="True" />
@@ -62,8 +86,8 @@
     </DetailView>
     <ListView Id="Portfolio_Positions_ListView">
       <Columns>
-        <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Ticker" SortIndex="0" SortOrder="Ascending" />
+        <ColumnInfo Id="Comment" SortIndex="-1" SortOrder="None" />
         <ColumnInfo Id="Last Price" PropertyName="Summary.LastPrice" Index="3" IsNewNode="True" />
         <ColumnInfo Id="Last Price Rub" PropertyName="Summary.LastPriceRub" Index="4" IsNewNode="True" />
         <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n6}" Index="5" IsNewNode="True" />
@@ -79,7 +103,13 @@
     </ListView>
     <ListView Id="Position_ListView">
       <Columns>
-        <ColumnInfo Id="SharesCount" PropertyName="Summary.SharesCount" IsNewNode="True" />
+        <ColumnInfo Id="Oid" Index="0" />
+        <ColumnInfo Id="ComplName" Index="1" />
+        <ColumnInfo Id="Ticker" Index="2" />
+        <ColumnInfo Id="Comment" Index="3" />
+        <ColumnInfo Id="Portfolio" Index="4" />
+        <ColumnInfo Id="Label" Index="5" />
+        <ColumnInfo Id="SharesCount" PropertyName="Summary.SharesCount" Index="6" IsNewNode="True" />
         <ColumnInfo Id="Summary" Removed="True" />
       </Columns>
     </ListView>
@@ -91,6 +121,13 @@
     <ListView Id="Ticker_DayData_ListView">
       <Columns>
         <ColumnInfo Id="Date" SortIndex="0" SortOrder="Descending" />
+      </Columns>
+    </ListView>
+    <ListView Id="Transaction_ListView">
+      <Columns>
+        <ColumnInfo Id="Position" LookupProperty="ComplName" />
+        <ColumnInfo Id="Position.Portfolio.Name" PropertyName="Position.Portfolio.Name" Caption="Position.Portfolio.Name" IsNewNode="True" />
+        <ColumnInfo Id="Position.Ticker.Name" PropertyName="Position.Ticker.Name" Caption="Position.Ticker.Name" IsNewNode="True" />
       </Columns>
     </ListView>
   </Views>

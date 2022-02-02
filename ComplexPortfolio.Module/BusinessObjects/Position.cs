@@ -13,17 +13,17 @@ using System.Threading.Tasks;
 namespace ComplexPortfolio.Module.BusinessObjects {
 
     public interface IPosition {
-        ITicker Ticker{ get; }
-        List<Transaction> Transactions{ get; }
-        string Label{ get; }
-        List<CalcPositionDatum> CalculateData{ get; set; }
+        ITicker Ticker { get; }
+        List<Transaction> Transactions { get; }
+        string Label { get; }
+        List<CalcPositionDatum> CalculateData { get; set; }
         PositionSummary Summary { get; set; }
     }
 
     [DefaultClassOptions]
     [DebuggerDisplay("Ticker - {Ticker.Name}")]
     [Appearance("RedPriceObject", AppearanceItemType = "ViewItem", TargetItems = "Ticker", Criteria = "!AllowEdit", Context = "DetailView", Enabled = false)]
-    [XafDefaultProperty(nameof(Comment))]
+    [XafDefaultProperty(nameof(ComplName))]
     public class Position : BaseObject, IPosition {
         public Position(Session session) : base(session) {
             this.Summary = new PositionSummary();
@@ -83,18 +83,28 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => label;
             set => SetPropertyValue(nameof(Label), ref label, value);
         }
-     
 
 
 
-       
+
+
 
         public List<CalcPositionDatum> CalculateData {
-            get => calculateData; 
+            get => calculateData;
             set => SetPropertyValue(nameof(CalculateData), ref calculateData, value);
         }
         [NonPersistent]
-        public PositionSummary Summary{ get; set; }
+        public PositionSummary Summary { get; set; }
+
+        [NonPersistent]
+        public String ComplName {
+            get {
+                if(Portfolio == null || Ticker == null) {
+                    return "deleted";
+                }
+                return Portfolio.Name + " " + Ticker.Name + " " + Comment;
+            }
+        }
 
         ITicker IPosition.Ticker => Ticker;
 

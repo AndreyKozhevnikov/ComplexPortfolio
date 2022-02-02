@@ -8,8 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ComplexPortfolio.Module.BusinessObjects {
+    public interface ITransaction {
+        public DateTime Date { get; set; }
+        public double Price { get; set; }
+        public int Amount { get; set; }
+        public IPosition Position { get; }
+        public TransactionDirectionEnum Direction { get; }
+    }
+
     [DefaultClassOptions]
-    public class Transaction : BaseObject {
+    public class Transaction : BaseObject, ITransaction {
         public Transaction(Session session) : base(session) {
         }
         public override void AfterConstruction() {
@@ -17,17 +25,18 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             this.Date = DateTime.Today;
         }
 
-        public Transaction(DateTime __transactionDate, int _amount, double _price, TransactionDirectionEnum _direction) {
-            this.transationDate = __transactionDate;
+        public Transaction(DateTime _transactionDate, int _amount, double _price, TransactionDirectionEnum _direction) {
+            this.transationDate = _transactionDate;
             this.amount = _amount;
             this.price = _price;
             this.direction = _direction;
         }
 
+
         string comment;
         int amount;
         double price;
-        
+
         DateTime transationDate;
         TransactionDirectionEnum direction;
 
@@ -48,7 +57,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get => amount;
             set => SetPropertyValue(nameof(Amount), ref amount, value);
         }
-        
+
         [Size(SizeAttribute.DefaultStringMappingFieldSize)]
         public string Comment {
             get => comment;
@@ -65,5 +74,17 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
+        Account _account;
+        [Association]
+        public Account Account {
+            get {
+                return _account;
+            }
+            set {
+                SetPropertyValue(nameof(Account), ref _account, value);
+            }
+        }
+
+        IPosition ITransaction.Position { get => Position; }
     }
 }
