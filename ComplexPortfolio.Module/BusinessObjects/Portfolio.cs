@@ -16,6 +16,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         }
 
 
+        bool isVirtual;
         string description;
         string name;
 
@@ -36,6 +37,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             get {
                 return GetCollection<Position>(nameof(Positions));
             }
+        }
+
+        
+        public bool IsVirtual {
+            get => isVirtual;
+            set => SetPropertyValue(nameof(IsVirtual), ref isVirtual, value);
         }
 
         PortfolioSummary _summary;

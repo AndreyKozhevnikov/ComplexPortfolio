@@ -123,6 +123,11 @@
         <ColumnInfo Id="Date" SortIndex="0" SortOrder="Descending" />
       </Columns>
     </ListView>
+    <DetailView Id="Transaction_DetailView">
+      <Items>
+        <PropertyEditor Id="Position" LookupProperty="ComplName" />
+      </Items>
+    </DetailView>
     <ListView Id="Transaction_ListView">
       <Columns>
         <ColumnInfo Id="Position" LookupProperty="ComplName" />
