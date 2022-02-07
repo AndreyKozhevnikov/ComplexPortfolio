@@ -10,7 +10,45 @@ using ComplexPortfolio.Module.BusinessObjects;
 using DevExpress.Data.Filtering;
 
 namespace ComplexPortfolio.Module.Controllers {
-     class MoveAllTransactionsToAccount : ObjectViewController<ListView, Portfolio> {
+
+     class SplitTIckersController : ObjectViewController<DetailView, Position> {
+        public SplitTIckersController() {
+            var splitTransationsAction = new SimpleAction(this, "SplitTransactions", PredefinedCategory.Edit);
+            splitTransationsAction.Execute += SplitTransationsAction_Execute; ;
+            
+        }
+
+        private void SplitTransationsAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var pos =(Position) View.CurrentObject;
+            foreach(var t in pos.Transactions) {
+                t.Price = t.Price / 10;
+                t.Amount = t.Amount * 10;
+            }
+            View.ObjectSpace.CommitChanges();
+        }
+    }
+    class CheckTransationsController : ObjectViewController<ListView, Portfolio> {
+        public CheckTransationsController() {
+            var checkTransationsAction = new SimpleAction(this, "CheckTransaction", PredefinedCategory.Edit);
+            checkTransationsAction.Execute += CheckTransactionsAction_Execute; ;
+            checkTransationsAction.SelectionDependencyType = SelectionDependencyType.RequireSingleObject;
+        }
+
+        private void CheckTransactionsAction_Execute(object sender, SimpleActionExecuteEventArgs e) {
+            var port = (Portfolio)View.SelectedObjects[0];
+            foreach(var pos in port.Positions) {
+                foreach(var trans in pos.Transactions) {
+                    if(trans.Account == null) {
+                        var test = 3;
+                    }
+                }
+            }
+
+        }
+    }
+
+
+    class MoveAllTransactionsToAccount : ObjectViewController<ListView, Portfolio> {
         public MoveAllTransactionsToAccount() {
             var moveTransactionsAction = new SimpleAction(this, "MoveTransactions", PredefinedCategory.Edit);
             moveTransactionsAction.Execute += MoveTransactionsAction_Execute; ;
