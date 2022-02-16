@@ -27,7 +27,7 @@
     </Items>
   </NavigationItems>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="21.2.4.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.5.0" IsNewNode="True" />
   </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">
@@ -127,6 +127,25 @@
       <Items>
         <PropertyEditor Id="Position" LookupProperty="ComplName" />
       </Items>
+      <Layout>
+        <LayoutGroup Id="Main" RelativeSize="100">
+          <LayoutGroup Id="SimpleEditors" RelativeSize="100">
+            <LayoutGroup Id="Transaction" RelativeSize="100">
+              <LayoutGroup Id="Transaction_col1" RelativeSize="50">
+                <LayoutItem Id="Direction" RelativeSize="6.941431670281996" />
+                <LayoutItem Id="Date" RelativeSize="5.206073752711497" />
+                <LayoutItem Id="Amount" RelativeSize="5.206073752711497" Index="2" />
+                <LayoutItem Id="Price" RelativeSize="82.646420824295" Index="3" />
+              </LayoutGroup>
+              <LayoutGroup Id="Transaction_col2" RelativeSize="50">
+                <LayoutItem Id="Comment" RelativeSize="6.941431670281996" />
+                <LayoutItem Id="Position" RelativeSize="5.206073752711497" />
+                <LayoutItem Id="Account" RelativeSize="87.85249457700651" />
+              </LayoutGroup>
+            </LayoutGroup>
+          </LayoutGroup>
+        </LayoutGroup>
+      </Layout>
     </DetailView>
     <ListView Id="Transaction_ListView">
       <Columns>
