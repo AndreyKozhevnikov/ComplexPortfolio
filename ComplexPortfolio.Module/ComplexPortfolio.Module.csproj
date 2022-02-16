@@ -13,14 +13,14 @@
     <EmbeddedResource Include="Model.DesignedDiffs.xafml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DevExpress.Document.Processor" Version="21.2.3" />
-    <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="21.2.3" />
-    <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="21.2.3" />
-    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.2.3" />
-    <PackageReference Include="DevExpress.Persistent.Base" Version="21.2.3" />
-      <PackageReference Include="DevExpress.ExpressApp.Validation" Version="21.2.3" />
-    <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="21.2.3" />
-    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="21.2.3" />
+    <PackageReference Include="DevExpress.Document.Processor" Version="21.2.5" />
+    <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="21.2.5" />
+    <PackageReference Include="DevExpress.ExpressApp.ConditionalAppearance" Version="21.2.5" />
+    <PackageReference Include="DevExpress.ExpressApp.Xpo" Version="21.2.5" />
+    <PackageReference Include="DevExpress.Persistent.Base" Version="21.2.5" />
+      <PackageReference Include="DevExpress.ExpressApp.Validation" Version="21.2.5" />
+    <PackageReference Include="DevExpress.Persistent.BaseImpl.Xpo" Version="21.2.5" />
+    <PackageReference Include="DevExpress.ExpressApp.Security.Xpo" Version="21.2.5" />
     <PackageReference Include="Tinkoff.Trading.OpenApi" Version="1.7.4" />
   </ItemGroup>
 </Project>
