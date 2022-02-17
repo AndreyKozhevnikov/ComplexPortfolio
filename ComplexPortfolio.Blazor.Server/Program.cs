@@ -8,6 +8,7 @@ using DevExpress.ExpressApp;
 using DevExpress.ExpressApp.Blazor.DesignTime;
 using DevExpress.ExpressApp.Blazor.Services;
 using DevExpress.ExpressApp.Design;
+using DevExpress.Xpo;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,7 @@ namespace ComplexPortfolio.Blazor.Server {
             }
             else {
                 DevExpress.ExpressApp.FrameworkSettings.DefaultSettingsCompatibilityMode = DevExpress.ExpressApp.FrameworkSettingsCompatibilityMode.Latest;
+                XpoDefault.IsObjectModifiedOnNonPersistentPropertyChange = false;
                 IHost host = CreateHostBuilder(args).Build();
                 if(ContainsArgument(args, "updateDatabase")) {
                     using(var serviceScope = host.Services.CreateScope()) {
