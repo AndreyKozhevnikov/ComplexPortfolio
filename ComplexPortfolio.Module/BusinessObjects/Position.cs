@@ -84,11 +84,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             set => SetPropertyValue(nameof(Label), ref label, value);
         }
 
-
-
-
-
-
+        [NonPersistent]
         public List<CalcPositionDatum> CalculateData {
             get => calculateData;
             set => SetPropertyValue(nameof(CalculateData), ref calculateData, value);
