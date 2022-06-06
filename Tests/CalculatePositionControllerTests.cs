@@ -579,7 +579,7 @@ namespace Tests {
             Assert.AreEqual(490, res.VirtualProfit);
             //Assert.AreEqual(7, res.VirtualProfitPercent);
             Assert.AreEqual(445, res.TotalProfit);
-            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent,2));
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent, 2));
         }
 
         [Test]
@@ -631,9 +631,108 @@ namespace Tests {
             Assert.AreEqual(14700, res.VirtualProfit);
             //Assert.AreEqual(7, res.VirtualProfitPercent);
             Assert.AreEqual(13350, res.TotalProfit);
-            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent,2));
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent, 2));
         }
 
+        [Test]
+        public void CalculatePositionSummary_InputValue_2_Currency_noValue() {
+            //arrange
+            var cnt = new CalculatePositionController();
+
+            var ticker = new Mock<ITicker>();
+
+            var myDayDataList = new List<ITickerDayDatum>();
+            var d1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 55);
+            var d2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 80);
+            myDayDataList.Add(d1);
+            myDayDataList.Add(d2);
+            ticker.Setup(x => x.DayData).Returns(myDayDataList);
+            var currency = new Mock<ITicker>();
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 20);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 3), 30);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            currency.Setup(x => x.DayData).Returns(myCurrencyDataList);
+            ticker.Setup(x => x.Currency).Returns(currency.Object);
+
+
+
+            var lst = new List<Transaction>();
+            var trans1 = new Transaction(new DateTime(2020, 8, 18), 10, 10, TransactionDirectionEnum.Buy);
+            var trans2 = new Transaction(new DateTime(2020, 8, 19), 5, 15, TransactionDirectionEnum.Sell);
+            var trans3 = new Transaction(new DateTime(2020, 8, 20), 5, 20, TransactionDirectionEnum.Buy);
+            var trans4 = new Transaction(new DateTime(2020, 8, 21), 8, 5, TransactionDirectionEnum.Sell);
+            var trans5 = new Transaction(new DateTime(2020, 8, 21), 5, 6, TransactionDirectionEnum.Buy);
+            lst.Add(trans1);
+            lst.Add(trans2);
+            lst.Add(trans3);
+            lst.Add(trans4);
+            lst.Add(trans5);
+            var pos = new Mock<IPosition>();
+            pos.Setup(x => x.Transactions).Returns(lst);
+            pos.Setup(x => x.Ticker).Returns(ticker.Object);
+            //act
+            var res = cnt.CalculatePositionSummary(pos.Object);
+            //assert
+            Assert.AreEqual(1400, res.InputValue);
+            Assert.AreEqual(7, res.SharesCount);
+            Assert.AreEqual(11200, res.CurrentValue);
+            Assert.AreEqual(200, res.AveragePrice);
+            Assert.AreEqual(-900, res.FixedProfit);
+            Assert.AreEqual(9800, res.VirtualProfit);
+            //Assert.AreEqual(7, res.VirtualProfitPercent);
+            Assert.AreEqual(8900, res.TotalProfit);
+            Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent, 2));
+        }
+
+        [Test]
+        public void GetLastCurrencyPrice() {
+            //arrange
+            var cnt = new CalculatePositionController();
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 20);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 2), 30);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            var maxDate = new DateTime(2022, 1, 2);
+            //act
+            var res = cnt.GetLastCurrencyPrice(myCurrencyDataList, maxDate);
+            //assert
+            Assert.AreEqual(30, res);
+        }
+        [Test]
+        public void GetLastCurrencyPrice_2() {
+            //arrange
+            var cnt = new CalculatePositionController();
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 1), 20);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 3), 30);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            var maxDate = new DateTime(2022, 1, 2);
+            //act
+            var res = cnt.GetLastCurrencyPrice(myCurrencyDataList, maxDate);
+            //assert
+            Assert.AreEqual(20, res);
+        }
+        [Test]
+        public void GetLastCurrencyPrice_3() {
+            //arrange
+            var cnt = new CalculatePositionController();
+            var myCurrencyDataList = new List<ITickerDayDatum>();
+            var dc1 = CreateDayDatum(null, new DateTime(2022, 1, 11), 20);
+            var dc2 = CreateDayDatum(null, new DateTime(2022, 1, 12), 25);
+            var dc3 = CreateDayDatum(null, new DateTime(2022, 1, 30), 30);
+            myCurrencyDataList.Add(dc1);
+            myCurrencyDataList.Add(dc2);
+            myCurrencyDataList.Add(dc3);
+            var maxDate = new DateTime(2022, 1, 20);
+            //act
+            var res = cnt.GetLastCurrencyPrice(myCurrencyDataList, maxDate);
+            //assert
+            Assert.AreEqual(25, res);
+        }
         [Test]
         [Ignore("todo")]
         public void CalculatePositionSummary_InputValue_3_EmptyPosition() {
@@ -660,7 +759,7 @@ namespace Tests {
             //act
             var res = cnt.CalculatePositionSummary(pos.Object);
             //assert
-           
+
             Assert.AreEqual(6.36, Math.Round(res.TotalProfitPercent, 2)); //for now it is infinity
         }
     }

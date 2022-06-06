@@ -58,8 +58,15 @@ namespace ComplexPortfolio.Module.Controllers {
                 currentProfitTotal = calcData.ProfitTotal;
                 prevPrice = calcData.Price;
                 double currencyValue;
+                double tmpCurrencyValue = 0;
                 if(position.Ticker.Currency != null) {
-                    currencyValue = position.Ticker.Currency.DayData.Where(x => x.Date == calcData.Date).First().Close;
+                    var currCurrencyValue = position.Ticker.Currency.DayData.Where(x => x.Date == calcData.Date).FirstOrDefault();
+                    if(currCurrencyValue != null) {
+                        currencyValue = currCurrencyValue.Close;
+                        tmpCurrencyValue = currCurrencyValue.Close;
+                    } else {
+                        currencyValue = tmpCurrencyValue;
+                    }
                     calcData.Value = calcData.Value * currencyValue;
                     calcData.Profit = calcData.Profit * currencyValue;
                     calcData.ProfitTotal = calcData.ProfitTotal * currencyValue;
@@ -117,7 +124,7 @@ namespace ComplexPortfolio.Module.Controllers {
 
             double lastCurrencyPrice = 1;
             DateTime maxDate = DateTime.MinValue;
-            if( ticker.DayData != null && ticker.DayData.Count > 0) {//todo: only for tests? remove?
+            if(ticker.DayData != null && ticker.DayData.Count > 0) {//todo: only for tests? remove?
                 maxDate = ticker.DayData.Max(x => x.Date);
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
                 summary.LastPrice = lastPrice;
@@ -126,7 +133,7 @@ namespace ComplexPortfolio.Module.Controllers {
             summary.LastPriceRub = summary.LastPrice;
             summary.CurrentValue = summary.LastPrice * summary.SharesCount;
             if(ticker.Currency != null) {
-                lastCurrencyPrice = ticker.Currency.DayData.Where(x => x.Date == maxDate).FirstOrDefault().Close;
+                lastCurrencyPrice = GetLastCurrencyPrice(ticker.Currency.DayData, maxDate);
                 summary.LastPriceRub = summary.LastPrice * lastCurrencyPrice;
                 summary.FixedProfit = summary.FixedProfit * lastCurrencyPrice;
                 summary.InputValue = summary.InputValue * lastCurrencyPrice;
@@ -138,6 +145,25 @@ namespace ComplexPortfolio.Module.Controllers {
             summary.TotalProfit = summary.FixedProfit + summary.VirtualProfit;
             summary.TotalProfitPercent = summary.TotalProfit / summary.InputValue;
             return summary;
+        }
+
+        public double GetLastCurrencyPrice(List<ITickerDayDatum> data, DateTime maxDate) {
+            var tmpDate = data.Where(x => x.Date == maxDate).FirstOrDefault();
+            double result = 0;
+            if(tmpDate != null) {
+                result = tmpDate.Close;
+            } else {
+                var sorted = data.OrderBy(x => x.Date).ToList();
+                DateTime candidateDate=maxDate;
+                ITickerDayDatum candidateResult;
+                do {
+                    candidateDate = candidateDate.AddDays(-1);
+                    candidateResult = data.Where(x => x.Date == candidateDate).FirstOrDefault();
+                } while(candidateResult == null);
+                result = candidateResult.Close;
+            }
+            return result;
+
         }
 
         public void PopulateCalcDataWithTransactionsData(CalcPositionDatum dayData, List<Transaction> transactions, double currencyValue) {
