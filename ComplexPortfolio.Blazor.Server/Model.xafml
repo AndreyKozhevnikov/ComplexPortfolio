@@ -110,7 +110,11 @@
         <ColumnInfo Id="Last Price Rub" PropertyName="Summary.LastPriceRub" Index="4" IsNewNode="True" />
         <ColumnInfo Id="Average Price" PropertyName="Summary.AveragePrice" DisplayFormat="{0:n6}" Index="5" IsNewNode="True" />
         <ColumnInfo Id="Shares Count" PropertyName="Summary.SharesCount" Index="6" IsNewNode="True" />
-        <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" Index="7" IsNewNode="True" />
+        <ColumnInfo Id="Current Value" PropertyName="Summary.CurrentValue" DisplayFormat="{0:n0}" EditMask="n0" Index="7" IsNewNode="True">
+          <Summary IsNewNode="True">
+            <ColumnSummaryItem Id="@71bb034a-2f29-41fd-98e6-d773cbc168b1" SummaryType="Sum" IsNewNode="True" />
+          </Summary>
+        </ColumnInfo>
         <ColumnInfo Id="Input Value" PropertyName="Summary.InputValue" DisplayFormat="{0:n0}" EditMask="n0" Index="8" IsNewNode="True" />
         <ColumnInfo Id="Fixed Profit" PropertyName="Summary.FixedProfit" DisplayFormat="{0:n0}" Index="9" IsNewNode="True" />
         <ColumnInfo Id="Virtual Profit" PropertyName="Summary.VirtualProfit" DisplayFormat="{0:n0}" Index="10" IsNewNode="True" />
