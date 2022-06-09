@@ -27,7 +27,7 @@
     </Items>
   </NavigationItems>
   <SchemaModules>
-    <SchemaModule Name="SystemModule" Version="21.2.5.0" IsNewNode="True" />
+    <SchemaModule Name="SystemModule" Version="21.2.7.0" IsNewNode="True" />
   </SchemaModules>
   <ViewItems>
     <PropertyEditor Name="PropertyEditors">
@@ -59,6 +59,24 @@
         </LayoutGroup>
       </Layout>
     </DetailView>
+    <ListView Id="AccountSummary_TickersData_ListView">
+      <Columns>
+        <ColumnInfo Id="CurrentValue">
+          <Summary>
+            <ColumnSummaryItem Id="@40af3d39-c1e8-4f5e-8a8b-3942cbf2299a" SummaryType="Sum" IsNewNode="True" />
+          </Summary>
+        </ColumnInfo>
+      </Columns>
+    </ListView>
+    <ListView Id="AccountSummaryObject_ListView">
+      <Columns>
+        <ColumnInfo Id="CurrentValue">
+          <Summary>
+            <ColumnSummaryItem Id="@b944bf75-78fe-47f1-a678-b95a52908510" SummaryType="Sum" IsNewNode="True" />
+          </Summary>
+        </ColumnInfo>
+      </Columns>
+    </ListView>
     <DetailView Id="Portfolio_DetailView">
       <Items>
         <PropertyEditor Id="CurrentValue" PropertyName="Summary.CurrentValue" DisplayFormat="{0:N0}" EditMask="N0" IsNewNode="True" />
