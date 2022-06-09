@@ -20,11 +20,23 @@ namespace Tests {
             var p1 = new Mock<IPosition>();
             var tick1 = new Mock<ITicker>();
             tick1.Setup(x => x.Name).Returns("Ticker1");
+            var dayData1 = new Mock<ITickerDayDatum>();
+            dayData1.Setup(x => x.Date).Returns(new DateTime(2022, 6, 9));
+            dayData1.Setup(x => x.Close).Returns(10);
+            var listDayData1 = new List<ITickerDayDatum>();
+            listDayData1.Add(dayData1.Object);
+            tick1.Setup(x => x.DayData).Returns(listDayData1);
             p1.Setup(x => x.Ticker).Returns(tick1.Object);
 
             var p2 = new Mock<IPosition>();
             var tick2 = new Mock<ITicker>();
+            var dayData2 = new Mock<ITickerDayDatum>();
+            dayData2.Setup(x => x.Date).Returns(new DateTime(2022, 6, 9));
+            var listDayData2 = new List<ITickerDayDatum>();
+            listDayData2.Add(dayData2.Object);
+            dayData2.Setup(x => x.Close).Returns(20);
             tick2.Setup(x => x.Name).Returns("Ticker2");
+            tick2.Setup(x => x.DayData).Returns(listDayData2);
             p2.Setup(x => x.Ticker).Returns(tick2.Object);
 
             var t1 = new Mock<ITransaction>();// (new DateTime(2022, 2, 1), 4, 50, TransactionDirectionEnum.Buy, p1.Object);
@@ -66,11 +78,18 @@ namespace Tests {
             var res = cnt.CalculateAccountSummary(list);
             //assert
             Assert.AreEqual(2, res.TickersData.Count);
+            
             Assert.AreEqual("Ticker1", res.TickersData[0].Ticker.Name);
             Assert.AreEqual(13, res.TickersData[0].Amount);
+            Assert.AreEqual(10, res.TickersData[0].LastPrice);
+            Assert.AreEqual(130, res.TickersData[0].CurrentValue);
 
             Assert.AreEqual("Ticker2", res.TickersData[1].Ticker.Name);
             Assert.AreEqual(6, res.TickersData[1].Amount);
+            Assert.AreEqual(20, res.TickersData[1].LastPrice);
+            Assert.AreEqual(120, res.TickersData[1].CurrentValue);
+
+
         }
     }
 }
