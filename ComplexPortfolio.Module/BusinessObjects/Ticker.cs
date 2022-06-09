@@ -12,8 +12,9 @@ namespace ComplexPortfolio.Module.BusinessObjects {
 
     public interface ITicker {
         List<ITickerDayDatum> DayData { get; }
-        ITicker Currency{ get; }
-        string Name{ get; }
+        ITicker Currency { get; }
+        string Name { get; }
+        bool IsBlocked { get; }
     }
 
     [DebuggerDisplay("Name - {Name}")]
@@ -25,6 +26,7 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Ticker() {
 
         }
+        bool isBlocked;
         bool isCurrency;
         Ticker _currency;
         string description;
@@ -64,6 +66,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
         public Ticker Currency {
             get => _currency;
             set => SetPropertyValue(nameof(Currency), ref _currency, value);
+        }
+
+
+        public bool IsBlocked {
+            get => isBlocked;
+            set => SetPropertyValue(nameof(IsBlocked), ref isBlocked, value);
         }
 
         List<ITickerDayDatum> ITicker.DayData => DayData.Cast<ITickerDayDatum>().ToList();

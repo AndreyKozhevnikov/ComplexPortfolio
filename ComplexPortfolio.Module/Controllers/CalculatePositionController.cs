@@ -129,7 +129,9 @@ namespace ComplexPortfolio.Module.Controllers {
                 var lastPrice = ticker.DayData.Where(x => x.Date == maxDate).First().Close;
                 summary.LastPrice = lastPrice;
             }
-
+            if(ticker.IsBlocked) {
+                summary.LastPrice = 0;
+            }
             summary.LastPriceRub = summary.LastPrice;
             summary.CurrentValue = summary.LastPrice * summary.SharesCount;
             if(ticker.Currency != null) {
