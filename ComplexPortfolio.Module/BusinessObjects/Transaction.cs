@@ -85,6 +85,12 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
+        [NonPersistent]
+        public double CommonSum {
+            get => Amount * Price;
+            set => Price = value / Amount;
+        }
+
         IPosition ITransaction.Position { get => Position; }
     }
 }
