@@ -13,7 +13,7 @@ namespace ComplexPortfolio.Blazor.Server {
     public partial class ComplexPortfolioBlazorApplication : BlazorApplication {
         public ComplexPortfolioBlazorApplication() {
             InitializeComponent();
-            
+            LinkNewObjectToParentImmediately = true;
         }
         protected override void OnSetupStarted() {
             base.OnSetupStarted();

@@ -56,5 +56,15 @@ namespace ComplexPortfolio.Module.BusinessObjects {
             }
         }
 
+        Account _defaultAccount;
+        public Account DefaultAccount {
+            get {
+                return _defaultAccount;
+            }
+            set {
+                SetPropertyValue(nameof(DefaultAccount), ref _defaultAccount, value);
+            }
+        }
+
     }
 }

@@ -70,7 +70,11 @@ namespace ComplexPortfolio.Module.BusinessObjects {
                 return _position;
             }
             set {
-                SetPropertyValue(nameof(Position), ref _position, value);
+
+                bool modified = SetPropertyValue(nameof(Position), ref _position, value);
+                if(!IsLoading && !IsSaving && value != null && modified && this.Account == null) {
+                    this.Account = value.Portfolio.DefaultAccount;
+                }
             }
         }
 
