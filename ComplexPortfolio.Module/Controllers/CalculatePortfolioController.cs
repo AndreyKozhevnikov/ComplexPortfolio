@@ -67,6 +67,10 @@ namespace ComplexPortfolio.Module.Controllers {
             }
             List<CalcPortfolioDatum> result = new List<CalcPortfolioDatum>();
             while(startDate <= finishDate) {
+                if (startDate.DayOfWeek==DayOfWeek.Saturday || startDate.DayOfWeek == DayOfWeek.Sunday) {
+                    startDate = startDate.AddDays(1);
+                    continue;
+                }
                 List<CalcPositionDatum> tmpList = new List<CalcPositionDatum>();
                 foreach(var p in positionsWithData) {
                     var positionData = p.CalculateData.Where(x => x.Date == startDate).FirstOrDefault();

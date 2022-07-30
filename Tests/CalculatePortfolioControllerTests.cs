@@ -18,9 +18,9 @@ namespace Tests {
             //arrange
             var cnt = new CalculatePortfolioController();
             var position1 = new Position();
-            var d1 = new DateTime(2021, 8, 19);
-            var d2 = new DateTime(2021, 8, 21);
-            var d3 = new DateTime(2021, 8, 22);
+            var d1 = new DateTime(2021, 8, 18);
+            var d2 = new DateTime(2021, 8, 19);
+            var d3 = new DateTime(2021, 8, 20);
             var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 11);
             var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 22);
             var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test2" }, d2, 33);
@@ -51,6 +51,46 @@ namespace Tests {
             Assert.AreEqual(d1, res[0].Date);
             Assert.AreEqual(d2, res[1].Date);
             Assert.AreEqual(d3, res[2].Date);
+        }
+
+        [Test]
+        public void CalculatePortfolio_ExcludeWeekedn() {
+            //arrange
+            var cnt = new CalculatePortfolioController();
+
+            var d1 = new DateTime(2022, 7, 28);
+            var d2 = new DateTime(2022, 7, 29);
+            var d3 = new DateTime(2022, 7, 30);
+            var tickerDayData1 = new TickerDayDatum(new Ticker() { Name = "test1" }, d1, 11);
+            var tickerDayData2 = new TickerDayDatum(new Ticker() { Name = "test1" }, d2, 22);
+            var tickerDayData3 = new TickerDayDatum(new Ticker() { Name = "test2" }, d2, 33);
+            var tickerDayData4 = new TickerDayDatum(new Ticker() { Name = "test2" }, d3, 33);
+
+            var position1 = new Position();
+            var calcData11 = new CalcPositionDatum(tickerDayData1);
+            var calcData12 = new CalcPositionDatum(tickerDayData2);
+            position1.CalculateData = new List<CalcPositionDatum>();
+            position1.CalculateData.Add(calcData11);
+            position1.CalculateData.Add(calcData12);
+
+            var position2 = new Position();
+            var calcData21 = new CalcPositionDatum(tickerDayData3);
+            var calcData22 = new CalcPositionDatum(tickerDayData4);
+            position2.CalculateData = new List<CalcPositionDatum>();
+            position2.CalculateData.Add(calcData21);
+            position2.CalculateData.Add(calcData22);
+
+            var positions = new List<Position>();
+            positions.Add(position1);
+            positions.Add(position2);
+            //act
+            var res = cnt.CalculatePortfolioDataList(positions);
+            //assert
+            Assert.AreEqual(2, res.Count);
+            Assert.AreEqual(1, res[0].SumTotalValues.Count); //check
+            Assert.AreEqual(2, res[1].SumTotalValues.Count);
+            Assert.AreEqual(d1, res[0].Date);
+            Assert.AreEqual(d2, res[1].Date);
         }
 
         [Test]
@@ -88,9 +128,9 @@ namespace Tests {
             positions.Add(position3);
             //act
             //assert
-            Assert.DoesNotThrow(()=> cnt.CalculatePortfolioDataList(positions));
-           
-            
+            Assert.DoesNotThrow(() => cnt.CalculatePortfolioDataList(positions));
+
+
         }
 
         List<CalcPositionDatum> CreatePlainPositions() {
@@ -692,7 +732,7 @@ namespace Tests {
             pos1.InputValue = 20;
             pos1.CurrentValue = 50;
             pos1.TotalProfit = 30;
-            
+
             var pos2 = new PositionSummary();
             pos2.InputValue = 30;
             pos2.CurrentValue = 150;
